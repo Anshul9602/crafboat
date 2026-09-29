@@ -112,6 +112,21 @@ class Footer extends \Opencart\System\Engine\Controller {
 		$data['scripts'] = $this->document->getScripts('footer');
 		$data['logged'] = $this->customer->isLogged();
 		$data['login'] = $this->url->link('account/login', 'language=' . $this->config->get('config_language'));
+		$data['wishlist_add'] = $this->url->link('account/wishlist.add', 'language=' . $this->config->get('config_language'));
+		$data['wishlist_remove'] = $this->url->link('account/wishlist.remove', 'language=' . $this->config->get('config_language'));
+		$saved_ids = [];
+
+		if ($this->customer->isLogged()) {
+			$this->load->model('account/wishlist');
+
+			foreach ($this->model_account_wishlist->getWishlist($this->customer->getId()) as $saved) {
+				$saved_ids[] = (int)$saved['product_id'];
+			}
+		} elseif (!empty($this->session->data['wishlist']) && is_array($this->session->data['wishlist'])) {
+			$saved_ids = array_map('intval', $this->session->data['wishlist']);
+		}
+
+		$data['saved_ids'] = $saved_ids;
 		$data['cookie'] = $this->load->controller('common/cookie');
 
 		return $this->load->view('common/footer', $data);

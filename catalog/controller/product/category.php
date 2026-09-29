@@ -283,6 +283,7 @@ class Category extends \Opencart\System\Engine\Controller {
 				$href = $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $result['product_id'] . $url);
 
 				$data['cards'][] = [
+					'product_id' => $result['product_id'],
 					'name'       => $result['name'],
 					'sku'        => $result['model'],
 					'category'   => $result['meta_keyword'],

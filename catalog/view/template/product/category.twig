@@ -73,7 +73,7 @@
     {% for product in cards %}
     <a class="cb-card" href="{{ product.href }}">
       <span class="cb-badge">{{ product.badge }}</span>
-      <img class="cb-heart" src="catalog/view/image/craftboat/heart.svg" alt="">
+      <span class="cb-heart" role="button" tabindex="0" data-wishlist="{{ product.product_id }}" aria-label="Save"><img src="catalog/view/image/craftboat/heart.svg" alt=""></span>
       <img class="cb-card__img" src="{{ product.image }}" alt="{{ product.name }}">
       <div>
         <div class="cb-meta"><span>{{ product.category }}</span><span>{{ product.sku }}</span></div>

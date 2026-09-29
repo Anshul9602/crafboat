@@ -10,8 +10,8 @@
       <img id="cb-pdp-photo" src="{{ gallery[0] }}" alt="{{ heading_title }}">
     </div>
     <div class="cb-pdp__thumbs">
-      {% for image in gallery|slice(1, 2) %}
-      <button type="button" data-src="{{ image }}" aria-label="Show image"><img src="{{ image }}" alt=""></button>
+      {% for image in gallery|slice(1) %}
+      <button type="button" data-src="{{ image }}" aria-label="Show this image large"><img src="{{ image }}" alt=""></button>
       {% endfor %}
     </div>
   </div>
@@ -75,7 +75,7 @@
     {% for product in related_products %}
     <a class="cb-card" href="{{ product.href }}">
       <span class="cb-badge">{{ product.badge }}</span>
-      <img class="cb-heart" src="catalog/view/image/craftboat/heart.svg" alt="">
+      <span class="cb-heart" role="button" tabindex="0" data-wishlist="{{ product.product_id }}" aria-label="Save"><img src="catalog/view/image/craftboat/heart.svg" alt=""></span>
       <img class="cb-card__img" src="{{ product.image }}" alt="{{ product.name }}">
       <div>
         <div class="cb-meta"><span>{{ product.category }}</span><span>{{ product.sku }}</span></div>
@@ -122,22 +122,27 @@
   <a class="cb-btn cb-btn--white" href="https://www.seedsofanaar.com/" target="_blank" rel="noopener">Seeds of Anaar <img src="catalog/view/image/craftboat/external.svg" alt=""></a>
 </section>
 <script>
-$(document).on('ajaxSuccess', function (event, xhr, settings) {
-  if (!settings.url || settings.url.indexOf('checkout/cart.add') === -1) return;
-  var json = xhr.responseJSON || {};
-  if (!json.success) return;
-  var opener = document.querySelector('[data-cart-open]');
-  if (opener) opener.click();
-});
 document.querySelectorAll('.cb-pdp__thumbs button').forEach(function (button) {
   button.addEventListener('click', function () {
     var photo = document.getElementById('cb-pdp-photo');
-    var next = button.getAttribute('data-src');
+    var thumb = button.querySelector('img');
+    if (!photo || !thumb) return;
+    var next = thumb.getAttribute('src');
     var current = photo.getAttribute('src');
     photo.setAttribute('src', next);
+    thumb.setAttribute('src', current);
     button.setAttribute('data-src', current);
-    button.querySelector('img').setAttribute('src', current);
+    photo.closest('.cb-pdp__main').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+if (window.jQuery) {
+  jQuery(document).on('ajaxSuccess', function (event, xhr, settings) {
+    if (!settings.url || settings.url.indexOf('checkout/cart.add') === -1) return;
+    var json = xhr.responseJSON || {};
+    if (!json.success) return;
+    var opener = document.querySelector('[data-cart-open]');
+    if (opener) opener.click();
+  });
+}
 </script>
 {{ footer }}

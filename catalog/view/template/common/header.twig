@@ -44,7 +44,7 @@
       {% else %}
         <a href="{{ account }}">Account</a>
       {% endif %}
-      <a href="{{ wishlist }}">Saved <span class="cb-pill">{{ saved_count }}</span></a>
+      <a href="{{ wishlist }}">Saved <span class="cb-pill cb-saved-count">{{ saved_count }}</span></a>
       <button type="button" class="cb-tools__cart" data-cart-open data-cart-url="{{ cart_drawer }}">Cart <span class="cb-pill">{{ cart_count }}</span></button>
       <a class="cb-btn cb-btn--black" href="{{ register }}">Apply to buy</a>
     </div>

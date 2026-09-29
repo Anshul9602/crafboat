@@ -78,6 +78,7 @@ class Home extends \Opencart\System\Engine\Controller {
 			$made = in_array('made', $tags, true);
 
 			$cards[] = [
+				'product_id' => $row['product_id'],
 				'name'       => $row['name'],
 				'sku'        => $row['model'],
 				'category'   => $row['meta_keyword'],

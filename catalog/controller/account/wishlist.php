@@ -99,9 +99,6 @@ class WishList extends \Opencart\System\Engine\Controller {
 		// Product
 		$this->load->model('catalog/product');
 
-		// Image
-		$this->load->model('tool/image');
-
 		// Stock Status
 		$this->load->model('localisation/stock_status');
 
@@ -112,10 +109,13 @@ class WishList extends \Opencart\System\Engine\Controller {
 
 			if ($product_info) {
 				if ($product_info['image'] && is_file(DIR_IMAGE . html_entity_decode($product_info['image'], ENT_QUOTES, 'UTF-8'))) {
-					$image = $this->model_tool_image->resize($product_info['image'], $this->config->get('config_image_wishlist_width'), $this->config->get('config_image_wishlist_height'));
+					$image = 'image/' . $product_info['image'];
 				} else {
 					$image = '';
 				}
+
+				$tags = array_map('trim', explode(',', (string)($product_info['tag'] ?? '')));
+				$made = in_array('made', $tags, true);
 
 				if ($product_info['quantity'] <= 0) {
 					$stock_status_id = $product_info['stock_status_id'];
@@ -146,13 +146,18 @@ class WishList extends \Opencart\System\Engine\Controller {
 				}
 
 				$data['products'][] = [
-					'thumb'   => $image,
-					'stock'   => $stock,
-					'price'   => $price,
-					'special' => $special,
-					'minimum' => $product_info['minimum'] > 0 ? $product_info['minimum'] : 1,
-					'href'    => $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $product_info['product_id']),
-					'remove'  => $this->url->link('account/wishlist.remove', 'language=' . $this->config->get('config_language') . '&product_id=' . $product_info['product_id'] . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''))
+					'thumb'      => $image,
+					'stock'      => $stock,
+					'price'      => $price,
+					'special'    => $special,
+					'minimum'    => $product_info['minimum'] > 0 ? $product_info['minimum'] : 1,
+					'href'       => $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $product_info['product_id']),
+					'remove'     => $this->url->link('account/wishlist.remove', 'language=' . $this->config->get('config_language') . '&product_id=' . $product_info['product_id'] . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : '')),
+					'category'   => $product_info['meta_keyword'] ?? '',
+					'collection' => $product_info['location'] ?? '',
+					'badge'      => in_array('new', $tags, true) ? 'new' : (in_array('bestseller', $tags, true) ? 'bestseller' : 'ready'),
+					'ship'       => $made ? 'Made to order · Ships in 10–12 days' : 'Ready to ship · Dispatches in 3–5 days',
+					'wait'       => $made
 				] + $product_info;
 			} else {
 				$this->model_account_wishlist->deleteWishlists($this->customer->getId(), $result['product_id']);
@@ -196,21 +201,19 @@ class WishList extends \Opencart\System\Engine\Controller {
 
 			$this->session->data['wishlist'] = array_unique($this->session->data['wishlist']);
 
-			// Logged in. We store the product ID into the wishlist
+			$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $product_id), $product_info['name'], $this->url->link('account/wishlist', 'language=' . $this->config->get('config_language') . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : '')));
+
 			if ($this->customer->isLogged()) {
-				// Edit the customer's cart
 				$this->load->model('account/wishlist');
 
 				$this->model_account_wishlist->addWishlist($this->customer->getId(), $product_id);
 
-				$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $product_id), $product_info['name'], $this->url->link('account/wishlist', 'language=' . $this->config->get('config_language') . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : '')));
-
-				$json['total'] = sprintf($this->language->get('text_wishlist'), $this->model_account_wishlist->getTotalWishlist($this->customer->getId()));
+				$json['count'] = $this->model_account_wishlist->getTotalWishlist($this->customer->getId());
 			} else {
-				$json['error'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', 'language=' . $this->config->get('config_language')), $this->url->link('account/register', 'language=' . $this->config->get('config_language')), $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $product_id), $product_info['name'], $this->url->link('account/wishlist', 'language=' . $this->config->get('config_language') . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : '')));
-
-				$json['total'] = sprintf($this->language->get('text_wishlist'), (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0));
+				$json['count'] = count($this->session->data['wishlist']);
 			}
+
+			$json['total'] = sprintf($this->language->get('text_wishlist'), $json['count']);
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -227,26 +230,36 @@ class WishList extends \Opencart\System\Engine\Controller {
 
 		$json = [];
 
-		if (isset($this->request->get['product_id'])) {
+		if (isset($this->request->post['product_id'])) {
+			$product_id = (int)$this->request->post['product_id'];
+		} elseif (isset($this->request->get['product_id'])) {
 			$product_id = (int)$this->request->get['product_id'];
 		} else {
 			$product_id = 0;
 		}
 
-		if (!$this->customer->isLogged()) {
-			$json['error'] = sprintf($this->language->get('error_login'), $this->url->link('account/login', 'language=' . $this->config->get('config_language')), $this->url->link('account/register', 'language=' . $this->config->get('config_language')), $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . (int)$product_id), $this->url->link('account/wishlist', 'language=' . $this->config->get('config_language')));
+		if (isset($this->session->data['wishlist']) && is_array($this->session->data['wishlist'])) {
+			$this->session->data['wishlist'] = array_values(array_filter($this->session->data['wishlist'], function ($id) use ($product_id) {
+				return (int)$id !== $product_id;
+			}));
 		}
 
-		if (!$json) {
-			// Wishlist
+		if ($this->customer->isLogged()) {
 			$this->load->model('account/wishlist');
 
 			$this->model_account_wishlist->deleteWishlists($this->customer->getId(), $product_id);
 
-			$json['success'] = $this->language->get('text_remove');
+			$json['count'] = $this->model_account_wishlist->getTotalWishlist($this->customer->getId());
+		} else {
+			$json['count'] = isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0;
 		}
 
-		$json['customer_token'] = $this->session->data['customer_token'];
+		$json['success'] = $this->language->get('text_remove');
+		$json['total'] = sprintf($this->language->get('text_wishlist'), $json['count']);
+
+		if (isset($this->session->data['customer_token'])) {
+			$json['customer_token'] = $this->session->data['customer_token'];
+		}
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));

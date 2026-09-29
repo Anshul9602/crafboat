@@ -511,7 +511,17 @@ class Product extends \Opencart\System\Engine\Controller {
 				$data['technique'] = 'Each edge is cut, wrapped and aligned by hand';
 				$data['packing'] = 'Nested, tissue wrapped · 4 sets per carton';
 			} else {
-				$data['gallery'] = [$main_image, $main_image, $main_image];
+				$data['gallery'] = [$main_image];
+
+				foreach ($this->model_catalog_product->getImages($product_id) as $extra) {
+					if (!empty($extra['image'])) {
+						$data['gallery'][] = 'image/' . ltrim((string)$extra['image'], '/');
+					}
+				}
+
+				if (count($data['gallery']) < 3) {
+					$data['gallery'] = [$main_image, $main_image, $main_image];
+				}
 				$data['dimensions'] = ((float)$product_info['length'] > 0) ? rtrim(rtrim((string)$product_info['length'], '0'), '.') . ' × ' . rtrim(rtrim((string)$product_info['width'], '0'), '.') . ' cm' : 'See the product notes';
 				$data['material'] = 'Handmade in the Jaipur studio';
 				$data['technique'] = 'Finished by hand';
@@ -525,6 +535,7 @@ class Product extends \Opencart\System\Engine\Controller {
 				$row_tags = array_map('trim', explode(',', (string)$row['tag']));
 				$row_made = in_array('made', $row_tags, true);
 				$data['related_products'][] = [
+					'product_id' => $row['product_id'],
 					'name'       => $row['name'],
 					'sku'        => $row['model'],
 					'category'   => $row['meta_keyword'],
