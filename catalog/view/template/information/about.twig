@@ -1,0 +1,96 @@
+{{ header }}
+<div id="information-about" class="tck-about">
+  <section class="tck-about__hero">
+    <div class="tck-wrap">
+      <p class="tck-about__eyebrow">Make A Wish · by Preety Solanki</p>
+      <h1>Cakes for the wishes you make out loud.</h1>
+      <p class="tck-about__lead">A home bakery for birthdays, baby showers, anniversaries and every celebration that deserves something made only for you.</p>
+      <div class="tck-about__actions">
+        <a class="tck-cta" href="{{ shop }}">Shop cakes</a>
+        <a class="tck-cta tck-cta--ghost" href="{{ instagram }}" target="_blank" rel="noopener">
+          <i class="fa-brands fa-instagram"></i> {{ instagram_handle }}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="tck-section">
+    <div class="tck-wrap tck-about__story">
+      <div class="tck-about__portrait">
+        {% if logo %}
+          <img src="{{ logo }}" alt="{{ name }}"/>
+        {% endif %}
+        <span>Preety Solanki</span>
+      </div>
+      <div>
+        <p class="tck-about__eyebrow">Where it began</p>
+        <h2>A baker, a wish, and an Instagram kitchen.</h2>
+        <p>Make A Wish is Preety Solanki’s bakery — started at home, shared first on <a href="{{ instagram }}" target="_blank" rel="noopener">Instagram</a>, and grown by people who wanted a cake that looked like their theme and tasted freshly made.</p>
+        <p>You will find her work as <strong>{{ instagram_handle }}</strong>: custom cream cakes, character cakes, brownies, bomboloni and gifting tins. Each bake is made to order, not pulled from a shop window.</p>
+        <p>The name is the brief. Tell us the wish — a birthday, a baby’s name, a colour, a cartoon, a quiet anniversary — and we bake it into something you can put on the table.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tck-section tck-about__believe">
+    <div class="tck-wrap">
+      <p class="tck-about__eyebrow">How we bake</p>
+      <h2>Made to order. Designed for the day.</h2>
+      <div class="tck-about__points">
+        <article>
+          <h3>Custom, not copy-paste</h3>
+          <p>Themes, names, colours and figures are built for your celebration — the same way Preety shares new cakes on Instagram every week.</p>
+        </article>
+        <article>
+          <h3>Fresh cream, real batter</h3>
+          <p>Cakes, brownies, tea cakes and bomboloni are mixed and finished for the order. No long shelf, no factory line.</p>
+        </article>
+        <article>
+          <h3>Sent with care</h3>
+          <p>Delhi NCR orders can arrive the next day. Pan-India boxes go out packed for the journey, so the wish still looks like the photo.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {% if categories %}
+  <section class="tck-section">
+    <div class="tck-wrap">
+      <p class="tck-about__eyebrow">The menu</p>
+      <h2>What we love to make</h2>
+      <div class="tck-about__cats">
+        {% for category in categories %}
+          <a href="{{ category.href }}">
+            {% if category.image %}<img src="{{ category.image }}" alt="{{ category.name }}">{% endif %}
+            <strong>{{ category.name }}</strong>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if products %}
+  <section class="tck-section">
+    <div class="tck-wrap">
+      <p class="tck-about__eyebrow">From the studio</p>
+      <h2>Recent wishes</h2>
+      <div class="tck-about__gallery tck-grid">
+        {% for product in products %}
+          <div>{% include 'catalog/view/template/product/card.twig' %}</div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="tck-about__follow">
+    <div class="tck-wrap">
+      <i class="fa-brands fa-instagram"></i>
+      <h2>See the cakes as they leave the kitchen.</h2>
+      <p>New designs, behind-the-scenes bakes and customer tables live on Instagram first.</p>
+      <a class="tck-cta" href="{{ instagram }}" target="_blank" rel="noopener">Follow {{ instagram_handle }}</a>
+    </div>
+  </section>
+</div>
+{{ footer }}

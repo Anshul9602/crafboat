@@ -1,0 +1,10 @@
+<div class="tck-mega__panel">
+  <div class="tck-mega__grid">
+    {% for category in categories %}
+      <a class="tck-mega__card" href="{{ category.href }}">
+        <img src="{{ category.image }}" alt="{{ category.name }}">
+        <span>{{ category.name }} <i class="fa-solid fa-arrow-up-right"></i></span>
+      </a>
+    {% endfor %}
+  </div>
+</div>

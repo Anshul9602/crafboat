@@ -1,0 +1,100 @@
+2026-09-29 09:44:28 - Error: Class "Twig\Loader\FilesystemLoader" not found
+File: C:\xampp\htdocs\crafboat\system\library\template\twig.php
+Line: 36
+
+Backtrace: 0
+File: C:\xampp\htdocs\crafboat\system\library\template.php
+Line: 30
+Class: Opencart\System\Library\Template\Twig
+Function: __construct
+
+Backtrace: 1
+File: C:\xampp\htdocs\crafboat\system\framework.php
+Line: 198
+Class: Opencart\System\Library\Template
+Function: __construct
+
+Backtrace: 2
+File: C:\xampp\htdocs\crafboat\index.php
+Line: 21
+Function: require_once
+2026-09-29 09:44:28 - Error: Class "Twig\Loader\FilesystemLoader" not found
+File: C:\xampp\htdocs\crafboat\system\library\template\twig.php
+Line: 36
+
+Backtrace: 0
+File: C:\xampp\htdocs\crafboat\system\library\template.php
+Line: 30
+Class: Opencart\System\Library\Template\Twig
+Function: __construct
+
+Backtrace: 1
+File: C:\xampp\htdocs\crafboat\system\framework.php
+Line: 198
+Class: Opencart\System\Library\Template
+Function: __construct
+
+Backtrace: 2
+File: C:\xampp\htdocs\crafboat\webadmin\index.php
+Line: 21
+Function: require_once
+2026-09-29 09:44:39 - Error: Class "Twig\Loader\FilesystemLoader" not found
+File: C:\xampp\htdocs\crafboat\system\library\template\twig.php
+Line: 36
+
+Backtrace: 0
+File: C:\xampp\htdocs\crafboat\system\library\template.php
+Line: 30
+Class: Opencart\System\Library\Template\Twig
+Function: __construct
+
+Backtrace: 1
+File: C:\xampp\htdocs\crafboat\system\framework.php
+Line: 198
+Class: Opencart\System\Library\Template
+Function: __construct
+
+Backtrace: 2
+File: C:\xampp\htdocs\crafboat\index.php
+Line: 21
+Function: require_once
+2026-09-29 09:45:00 - Error: Class "Twig\Loader\FilesystemLoader" not found
+File: C:\xampp\htdocs\crafboat\system\library\template\twig.php
+Line: 36
+
+Backtrace: 0
+File: C:\xampp\htdocs\crafboat\system\library\template.php
+Line: 30
+Class: Opencart\System\Library\Template\Twig
+Function: __construct
+
+Backtrace: 1
+File: C:\xampp\htdocs\crafboat\system\framework.php
+Line: 198
+Class: Opencart\System\Library\Template
+Function: __construct
+
+Backtrace: 2
+File: C:\xampp\htdocs\crafboat\index.php
+Line: 21
+Function: require_once
+2026-09-29 09:45:15 - Error: Class "Twig\Loader\FilesystemLoader" not found
+File: C:\xampp\htdocs\crafboat\system\library\template\twig.php
+Line: 36
+
+Backtrace: 0
+File: C:\xampp\htdocs\crafboat\system\library\template.php
+Line: 30
+Class: Opencart\System\Library\Template\Twig
+Function: __construct
+
+Backtrace: 1
+File: C:\xampp\htdocs\crafboat\system\framework.php
+Line: 198
+Class: Opencart\System\Library\Template
+Function: __construct
+
+Backtrace: 2
+File: C:\xampp\htdocs\crafboat\index.php
+Line: 21
+Function: require_once

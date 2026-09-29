@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html dir="{{ direction }}" lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123942">
+  <title>{{ title }}</title>
+  <base href="{{ base }}"/>
+  {% if description %}<meta name="description" content="{{ description }}"/>{% endif %}
+  {% if keywords %}<meta name="keywords" content="{{ keywords }}"/>{% endif %}
+  <script src="{{ jquery }}" type="text/javascript"></script>
+  <link href="{{ bootstrap }}" type="text/css" rel="stylesheet" media="screen"/>
+  <link href="{{ icons }}" rel="stylesheet" type="text/css"/>
+  <link href="{{ stylesheet }}" type="text/css" rel="stylesheet"/>
+  <link href="{{ theme }}" type="text/css" rel="stylesheet"/>
+  {% if icon %}<link rel="icon" href="{{ icon }}" type="image/png">{% endif %}
+  {% for style in styles %}<link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}"/>{% endfor %}
+  {% for script in scripts %}<script src="{{ script.href }}" type="text/javascript"></script>{% endfor %}
+  {% for analytic in analytics %}{{ analytic }}{% endfor %}
+</head>
+<body class="cb{% if account_page %} cb-acct{% endif %}">
+<div id="container">
+  <div id="alert"></div>
+  <div class="cb-topbar">
+    <span>Craft Boat’s wholesale home for approved stocklists</span>
+    {% if topbar_note %}
+      <span>{{ topbar_note }}</span>
+    {% else %}
+      <a href="https://www.faire.com/" target="_blank" rel="noopener">Prefer Faire? Continue there ↗</a>
+    {% endif %}
+  </div>
+  <header class="cb-header">
+    <a class="cb-logo" href="{{ home }}"><img src="catalog/view/image/craftboat/logo.svg" alt="Craft Boat"></a>
+    <form class="cb-search" action="{{ search_action }}" method="post">
+      <label class="cb-search__field">
+        <img src="catalog/view/image/craftboat/search.svg" alt="">
+        <input type="text" name="search" value="{{ search }}" placeholder="Search products, SKU, material or colour">
+      </label>
+      <button class="cb-btn cb-btn--teal" type="submit">Search</button>
+    </form>
+    <div class="cb-tools">
+      {% if not logged %}
+        <a href="{{ login }}">Sign in</a>
+      {% else %}
+        <a href="{{ account }}">Account</a>
+      {% endif %}
+      <a href="{{ wishlist }}">Saved <span class="cb-pill">{{ saved_count }}</span></a>
+      <button type="button" class="cb-tools__cart" data-cart-open data-cart-url="{{ cart_drawer }}">Cart <span class="cb-pill">{{ cart_count }}</span></button>
+      <a class="cb-btn cb-btn--black" href="{{ register }}">Apply to buy</a>
+    </div>
+  </header>
+  <nav class="cb-nav">
+    <div class="cb-nav__item">
+      <a href="{{ nav.catalog }}">Shop <img src="catalog/view/image/craftboat/plus.svg" alt=""></a>
+      <div class="cb-mega">
+        <div class="cb-mega__shop">
+          <div>
+            <p class="cb-mega__kicker">Shop Craft Boat trade</p>
+            <h2>Find the right pieces for your next buy.</h2>
+            <a class="cb-mega__more" href="{{ nav.catalog }}">View the full catalog →</a>
+          </div>
+          <div>
+            <p class="cb-mega__label">Shop by edit</p>
+            <a href="{{ nav.new }}">New arrivals</a>
+            <a href="{{ nav.favourites }}">Buyer favourites</a>
+            <a href="{{ nav.ready }}">Ready to ship</a>
+            <a href="{{ nav.holiday }}">Holiday 2026</a>
+          </div>
+          <div>
+            <p class="cb-mega__label">Shop by need</p>
+            <a href="{{ nav.desk }}">Refresh the desk</a>
+            <a href="{{ nav.gifting }}">Build a gifting table</a>
+            <a href="{{ nav.home }}">Add home accents</a>
+            <a href="{{ nav.catalog }}">Start with an assortment</a>
+          </div>
+          <a class="cb-mega__promo" href="{{ nav.ready }}" style="background-image:url('image/catalog/craftboat/trays.png')">
+            <span>Available now</span>
+            <strong>Ready-stock lines dispatch in 3–5 days</strong>
+            <em>Shop ready stock →</em>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="cb-nav__item">
+      <a href="{{ nav.catalog }}">Departments <img src="catalog/view/image/craftboat/plus.svg" alt=""></a>
+      <div class="cb-mega">
+        <div class="cb-mega__depts">
+          <div>
+            <p class="cb-mega__kicker">Browse departments</p>
+            <h2>From paper objects to soft goods.</h2>
+            <p>Products can live in more than one useful buying category.</p>
+          </div>
+          <div>
+            <p class="cb-mega__label">Home &amp; desk</p>
+            <a href="{{ nav.home }}">Home accents</a>
+            <a href="{{ nav.storage }}">Storage &amp; organisation</a>
+            <a href="{{ nav.home }}">Kitchen &amp; tabletop</a>
+            <a href="{{ nav.textiles }}">Textiles &amp; bedding</a>
+          </div>
+          <div>
+            <p class="cb-mega__label">Paper &amp; gifting</p>
+            <a href="{{ nav.stationery }}">Stationery &amp; writing</a>
+            <a href="{{ nav.gifting }}">Gift wrapping</a>
+            <a href="{{ nav.desk }}">Craft materials</a>
+            <a href="{{ nav.textiles }}">Accessories &amp; pouches</a>
+          </div>
+          <div>
+            <p class="cb-mega__label">Textile &amp; seasonal</p>
+            <a href="{{ nav.home }}">Frames &amp; decorative objects</a>
+            <a href="{{ nav.storage }}">Desk organisation</a>
+            <a href="{{ nav.home }}">Lighting &amp; lampshades</a>
+            <a href="{{ nav.seasonal }}">Holiday keepsakes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cb-nav__item">
+      <a href="{{ collections }}">Collections <img src="catalog/view/image/craftboat/plus.svg" alt=""></a>
+      <div class="cb-mega">
+        <div class="cb-mega__cards">
+          <div>
+            <p class="cb-mega__kicker">Editorial collections</p>
+            <h2>Buy a cohesive colour and material story.</h2>
+            <a class="cb-mega__more" href="{{ collections }}">Explore all collections →</a>
+          </div>
+          <a class="cb-mega__card" href="{{ nav.saffron }}" style="background-image:url('image/catalog/craftboat/pouch.png')">
+            <strong>Saffron Valley</strong>
+            <em>Florals and sun-warmed block print.</em>
+          </a>
+          <a class="cb-mega__card" href="{{ nav.marbled }}" style="background-image:url('image/catalog/craftboat/trays.png')">
+            <strong>Marbled Stories</strong>
+            <em>One-of-one colour pulled by hand.</em>
+          </a>
+          <a class="cb-mega__card" href="{{ nav.holiday }}" style="background-image:url('image/catalog/craftboat/collection-holiday.png')">
+            <strong>Holiday 2026</strong>
+            <em>Keepsake gifting for the season.</em>
+          </a>
+        </div>
+      </div>
+    </div>
+    <a href="{{ nav.new }}">New arrivals</a>
+    <a href="{{ nav.favourites }}">Bestsellers</a>
+    <a href="{{ nav.ready }}"><i class="cb-dot"></i> Ready to ship</a>
+    <div class="cb-nav__item">
+      <a href="{{ about }}">Crafts &amp; values <img src="catalog/view/image/craftboat/plus.svg" alt=""></a>
+      <div class="cb-mega">
+        <div class="cb-mega__craft">
+          <div>
+            <p class="cb-mega__kicker">Shop by craft</p>
+            <h2>Let the making story guide the assortment.</h2>
+            <a class="cb-mega__more" href="{{ about }}">How Craft Boat makes →</a>
+          </div>
+          <div class="cb-craft">
+            <a href="{{ nav.stationery }}"><strong>Handmade paper</strong><span>Waste becomes paper. Paper becomes possibility.</span></a>
+            <a href="{{ nav.marbled }}"><strong>Hand marbled</strong><span>No two pulls from the marbling table are the same.</span></a>
+            <a href="{{ nav.saffron }}"><strong>Block printed</strong><span>Pattern, registered one colour at a time.</span></a>
+            <a href="{{ nav.textiles }}"><strong>Natural dyed</strong><span>Colour with a material story.</span></a>
+            <a class="is-wide" href="{{ about }}"><strong>Made in Jaipur</strong><span>A multidisciplinary studio, close to the hands that make.</span></a>
+          </div>
+          <a class="cb-mega__promo" href="{{ contact }}" style="background-image:url('image/catalog/craftboat/pouch.png')">
+            <span>Made for your store</span>
+            <strong>Develop a custom colour, form or finish.</strong>
+            <em>Start a custom brief →</em>
+          </a>
+        </div>
+      </div>
+    </div>
+    <a href="{{ contact }}">Custom orders</a>
+  </nav>
+  <main>

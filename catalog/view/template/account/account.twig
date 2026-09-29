@@ -1,0 +1,55 @@
+{{ header }}
+<div id="account-account" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+      <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if success %}
+    <div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check"></i> {{ success }}</div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    <div id="content" class="col">{{ content_top }}
+      <h1>Your trade account</h1>
+      <div class="cb-acct-board">
+        <section class="cb-acct-card">
+          <h2>{{ text_my_account }}</h2>
+          <a href="{{ edit }}">{{ text_edit }}</a>
+          <a href="{{ password }}">{{ text_password }}</a>
+          <a href="{{ payment_method }}">{{ text_payment_method }}</a>
+          <a href="{{ address }}">{{ text_address }}</a>
+          <a href="{{ wishlist }}">{{ text_wishlist }}</a>
+        </section>
+        <section class="cb-acct-card">
+          <h2>{{ text_my_orders }}</h2>
+          <a href="{{ order }}">{{ text_order }}</a>
+          <a href="{{ subscription }}">{{ text_subscription }}</a>
+          <a href="{{ download }}">{{ text_download }}</a>
+          {% if reward %}
+            <a href="{{ reward }}">{{ text_reward }}</a>
+          {% endif %}
+          <a href="{{ return }}">{{ text_return }}</a>
+          <a href="{{ transaction }}">{{ text_transaction }}</a>
+        </section>
+        <div class="cb-acct-stack">
+          {% if affiliate %}
+            <section class="cb-acct-card">
+              <h2>{{ text_my_affiliate }}</h2>
+              {% if not tracking %}
+                <a href="{{ affiliate }}">{{ text_affiliate_add }}</a>
+              {% else %}
+                <a href="{{ affiliate }}">{{ text_affiliate_edit }}</a>
+                <a href="{{ tracking }}">{{ text_tracking }}</a>
+              {% endif %}
+            </section>
+          {% endif %}
+          <section class="cb-acct-card">
+            <h2>{{ text_my_newsletter }}</h2>
+            <a href="{{ newsletter }}">{{ text_newsletter }}</a>
+          </section>
+        </div>
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}

@@ -1,0 +1,25 @@
+<div class="list-group cb-account-nav mb-3">
+  {% if not logged %}
+    <a href="{{ login }}" class="list-group-item{% if route == 'account/login' %} is-active{% endif %}">{{ text_login }}</a>
+    <a href="{{ register }}" class="list-group-item{% if route == 'account/register' %} is-active{% endif %}">{{ text_register }}</a>
+    <a href="{{ forgotten }}" class="list-group-item{% if route == 'account/forgotten' %} is-active{% endif %}">{{ text_forgotten }}</a>
+  {% endif %}
+  <a href="{{ account }}" class="list-group-item{% if route == 'account/account' %} is-active{% endif %}">{{ text_account }}</a>
+  {% if logged %}
+    <a href="{{ edit }}" class="list-group-item{% if route == 'account/edit' %} is-active{% endif %}">{{ text_edit }}</a>
+    <a href="{{ password }}" class="list-group-item{% if route == 'account/password' %} is-active{% endif %}">{{ text_password }}</a>
+  {% endif %}
+  <a href="{{ payment_method }}" class="list-group-item{% if route == 'account/payment_method' %} is-active{% endif %}">{{ text_payment_method }}</a>
+  <a href="{{ address }}" class="list-group-item{% if route == 'account/address' %} is-active{% endif %}">{{ text_address }}</a>
+  <a href="{{ wishlist }}" class="list-group-item{% if route == 'account/wishlist' %} is-active{% endif %}">{{ text_wishlist }}</a>
+  <a href="{{ order }}" class="list-group-item{% if route == 'account/order' %} is-active{% endif %}">{{ text_order }}</a>
+  <a href="{{ download }}" class="list-group-item{% if route == 'account/download' %} is-active{% endif %}">{{ text_download }}</a>
+  <a href="{{ subscription }}" class="list-group-item{% if route == 'account/subscription' %} is-active{% endif %}">{{ text_subscription }}</a>
+  <a href="{{ reward }}" class="list-group-item{% if route == 'account/reward' %} is-active{% endif %}">{{ text_reward }}</a>
+  <a href="{{ return }}" class="list-group-item{% if route == 'account/returns' %} is-active{% endif %}">{{ text_return }}</a>
+  <a href="{{ transaction }}" class="list-group-item{% if route == 'account/transaction' %} is-active{% endif %}">{{ text_transaction }}</a>
+  <a href="{{ newsletter }}" class="list-group-item{% if route == 'account/newsletter' %} is-active{% endif %}">{{ text_newsletter }}</a>
+  {% if logged %}
+    <a href="{{ logout }}" class="list-group-item">{{ text_logout }}</a>
+  {% endif %}
+</div>

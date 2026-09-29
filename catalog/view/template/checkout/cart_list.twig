@@ -1,0 +1,68 @@
+{% if products %}
+  {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> {{ error_warning }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+  {% endif %}
+  {% if error_stock %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> {{ error_stock }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+  {% endif %}
+  {% if success %}
+    <div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check"></i> {{ success }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+  {% endif %}
+  {% if attention %}
+    <div class="alert alert-info"><i class="fa-solid fa-circle-info"></i> {{ attention }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+  {% endif %}
+  <div class="cb-bag">
+    <h1>{{ heading_title }}{% if weight %} <small>{{ weight }}</small>{% endif %}</h1>
+    <div class="cb-bag__grid">
+      <div id="output-cart" class="cb-bag__items">
+        <div class="cb-bag__items-head"><span>In your cart</span><span>{{ products|length }}</span></div>
+        {% for product in products %}
+          <article class="cb-bag__item">
+            <a class="cb-bag__thumb" href="{{ product.href }}">{% if product.thumb %}<img src="{{ product.thumb }}" alt="{{ product.name }}">{% endif %}</a>
+            <div class="cb-bag__copy">
+              <a class="cb-bag__name" href="{{ product.href }}">{{ product.name }}</a>
+              <em>{{ product.model }}</em>
+              {% for option in product.option %}
+                <em>{{ option.name }}: {{ option.value }}</em>
+              {% endfor %}
+              {% if product.subscription %}<em>{{ product.subscription }}</em>{% endif %}
+              <form method="post" data-oc-target="#shopping-cart">
+                <label>Qty</label>
+                <input type="text" name="quantity" value="{{ product.quantity }}" class="form-control{% if product.minimum %} is-invalid{% endif %}">
+                <input type="hidden" name="key" value="{{ product.cart_id }}">
+                <button type="submit" formaction="{{ edit }}" class="cb-bag__update">{{ button_update }}</button>
+                <a href="{{ product.remove }}" class="btn-danger cb-bag__remove">{{ button_remove }}</a>
+              </form>
+              {% if product.minimum %}<small class="cb-bag__note">{{ product.minimum }}</small>{% endif %}
+            </div>
+            <div class="cb-bag__money">
+              <strong>{{ product.total }}</strong>
+              <span>{{ product.price }}</span>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+      <aside class="cb-bag__summary">
+        <h2>Order summary</h2>
+        {% for total in totals %}
+          <div class="cb-bag__row{% if loop.last %} is-total{% endif %}"><span>{{ total.title }}</span><b>{{ total.text }}</b></div>
+        {% endfor %}
+        {% if modules %}
+          <div id="accordion" class="accordion cb-bag__extras">
+            {% for module in modules %}
+              {{ module }}
+            {% endfor %}
+          </div>
+        {% endif %}
+        <a class="cb-btn cb-btn--black" href="{{ checkout }}">{{ button_checkout }}</a>
+        <a class="cb-btn cb-btn--line" href="{{ continue }}">{{ button_shopping }}</a>
+      </aside>
+    </div>
+  </div>
+{% else %}
+  <div class="cb-bag">
+    <h1>{{ heading_title }}</h1>
+    <p class="cb-bag__empty">{{ text_no_results }}</p>
+    <a class="cb-btn cb-btn--black" href="{{ continue }}">{{ button_continue }}</a>
+  </div>
+{% endif %}

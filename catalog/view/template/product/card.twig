@@ -1,0 +1,27 @@
+<div class="ck-card">
+  <a href="{{ product.href }}" class="ck-card__figure">
+    {% if product.badge %}<span class="tck-badge"{% if product.badge == 'Delhi/NCR Only' %} style="background:#f83a3a;color:#fff"{% endif %}>{{ product.badge }}</span>{% endif %}
+    <img src="{{ product.img }}" alt="{{ product.title }}">
+  </a>
+  <div class="ck-card__info">
+    {% if product.sub or product.rating %}
+    <div class="ck-card__eyebrow">
+      <span class="ck-card__subtitle">{{ product.sub }}</span>
+      {% if product.rating %}
+        <span class="ck-card__rating">{{ product.rating }} <i class="fa-solid fa-star"></i></span>
+      {% endif %}
+    </div>
+    {% endif %}
+    <a class="ck-card__title" href="{{ product.href }}">{{ product.title }}</a>
+    <div class="ck-card__price-row">
+      <span class="price-new">{{ product.sale }}</span>
+      {% if product.compare %}<span class="price-old">{{ product.compare }}</span>{% endif %}
+      {% if product.percent %}<span class="tck-off">{{ product.percent }}</span>{% endif %}
+    </div>
+    <form method="post" data-oc-toggle="ajax" data-oc-load="{{ product.cart }}" data-oc-target="#cart">
+      <button class="ck-card__atc" type="submit" formaction="{{ product.cart_add }}">Add to cart</button>
+      <input type="hidden" name="product_id" value="{{ product.product_id }}"/>
+      <input type="hidden" name="quantity" value="1"/>
+    </form>
+  </div>
+</div>

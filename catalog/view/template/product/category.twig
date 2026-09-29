@@ -1,0 +1,124 @@
+{{ header }}
+<section class="cb-coll-hero" style="background-image:url('{{ hero_image }}')">
+  <div class="cb-coll-hero__shade"></div>
+  <div class="cb-coll-hero__copy">
+    <p class="cb-kicker">Wholesale collection · Pricing locked</p>
+    <h1>{{ heading_title }}</h1>
+    <p>{{ summary }}</p>
+    <div class="cb-hero__actions">
+      <a class="cb-btn cb-btn--white" href="#assortment">Explore products</a>
+      <a class="cb-btn cb-btn--ghost" href="{{ register }}">Apply for a Trade Account</a>
+    </div>
+  </div>
+  <img class="cb-hero__dots" src="catalog/view/image/craftboat/dots.svg" alt="">
+</section>
+
+<nav class="cb-coll-switch" aria-label="Explore collections">
+  <span>Explore collections</span>
+  {% for item in collections %}
+  <a href="{{ item.href }}"{% if item.active %} class="is-on"{% endif %}>
+    <strong>{{ item.name }}</strong>
+    <em>{{ item.blurb }}</em>
+  </a>
+  {% endfor %}
+</nav>
+
+<section class="cb-coll-note">
+  <div>
+    <p class="cb-kicker">Browse before you apply</p>
+    <h2 class="cb-display">Everything needed to understand the product. Trade figures unlock after approval.</h2>
+  </div>
+  <div class="cb-coll-note__list">
+    <div>
+      <h3>Visible now</h3>
+      <p>Product name, MSRP, SKU, case pack, MOQ, material and dispatch window.</p>
+    </div>
+    <div>
+      <h3>With trade access</h3>
+      <p>Wholesale price, retail margin, live inventory, quantity controls and quick add.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cb-coll-products" id="assortment">
+  <div class="cb-head">
+    <div>
+      <p class="cb-kicker">{{ assortment }}</p>
+      <h2>Build the collection into your store.</h2>
+    </div>
+    <p>Paper &amp; Desk · Textiles · Home · Stationery — each product page carries the complete commercial specification while protecting trade pricing.</p>
+  </div>
+  <div class="cb-coll-tools">
+    <div class="cb-coll-filters">
+      <a class="{% if availability == 'all' %}is-on{% endif %}" href="{{ filter_all }}">All</a>
+      <a class="{% if availability == 'ready' %}is-on{% endif %}" href="{{ filter_ready }}">Ready to ship</a>
+      <a class="{% if availability == 'made' %}is-on{% endif %}" href="{{ filter_made }}">Made to order</a>
+    </div>
+    <form class="cb-coll-sort" method="get" action="index.php">
+      <input type="hidden" name="route" value="product/category">
+      <input type="hidden" name="language" value="en-gb">
+      <input type="hidden" name="path" value="{{ path }}">
+      <input type="hidden" name="availability" value="{{ availability }}">
+      <span>Sort</span>
+      <label>
+        <select name="sort" aria-label="Sort" onchange="this.form.submit()">
+          <option value="p.sort_order"{% if not sort_name %} selected{% endif %}>Featured</option>
+          <option value="pd.name"{% if sort_name %} selected{% endif %}>Name</option>
+        </select>
+        <img src="catalog/view/image/craftboat/chevron.svg" alt="">
+      </label>
+    </form>
+  </div>
+  <div class="cb-grid">
+    {% for product in cards %}
+    <a class="cb-card" href="{{ product.href }}">
+      <span class="cb-badge">{{ product.badge }}</span>
+      <img class="cb-heart" src="catalog/view/image/craftboat/heart.svg" alt="">
+      <img class="cb-card__img" src="{{ product.image }}" alt="{{ product.name }}">
+      <div>
+        <div class="cb-meta"><span>{{ product.category }}</span><span>{{ product.sku }}</span></div>
+        <h3>{{ product.name }}</h3>
+        <p class="cb-collection">{{ product.collection }}</p>
+      </div>
+      <div>
+        <p class="cb-ship{% if product.wait %} cb-ship--wait{% endif %}">{{ product.ship }}</p>
+        <hr>
+        <span class="cb-card__foot">{% if logged %}Signed in · pricing unlocks after approval{% else %}Sign in to view wholesale pricing{% endif %} <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+      </div>
+    </a>
+    {% else %}
+    <p class="cb-muted">No products in this view yet.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cb-coll-story">
+  <div class="cb-coll-story__photo" style="background-image:url('catalog/view/image/craftboat/collection-story.png')"></div>
+  <div class="cb-coll-story__copy">
+    <p class="cb-kicker">The making story</p>
+    <h2 class="cb-display">Made as a family, finished by hand.</h2>
+    <p>Hand-carved blocks register each colour separately before the printed cotton is wrapped, pleated, stitched or bound in Jaipur.</p>
+    <p><a class="cb-btn cb-btn--black" href="{{ about }}">Discover Craft Boat’s process →</a></p>
+  </div>
+</section>
+
+<section class="cb-unlock">
+  <div>
+    <p class="cb-kicker">Shopping for yourself?</p>
+    <h2 class="cb-display">Unlock wholesale pricing and add full case packs.</h2>
+  </div>
+  <div class="cb-unlock__actions">
+    <a class="cb-btn cb-btn--black" href="{{ register }}">Apply for a trade account →</a>
+    <a class="cb-unlock__login" href="{{ logged ? account : login }}">{% if logged %}Go to your account{% else %}Already approved? Sign in{% endif %}</a>
+  </div>
+</section>
+
+<section class="cb-retail">
+  <img class="cb-retail__mark" src="catalog/view/image/craftboat/pattern.svg" alt="">
+  <div>
+    <p class="cb-kicker">Shopping for yourself?</p>
+    <h2 class="cb-display">Buy individual pieces from our retail store.</h2>
+  </div>
+  <a class="cb-btn cb-btn--white" href="https://www.seedsofanaar.com/" target="_blank" rel="noopener">Seeds of Anaar <img src="catalog/view/image/craftboat/external.svg" alt=""></a>
+</section>
+{{ footer }}

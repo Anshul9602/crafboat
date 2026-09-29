@@ -1,0 +1,92 @@
+</main>
+<footer class="cb-footer">
+  <div class="cb-footer__brand">
+    <img src="catalog/view/image/craftboat/seal.svg" alt="Craft Boat">
+    <p>Craft-led design and production, handmade in Jaipur since 2015.</p>
+  </div>
+  <div>
+    <h3>Wholesale</h3>
+    <a href="{{ shop_all }}">Shop all</a>
+    <a href="{{ collection }}">Collection</a>
+    <a href="index.php?route=account/register&amp;language=en-gb">Apply for an account</a>
+    {% if logged %}
+      <a href="{{ account }}">Account</a>
+    {% else %}
+      <a href="{{ login }}">Sign in</a>
+    {% endif %}
+  </div>
+  <div>
+    <h3>Work with us</h3>
+    <a href="{{ contact }}">Custom orders</a>
+    <a href="{{ about }}">Our process</a>
+    <a href="{{ contact }}">Wholesale terms</a>
+    <a href="{{ contact }}">FAQ’s</a>
+  </div>
+  <div>
+    <h2>Studio notes, by email</h2>
+    <p>New collections, trade show dates and wholesale updates. No noise.</p>
+    <form class="cb-news" action="{{ newsletter }}" method="get">
+      <input type="email" name="email" placeholder="Email address" aria-label="Email address">
+      <button type="submit" aria-label="Subscribe"><img src="catalog/view/image/craftboat/arrow.svg" alt=""></button>
+    </form>
+  </div>
+</footer>
+<div class="cb-drawer" id="cb-drawer" hidden>
+  <button type="button" class="cb-drawer__backdrop" data-cart-close aria-label="Close cart"></button>
+  <div class="cb-drawer__panel" id="cb-drawer-panel"></div>
+</div>
+</div>
+{{ cookie }}
+<script src="{{ bootstrap }}" type="text/javascript"></script>
+<script>
+(function () {
+  var drawer = document.getElementById('cb-drawer');
+  var panel = document.getElementById('cb-drawer-panel');
+  if (!drawer || !panel) return;
+
+  function openCart(url) {
+    drawer.hidden = false;
+    document.body.classList.add('cb-drawer-open');
+    requestAnimationFrame(function () { drawer.classList.add('is-open'); });
+    fetch(url).then(function (response) { return response.text(); }).then(function (html) {
+      panel.innerHTML = html;
+    });
+  }
+
+  function closeCart() {
+    drawer.classList.remove('is-open');
+    document.body.classList.remove('cb-drawer-open');
+    window.setTimeout(function () {
+      if (!drawer.classList.contains('is-open')) drawer.hidden = true;
+    }, 280);
+  }
+
+  document.addEventListener('click', function (event) {
+    var opener = event.target.closest('[data-cart-open]');
+    if (opener) {
+      event.preventDefault();
+      openCart(opener.getAttribute('data-cart-url'));
+      return;
+    }
+    if (event.target.closest('[data-cart-close]')) {
+      event.preventDefault();
+      closeCart();
+      return;
+    }
+    var remove = event.target.closest('#cb-drawer-panel .cb-cart__remove');
+    if (remove) {
+      event.preventDefault();
+      fetch(remove.getAttribute('href')).then(function () {
+        var button = document.querySelector('[data-cart-open]');
+        if (button) openCart(button.getAttribute('data-cart-url'));
+      });
+    }
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') closeCart();
+  });
+})();
+</script>
+{% for script in scripts %}<script src="{{ script.href }}" type="text/javascript"></script>{% endfor %}
+</body></html>

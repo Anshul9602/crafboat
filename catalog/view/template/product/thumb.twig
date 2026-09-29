@@ -1,0 +1,15 @@
+<a class="cb-card" href="{{ href }}">
+  <span class="cb-badge">{{ badge }}</span>
+  <img class="cb-heart" src="catalog/view/image/craftboat/heart.svg" alt="">
+  <img class="cb-card__img" src="{{ thumb }}" alt="{{ name }}">
+  <div>
+    <div class="cb-meta"><span>{{ category_name }}</span><span>{{ sku }}</span></div>
+    <h3>{{ name }}</h3>
+    {% if collection %}<p class="cb-collection">{{ collection }}</p>{% endif %}
+  </div>
+  <div>
+    <p class="cb-ship{% if ship_wait %} cb-ship--wait{% endif %}">{{ ship }}</p>
+    <hr>
+    <span class="cb-card__foot">{% if logged %}Signed in · pricing unlocks after approval{% else %}Sign in to view wholesale pricing{% endif %} <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+  </div>
+</a>

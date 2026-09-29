@@ -1,0 +1,79 @@
+<article class="cb-cart">
+  {% if error_warning %}<p class="cb-cart__alert">{{ error_warning }}</p>{% endif %}
+  {% if error_stock %}<p class="cb-cart__alert">{{ error_stock }}</p>{% endif %}
+  {% if success %}<p class="cb-cart__alert cb-cart__alert--ok">{{ success }}</p>{% endif %}
+  <header class="cb-cart__top">
+    <div>
+      <p class="cb-cart__kicker">Wholesale order</p>
+      <h1>Your cart</h1>
+    </div>
+    <button type="button" class="cb-cart__close" data-cart-close aria-label="Close"><img src="catalog/view/image/craftboat/cart-close.svg" alt=""></button>
+  </header>
+  <section class="cb-cart__access">
+    <img class="cb-cart__seal" src="catalog/view/image/craftboat/cart-seal.svg" alt="">
+    <p class="cb-cart__kicker">Trade access required</p>
+    <h2>Build your opening order with wholesale access.</h2>
+    <p>Apply for a verified retailer account to unlock trade pricing, live availability and case-pack ordering.</p>
+    <a class="cb-btn cb-btn--black cb-cart__wide" href="{{ register }}">Apply to buy <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
+    <a class="cb-btn cb-btn--line cb-cart__wide" href="{{ login }}">Already approved? Sign in</a>
+    <p class="cb-cart__fine">Applications are reviewed by the Craft Boat team.</p>
+  </section>
+  <section class="cb-cart__draft">
+    <div class="cb-cart__head">
+      <p class="cb-cart__kicker">Saved order draft</p>
+      <span>{{ unit_count }} units</span>
+    </div>
+    {% if products %}
+      {% for product in products %}
+        <div class="cb-cart__item">
+          <a class="cb-cart__thumb" href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}"></a>
+          <div>
+            <a href="{{ product.href }}">{{ product.name }}</a>
+            <em>{{ product.model }}</em>
+            <small>{{ product.quantity }} units · price locked</small>
+          </div>
+          <a class="btn-danger cb-cart__remove" href="{{ product.remove }}" aria-label="Remove">×</a>
+        </div>
+      {% endfor %}
+      <div class="cb-cart__actions">
+        <a class="cb-btn cb-btn--line cb-cart__wide" href="{{ cart }}">View cart</a>
+        <a class="cb-btn cb-btn--black cb-cart__wide" href="{{ checkout }}">Checkout <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
+      </div>
+    {% else %}
+      <p class="cb-cart__empty">Your draft is empty. Add pieces from the catalog to start an opening order.</p>
+    {% endif %}
+  </section>
+  <section class="cb-cart__guide">
+    <div class="cb-cart__head">
+      <p class="cb-cart__kicker">Opening order guide</p>
+      <span>$500 minimum</span>
+    </div>
+    <div class="cb-cart__bar" aria-hidden="true"><span></span></div>
+    <p>Sign in to reveal your draft value and progress.</p>
+  </section>
+  <section class="cb-cart__ways">
+    <div class="cb-cart__head">
+      <p class="cb-cart__kicker">Helpful ways to start</p>
+      <span>For independent retailers</span>
+    </div>
+    <a href="{{ ready }}">
+      <i>01</i>
+      <span><strong>Buy what can move sooner</strong><small>8 product lines are marked ready to ship in 3–5 days.</small></span>
+      <img src="catalog/view/image/craftboat/arrow.svg" alt="">
+    </a>
+    <a class="is-hot" href="{{ favourites }}">
+      <i>02</i>
+      <span><strong>Begin with buyer favourites</strong><small>Use proven products as the foundation of your first order.</small></span>
+      <img src="catalog/view/image/craftboat/arrow.svg" alt="">
+    </a>
+    <a href="{{ contact }}">
+      <i>03</i>
+      <span><strong>Let us build the mix</strong><small>Curated case-pack plans make the $500 opening order easier.</small></span>
+      <img src="catalog/view/image/craftboat/arrow.svg" alt="">
+    </a>
+  </section>
+  <a class="cb-cart__ask" href="{{ contact }}">
+    <span>Need help planning your buy?</span>
+    <strong>Ask the Craft Boat trade team →</strong>
+  </a>
+</article>

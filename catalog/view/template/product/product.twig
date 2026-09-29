@@ -1,0 +1,143 @@
+{{ header }}
+<nav class="cb-crumb" aria-label="Breadcrumb">
+  {% if collection_name %}<a href="{{ collection_href }}">{{ collection_name|title }}</a><span>/</span>{% endif %}
+  <span>{{ heading_title }}</span>
+</nav>
+
+<section class="cb-pdp">
+  <div class="cb-pdp__gallery">
+    <div class="cb-pdp__main">
+      <img id="cb-pdp-photo" src="{{ gallery[0] }}" alt="{{ heading_title }}">
+    </div>
+    <div class="cb-pdp__thumbs">
+      {% for image in gallery|slice(1, 2) %}
+      <button type="button" data-src="{{ image }}" aria-label="Show image"><img src="{{ image }}" alt=""></button>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="cb-pdp__info">
+    <span class="cb-badge cb-badge--static">{{ badge }}</span>
+    <p class="cb-pdp__meta">{{ category_name }}{% if collection_name %} · {{ collection_name|title }}{% endif %}</p>
+    <h1>{{ heading_title }}</h1>
+    {% if collection_name %}<p class="cb-pdp__collection">{{ collection_name|title }}</p>{% endif %}
+    <p class="cb-ship{% if ship_wait %} cb-ship--wait{% endif %}">{{ ship }}</p>
+    <p class="cb-pdp__summary">{{ summary }}</p>
+    <div class="cb-pdp__price">
+      <div class="cb-pdp__figures">
+        <div>
+          <span>Suggested retail</span>
+          <strong>{{ price }}</strong>
+        </div>
+        <div>
+          <span>Wholesale</span>
+          <strong>{% if wholesale %}{{ wholesale_price }}{% else %}Locked{% endif %}</strong>
+        </div>
+      </div>
+      {% if logged %}
+        <h2>Add this case pack to your order.</h2>
+        <p>Case pack of {{ minimum }}. The cart opens with this quantity.</p>
+        <form class="cb-pdp__actions" action="{{ cart_add }}" method="post" data-oc-toggle="ajax">
+          <input type="hidden" name="product_id" value="{{ product_id }}">
+          <input type="hidden" name="quantity" value="{{ minimum }}">
+          <button type="submit" class="cb-btn cb-btn--black">Add to cart</button>
+          <a class="cb-btn cb-btn--line" href="{{ account }}">Go to your account</a>
+        </form>
+      {% else %}
+        <h2>Wholesale pricing is reserved for approved stockists.</h2>
+        <p>Sign in to view price, margin, inventory and quick-add controls.</p>
+        <div class="cb-pdp__actions">
+          <a class="cb-btn cb-btn--black" href="{{ login }}">Sign in to view pricing</a>
+          <a class="cb-btn cb-btn--line" href="{{ register }}">Apply for Trade</a>
+        </div>
+      {% endif %}
+    </div>
+    <dl class="cb-specs">
+      <div><dt>SKU</dt><dd>{{ model }}</dd></div>
+      <div><dt>MOQ / case pack</dt><dd>{{ minimum }} / {{ minimum }}</dd></div>
+      <div><dt>Dimensions</dt><dd>{{ dimensions }}</dd></div>
+      <div><dt>Material</dt><dd>{{ material }}</dd></div>
+      <div><dt>Technique</dt><dd>{{ technique }}</dd></div>
+      <div><dt>Lead time</dt><dd>{{ lead }}</dd></div>
+      <div><dt>Packing</dt><dd>{{ packing }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="cb-coll-products">
+  <div class="cb-head">
+    <div>
+      <p class="cb-kicker">Complete the shelf</p>
+      <h2>Related products</h2>
+    </div>
+    <a class="cb-btn cb-btn--line" href="{{ view_all }}">View all →</a>
+  </div>
+  <div class="cb-grid">
+    {% for product in related_products %}
+    <a class="cb-card" href="{{ product.href }}">
+      <span class="cb-badge">{{ product.badge }}</span>
+      <img class="cb-heart" src="catalog/view/image/craftboat/heart.svg" alt="">
+      <img class="cb-card__img" src="{{ product.image }}" alt="{{ product.name }}">
+      <div>
+        <div class="cb-meta"><span>{{ product.category }}</span><span>{{ product.sku }}</span></div>
+        <h3>{{ product.name }}</h3>
+        <p class="cb-collection">{{ product.collection|title }}</p>
+      </div>
+      <div>
+        <p class="cb-ship{% if product.wait %} cb-ship--wait{% endif %}">{{ product.ship }}</p>
+        <hr>
+        <span class="cb-card__foot">{% if wholesale %}Wholesale pricing unlocked{% elseif logged %}Wholesale price locked{% else %}Sign in to view wholesale pricing{% endif %} <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cb-coll-story">
+  <div class="cb-coll-story__photo" style="background-image:url('catalog/view/image/craftboat/collection-story.png')"></div>
+  <div class="cb-coll-story__copy">
+    <p class="cb-kicker">The making story</p>
+    <h2 class="cb-display">Made as a family, finished by hand.</h2>
+    <p>Hand-carved blocks register each colour separately before the printed cotton is wrapped, pleated, stitched or bound in Jaipur.</p>
+    <p><a class="cb-btn cb-btn--black" href="{{ about }}">Discover Craft Boat’s process →</a></p>
+  </div>
+</section>
+
+<section class="cb-unlock">
+  <div>
+    <p class="cb-kicker">Shopping for yourself?</p>
+    <h2 class="cb-display">Unlock wholesale pricing and add full case packs.</h2>
+  </div>
+  <div class="cb-unlock__actions">
+    <a class="cb-btn cb-btn--black" href="{{ register }}">Apply for a trade account →</a>
+    <a class="cb-unlock__login" href="{{ logged ? account : login }}">{% if logged %}Go to your account{% else %}Already approved? Sign in{% endif %}</a>
+  </div>
+</section>
+
+<section class="cb-retail">
+  <img class="cb-retail__mark" src="catalog/view/image/craftboat/pattern.svg" alt="">
+  <div>
+    <p class="cb-kicker">Shopping for yourself?</p>
+    <h2 class="cb-display">Buy individual pieces from our retail store.</h2>
+  </div>
+  <a class="cb-btn cb-btn--white" href="https://www.seedsofanaar.com/" target="_blank" rel="noopener">Seeds of Anaar <img src="catalog/view/image/craftboat/external.svg" alt=""></a>
+</section>
+<script>
+$(document).on('ajaxSuccess', function (event, xhr, settings) {
+  if (!settings.url || settings.url.indexOf('checkout/cart.add') === -1) return;
+  var json = xhr.responseJSON || {};
+  if (!json.success) return;
+  var opener = document.querySelector('[data-cart-open]');
+  if (opener) opener.click();
+});
+document.querySelectorAll('.cb-pdp__thumbs button').forEach(function (button) {
+  button.addEventListener('click', function () {
+    var photo = document.getElementById('cb-pdp-photo');
+    var next = button.getAttribute('data-src');
+    var current = photo.getAttribute('src');
+    photo.setAttribute('src', next);
+    button.setAttribute('data-src', current);
+    button.querySelector('img').setAttribute('src', current);
+  });
+});
+</script>
+{{ footer }}
