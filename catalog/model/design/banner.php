@@ -55,4 +55,33 @@ class Banner extends \Opencart\System\Engine\Model {
 
 		return $banners;
 	}
+
+	/**
+	 * Every enabled banner image for the homepage, skipping the sample catalog.
+	 *
+	 * @return array<int, array<string, string>>
+	 */
+	public function getAllPageBanners(): array {
+		$query = $this->db->query("SELECT `b`.`name`, `bi`.`title`, `bi`.`link`, `bi`.`image` FROM `" . DB_PREFIX . "banner` `b` LEFT JOIN `" . DB_PREFIX . "banner_image` `bi` ON (`b`.`banner_id` = `bi`.`banner_id`) WHERE `b`.`status` = '1' AND `bi`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' ORDER BY CASE WHEN `b`.`name` = 'Homepage' THEN 0 ELSE 1 END, `b`.`name` ASC, `bi`.`sort_order` ASC, `bi`.`banner_image_id` ASC");
+
+		$banners = [];
+		$seen = [];
+
+		foreach ($query->rows as $row) {
+			$image = html_entity_decode((string)$row['image'], ENT_QUOTES, 'UTF-8');
+
+			if ($image === '' || str_starts_with($image, 'catalog/demo/') || isset($seen[$image]) || !is_file(DIR_IMAGE . $image)) {
+				continue;
+			}
+
+			$seen[$image] = true;
+			$banners[] = [
+				'title' => (string)($row['title'] !== '' ? $row['title'] : $row['name']),
+				'link'  => (string)$row['link'],
+				'image' => 'image/' . $image
+			];
+		}
+
+		return $banners;
+	}
 }

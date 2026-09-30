@@ -34,7 +34,7 @@ class Home extends \Opencart\System\Engine\Controller {
 		$data['dept_storage'] = $this->url->link('product/category', 'language=' . $language . '&path=107');
 		$data['dept_stationery'] = $this->url->link('product/category', 'language=' . $language . '&path=104');
 		$this->load->model('design/banner');
-		$data['banners'] = $this->model_design_banner->getPageBanners('Homepage');
+		$data['banners'] = $this->model_design_banner->getAllPageBanners();
 
 		if (!$data['banners']) {
 			$data['banners'] = [[
