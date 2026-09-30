@@ -28,4 +28,31 @@ class Banner extends \Opencart\System\Engine\Model {
 
 		return $query->rows;
 	}
+
+	/**
+	 * Images for a banner, matched by the name shown in the admin banner list.
+	 *
+	 * @return array<int, array<string, string>>
+	 */
+	public function getPageBanners(string $name): array {
+		$query = $this->db->query("SELECT `bi`.`title`, `bi`.`link`, `bi`.`image` FROM `" . DB_PREFIX . "banner` `b` LEFT JOIN `" . DB_PREFIX . "banner_image` `bi` ON (`b`.`banner_id` = `bi`.`banner_id`) WHERE `b`.`name` = '" . $this->db->escape($name) . "' AND `b`.`status` = '1' AND `bi`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' ORDER BY `bi`.`sort_order` ASC, `bi`.`banner_image_id` ASC");
+
+		$banners = [];
+
+		foreach ($query->rows as $row) {
+			$image = html_entity_decode((string)$row['image'], ENT_QUOTES, 'UTF-8');
+
+			if ($image === '' || !is_file(DIR_IMAGE . $image)) {
+				continue;
+			}
+
+			$banners[] = [
+				'title' => (string)$row['title'],
+				'link'  => (string)$row['link'],
+				'image' => 'image/' . $image
+			];
+		}
+
+		return $banners;
+	}
 }

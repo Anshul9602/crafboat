@@ -1,5 +1,10 @@
 {{ header }}
-<section class="cb-coll-hero" style="background-image:url('{{ hero_image }}')">
+<section class="cb-coll-hero" data-cb-banner{% if banners|length < 2 %} style="background-image:url('{{ banners[0].image }}')"{% endif %}>
+  {% if banners|length > 1 %}
+    {% for banner in banners %}
+    <div class="cb-coll-hero__slide{% if loop.first %} is-on{% endif %}" style="background-image:url('{{ banner.image }}')"></div>
+    {% endfor %}
+  {% endif %}
   <div class="cb-coll-hero__shade"></div>
   <div class="cb-coll-hero__copy">
     <p class="cb-kicker">Wholesale collection · Pricing locked</p>
@@ -10,7 +15,15 @@
       <a class="cb-btn cb-btn--ghost" href="{{ register }}">Apply for a Trade Account</a>
     </div>
   </div>
+  {% if banners|length > 1 %}
+  <div class="cb-hero__dots cb-hero__dots--list">
+    {% for banner in banners %}
+    <button type="button" data-cb-dot{% if loop.first %} class="is-on"{% endif %} aria-label="{{ banner.title }}"></button>
+    {% endfor %}
+  </div>
+  {% else %}
   <img class="cb-hero__dots" src="catalog/view/image/craftboat/dots.svg" alt="">
+  {% endif %}
 </section>
 
 <nav class="cb-coll-switch" aria-label="Explore collections">

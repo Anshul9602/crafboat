@@ -47,9 +47,12 @@
       <a href="{{ wishlist }}">Saved <span class="cb-pill cb-saved-count">{{ saved_count }}</span></a>
       <button type="button" class="cb-tools__cart" data-cart-open data-cart-url="{{ cart_drawer }}">Cart <span class="cb-pill">{{ cart_count }}</span></button>
       <a class="cb-btn cb-btn--black" href="{{ register }}">Apply to buy</a>
+      <button type="button" class="cb-menu" data-nav-toggle aria-expanded="false" aria-controls="cb-nav" aria-label="Menu"><span></span></button>
     </div>
   </header>
-  <nav class="cb-nav">
+  <button type="button" class="cb-nav-backdrop" data-nav-close aria-label="Close menu"></button>
+  <nav class="cb-nav" id="cb-nav">
+    <button type="button" class="cb-nav__close" data-nav-close aria-label="Close menu"><span></span></button>
     <div class="cb-nav__item">
       <a href="{{ nav.catalog }}">Shop <img src="catalog/view/image/craftboat/plus.svg" alt=""></a>
       <div class="cb-mega">

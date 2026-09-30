@@ -42,7 +42,7 @@ class Header extends \Opencart\System\Engine\Controller {
 		$data['bootstrap'] = 'catalog/view/stylesheet/bootstrap.css';
 		$data['icons'] = 'catalog/view/stylesheet/fonts/fontawesome/css/all.min.css';
 		$data['stylesheet'] = 'catalog/view/stylesheet/stylesheet.css';
-		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=checkout-page';
+		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=mobile19';
 		$route = (string)($this->request->get['route'] ?? '');
 		$data['account_page'] = str_starts_with($route, 'account/');
 		$data['topbar_note'] = in_array(($this->request->get['route'] ?? ''), ['product/collection', 'product/category', 'product/product'], true) ? 'Ships from Jaipur, India  |   Opening order $500' : '';

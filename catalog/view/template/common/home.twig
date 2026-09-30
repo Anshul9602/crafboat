@@ -1,5 +1,10 @@
 {{ header }}
-<section class="cb-hero" style="background-image:url('catalog/view/image/craftboat/hero.png')">
+<section class="cb-hero" data-cb-banner{% if banners|length < 2 %} style="background-image:url('{{ banners[0].image }}')"{% endif %}>
+  {% if banners|length > 1 %}
+    {% for banner in banners %}
+    <div class="cb-hero__slide{% if loop.first %} is-on{% endif %}" style="background-image:url('{{ banner.image }}')"></div>
+    {% endfor %}
+  {% endif %}
   <div class="cb-hero__shade"></div>
   <div class="cb-hero__copy">
     <p class="cb-kicker">craft boat trade</p>
@@ -10,7 +15,15 @@
       <a class="cb-btn cb-btn--ghost" href="index.php?route=account/register&amp;language=en-gb">Apply for a Trade Account</a>
     </div>
   </div>
+  {% if banners|length > 1 %}
+  <div class="cb-hero__dots cb-hero__dots--list">
+    {% for banner in banners %}
+    <button type="button" data-cb-dot{% if loop.first %} class="is-on"{% endif %} aria-label="{{ banner.title }}"></button>
+    {% endfor %}
+  </div>
+  {% else %}
   <img class="cb-hero__dots" src="catalog/view/image/craftboat/dots.svg" alt="">
+  {% endif %}
   <a class="cb-message" href="index.php?route=information/contact&amp;language=en-gb">Message Craft Boat <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
 </section>
 
@@ -46,7 +59,7 @@
     </div>
     <p>Adapted from Craft Boat’s real Faire taxonomy, then simplified for a single-brand buying journey.</p>
   </div>
-  <div class="cb-depts">
+  <div class="cb-depts" id="cb-depts">
     <a class="cb-dept" href="{{ dept_home }}" style="background-image:url('catalog/view/image/craftboat/dept-home.png')">
       <h3>Home accents</h3>
       <p>Hand-finished trays, frames and small objects with a strong shelf story.</p>
@@ -62,6 +75,11 @@
       <p>Handmade paper, journals, notebooks and paper bundles for considered gifting.</p>
       <span class="cb-dept__go">shop department <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
     </a>
+  </div>
+  <div class="cb-depts__dots" hidden>
+    <button type="button" class="is-on" aria-label="Home accents"></button>
+    <button type="button" aria-label="Storage and organisation"></button>
+    <button type="button" aria-label="Stationery and writing"></button>
   </div>
   <p class="cb-more">More to explore</p>
   <div class="cb-chips">
@@ -377,4 +395,23 @@
     <a class="cb-btn cb-btn--white" href="https://www.seedsofanaar.com/" target="_blank" rel="noopener">Seeds of Anaar <img src="catalog/view/image/craftboat/external.svg" alt=""></a>
   </div>
 </section>
+<script>
+(function () {
+  var track = document.getElementById('cb-depts');
+  var dots = document.querySelectorAll('.cb-depts__dots button');
+  if (!track || !dots.length || !window.matchMedia('(max-width: 700px)').matches) return;
+  var slides = track.querySelectorAll('.cb-dept');
+  function update() {
+    var index = Math.round(track.scrollLeft / track.clientWidth);
+    dots.forEach(function (dot, i) { dot.classList.toggle('is-on', i === index); });
+  }
+  track.addEventListener('scroll', update, { passive: true });
+  dots.forEach(function (dot, i) {
+    dot.addEventListener('click', function () {
+      var left = slides[i].getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft;
+      track.scrollTo({ left: left, behavior: 'smooth' });
+    });
+  });
+})();
+</script>
 {{ footer }}

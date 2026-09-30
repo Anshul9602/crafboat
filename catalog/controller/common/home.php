@@ -33,6 +33,17 @@ class Home extends \Opencart\System\Engine\Controller {
 		$data['dept_home'] = $this->url->link('product/category', 'language=' . $language . '&path=102');
 		$data['dept_storage'] = $this->url->link('product/category', 'language=' . $language . '&path=107');
 		$data['dept_stationery'] = $this->url->link('product/category', 'language=' . $language . '&path=104');
+		$this->load->model('design/banner');
+		$data['banners'] = $this->model_design_banner->getPageBanners('Homepage');
+
+		if (!$data['banners']) {
+			$data['banners'] = [[
+				'title' => 'Homepage',
+				'link'  => '',
+				'image' => 'catalog/view/image/craftboat/hero.png'
+			]];
+		}
+
 		$data['categories'] = $this->homeCategories();
 		$data['bestsellers'] = $this->homeCards('featured', 8);
 		$data['ready'] = $this->homeCards('readyline', 4);
