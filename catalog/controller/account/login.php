@@ -147,7 +147,33 @@ class Login extends \Opencart\System\Engine\Controller {
 			$customer_info = $this->model_account_customer->getCustomerByEmail($post_info['email']);
 
 			if ($customer_info && !$customer_info['status']) {
-				$json['error']['warning'] = $this->language->get('error_approved');
+				$plain = html_entity_decode($post_info['password'], ENT_QUOTES, 'UTF-8');
+				$hash = (string)$customer_info['password'];
+				$password_ok = password_verify($plain, $hash) || $hash === md5($plain) || (isset($customer_info['salt']) && $customer_info['salt'] !== '' && $hash === sha1($customer_info['salt'] . sha1($customer_info['salt'] . sha1($plain))));
+				$group_query = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$customer_info['customer_group_id'] . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "'");
+				$group_name = $group_query->num_rows ? (string)$group_query->row['name'] : '';
+
+				if ($password_ok && in_array(oc_strtolower($group_name), ['trade', 'wholesale'], true)) {
+					$pending = $this->db->query("SELECT `customer_approval_id` FROM `" . DB_PREFIX . "customer_approval` WHERE `customer_id` = '" . (int)$customer_info['customer_id'] . "' AND `type` = 'customer' LIMIT 1");
+
+					if ($pending->num_rows) {
+						$json['popup'] = [
+							'title'   => 'Account under verification',
+							'message' => 'Your ' . $group_name . ' account is being reviewed. You can sign in after Craft Boat approves it.'
+						];
+					} else {
+						$json['popup'] = [
+							'title'   => 'Account not approved',
+							'message' => 'Your ' . $group_name . ' account was not approved. Contact Craft Boat if you would like to apply again.'
+						];
+					}
+				} elseif (!$password_ok) {
+					$json['error']['warning'] = $this->language->get('error_login');
+
+					$this->model_account_customer->addLoginAttempt($post_info['email']);
+				} else {
+					$json['error']['warning'] = $this->language->get('error_approved');
+				}
 			} elseif (!$this->customer->login($post_info['email'], html_entity_decode($post_info['password'], ENT_QUOTES, 'UTF-8'))) {
 				$json['error']['warning'] = $this->language->get('error_login');
 

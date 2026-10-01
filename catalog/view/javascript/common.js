@@ -122,6 +122,18 @@ $(document).on('submit', 'form', function (e) {
                 $(element).find('.is-invalid').removeClass('is-invalid');
                 $(element).find('.invalid-feedback').removeClass('d-block');
 
+				if (json['popup'] && json['popup']['message']) {
+                    var notice = document.getElementById('cb-notice');
+                    var noticeTitle = document.getElementById('cb-notice-title');
+                    var noticeMessage = document.getElementById('cb-notice-message');
+
+                    if (notice && noticeTitle && noticeMessage) {
+                        noticeTitle.textContent = json['popup']['title'] || 'Account';
+                        noticeMessage.textContent = json['popup']['message'];
+                        notice.hidden = false;
+                    }
+                }
+
                 if (json['redirect']) {
                     location = json['redirect'];
                 }

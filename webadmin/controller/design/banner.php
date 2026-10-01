@@ -253,12 +253,23 @@ class Banner extends \Opencart\System\Engine\Controller {
 					$thumb = 'no_image.png';
 				}
 
+				$mobile_image = (string)($value['mobile_image'] ?? '');
+
+				if ($mobile_image && is_file(DIR_IMAGE . html_entity_decode($mobile_image, ENT_QUOTES, 'UTF-8'))) {
+					$mobile_thumb = $mobile_image;
+				} else {
+					$mobile_image = '';
+					$mobile_thumb = 'no_image.png';
+				}
+
 				$data['banner_images'][$language_id][] = [
-					'title'      => $value['title'],
-					'link'       => $value['link'],
-					'image'      => $image,
-					'thumb'      => $this->model_tool_image->resize($thumb, $this->config->get('config_image_default_width'), $this->config->get('config_image_default_height')),
-					'sort_order' => $value['sort_order']
+					'title'        => $value['title'],
+					'link'         => $value['link'],
+					'image'        => $image,
+					'thumb'        => $this->model_tool_image->resize($thumb, $this->config->get('config_image_default_width'), $this->config->get('config_image_default_height')),
+					'mobile_image' => $mobile_image,
+					'mobile_thumb' => $this->model_tool_image->resize($mobile_thumb, $this->config->get('config_image_default_width'), $this->config->get('config_image_default_height')),
+					'sort_order'   => $value['sort_order']
 				];
 			}
 		}

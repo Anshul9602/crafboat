@@ -89,10 +89,28 @@
 })();
 </script>
 <div id="cb-saved" hidden data-add="{{ wishlist_add }}" data-remove="{{ wishlist_remove }}" data-ids="{{ saved_ids|join(',') }}"></div>
+<div class="cb-notice" id="cb-notice" hidden>
+  <div class="cb-notice__card" role="dialog" aria-modal="true" aria-labelledby="cb-notice-title">
+    <h2 id="cb-notice-title"></h2>
+    <p id="cb-notice-message"></p>
+    <button type="button" class="cb-btn cb-btn--black" data-notice-close>Close</button>
+  </div>
+</div>
 <aside class="cb-toast" id="cb-toast" hidden>
   <strong>Saved</strong>
   <p></p>
 </aside>
+<script>
+(function () {
+  var notice = document.getElementById('cb-notice');
+  if (!notice) return;
+  notice.addEventListener('click', function (event) {
+    if (event.target === notice || event.target.closest('[data-notice-close]')) {
+      notice.hidden = true;
+    }
+  });
+})();
+</script>
 <script>
 (function () {
   var root = document.getElementById('cb-saved');
@@ -173,9 +191,11 @@
   var desktop = window.matchMedia('(min-width: 701px)');
   var barY = window.scrollY;
   var compact = false;
+  var compactLock = 0;
   function setCompact(next) {
     if (!bar || compact === next) return;
     compact = next;
+    compactLock = Date.now() + 280;
     if (next) {
       bar.classList.remove('is-ready');
       bar.classList.add('is-compact');
@@ -197,13 +217,17 @@
       barY = window.scrollY;
       return;
     }
+    if (Date.now() < compactLock) {
+      barY = window.scrollY;
+      return;
+    }
     var y = window.scrollY;
     if (y < 80) {
       setCompact(false);
       bar.classList.add('is-ready');
-    } else if (y > barY + 12) {
+    } else if (y > barY + 16) {
       setCompact(true);
-    } else if (y < barY - 12) {
+    } else if (y < barY - 16) {
       setCompact(false);
     }
     barY = y;
@@ -213,12 +237,34 @@
       input.setAttribute('placeholder', 'Search products');
     });
     var header = document.querySelector('.cb-header');
+    var topbar = document.querySelector('.cb-topbar');
     var lastY = window.scrollY;
+    var away = false;
+    var awayLock = 0;
+    function placeHeader() {
+      if (!header) return;
+      var topH = topbar ? topbar.offsetHeight : 0;
+      header.style.top = Math.max(0, topH - window.scrollY) + 'px';
+      if (bar) bar.style.height = header.offsetHeight + 'px';
+    }
+    placeHeader();
     window.addEventListener('scroll', function () {
+      placeHeader();
       if (!header || document.body.classList.contains('cb-nav-open')) return;
+      if (Date.now() < awayLock) {
+        lastY = window.scrollY;
+        return;
+      }
       var y = window.scrollY;
-      header.classList.toggle('is-away', y > lastY && y > 80);
+      var next = away;
+      if (y < 80) next = false;
+      else if (y > lastY + 16) next = true;
+      else if (y < lastY - 16) next = false;
       lastY = y;
+      if (next === away) return;
+      away = next;
+      awayLock = Date.now() + 240;
+      header.classList.toggle('is-away', away);
     }, { passive: true });
   }
   function setNav(open) {

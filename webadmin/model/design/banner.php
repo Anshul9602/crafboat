@@ -226,7 +226,7 @@ class Banner extends \Opencart\System\Engine\Model {
 	 * $this->model_design_banner->addImage($banner_id, $language_id, $banner_image_data);
 	 */
 	public function addImage(int $banner_id, int $language_id, array $data): void {
-		$this->db->query("INSERT INTO `" . DB_PREFIX . "banner_image` SET `banner_id` = '" . (int)$banner_id . "', `language_id` = '" . (int)$language_id . "', `title` = '" . $this->db->escape($data['title']) . "', `link` = '" . $this->db->escape($data['link']) . "', `image` = '" . $this->db->escape($data['image']) . "', `sort_order` = '" . (int)$data['sort_order'] . "'");
+		$this->db->query("INSERT INTO `" . DB_PREFIX . "banner_image` SET `banner_id` = '" . (int)$banner_id . "', `language_id` = '" . (int)$language_id . "', `title` = '" . $this->db->escape($data['title']) . "', `link` = '" . $this->db->escape($data['link']) . "', `image` = '" . $this->db->escape($data['image']) . "', `mobile_image` = '" . $this->db->escape((string)($data['mobile_image'] ?? '')) . "', `sort_order` = '" . (int)$data['sort_order'] . "'");
 	}
 
 	/**

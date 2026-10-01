@@ -459,18 +459,6 @@ class Category extends \Opencart\System\Engine\Controller {
 			$data['path'] = $request_path;
 			$this->load->model('design/banner');
 			$data['banners'] = $this->model_design_banner->getPageBanners((string)$category_info['name']);
-
-			if (!$data['banners'] && $category_info['name'] !== 'Shop') {
-				$data['banners'] = $this->model_design_banner->getPageBanners('Shop');
-			}
-
-			if (!$data['banners']) {
-				$data['banners'] = [[
-					'title' => (string)$category_info['name'],
-					'link'  => '',
-					'image' => 'catalog/view/image/craftboat/collection-hero.png'
-				]];
-			}
 			$data['summary'] = trim(strip_tags(html_entity_decode($category_info['description'], ENT_QUOTES, 'UTF-8')));
 			$data['assortment'] = 'The ' . $category_info['name'] . ' assortment';
 			$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');

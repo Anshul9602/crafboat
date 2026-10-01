@@ -128,6 +128,12 @@ class Register extends \Opencart\System\Engine\Controller {
 		}
 
 		$data['language'] = $this->config->get('config_language');
+		$data['country'] = $this->url->link('localisation/country', 'language=' . $data['language']);
+
+		$this->load->model('localisation/country');
+
+		$data['countries'] = $this->model_localisation_country->getCountries();
+		$data['business_types'] = ['Retailer', 'Wholesaler', 'Distributor', 'Reseller', 'Other'];
 
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');
@@ -161,6 +167,10 @@ class Register extends \Opencart\System\Engine\Controller {
 		];
 
 		$post_info = $this->request->post + $required;
+		$contact = trim((string)($post_info['contact'] ?? ''));
+		$contact_parts = preg_split('/\s+/', $contact, 2) ?: [];
+		$post_info['firstname'] = oc_substr($contact_parts[0] ?? '', 0, 32);
+		$post_info['lastname'] = oc_substr(($contact_parts[1] ?? '') !== '' ? $contact_parts[1] : ($contact_parts[0] ?? ''), 0, 32);
 
 		if (!isset($this->request->get['register_token']) || !isset($this->session->data['register_token']) || ($this->session->data['register_token'] != $this->request->get['register_token'])) {
 			$json['redirect'] = $this->url->link('account/register', 'language=' . $this->config->get('config_language'), true);
@@ -214,8 +224,82 @@ class Register extends \Opencart\System\Engine\Controller {
 				$json['error']['warning'] = $this->language->get('error_exists');
 			}
 
-			if ($this->config->get('config_telephone_required') && !oc_validate_length($post_info['telephone'], 3, 32)) {
+			if (!oc_validate_length($post_info['telephone'], 3, 32)) {
 				$json['error']['telephone'] = $this->language->get('error_telephone');
+			}
+
+			if (!oc_validate_length((string)($post_info['company'] ?? ''), 2, 255)) {
+				$json['error']['company'] = 'Company / business name must be between 2 and 255 characters.';
+			}
+
+			if (!oc_validate_length($contact, 2, 128)) {
+				$json['error']['contact'] = 'Contact person must be between 2 and 128 characters.';
+			}
+
+			$business_types = ['Retailer', 'Wholesaler', 'Distributor', 'Reseller', 'Other'];
+
+			if (!in_array((string)($post_info['business_type'] ?? ''), $business_types, true)) {
+				$json['error']['business_type'] = 'Select a business type.';
+			}
+
+			foreach (['billing_address' => 'Billing address', 'billing_city' => 'City', 'billing_postcode' => 'PIN', 'gstin' => 'GSTIN / Tax ID', 'pan' => 'PAN / business registration number', 'monthly_purchase' => 'Expected monthly purchase', 'stores' => 'Number of stores'] as $field => $label) {
+				if (!oc_validate_length(trim((string)($post_info[$field] ?? '')), 1, 255)) {
+					$json['error'][$field] = $label . ' is required.';
+				}
+			}
+
+			$this->load->model('localisation/country');
+			$this->load->model('localisation/zone');
+
+			$billing_country = $this->model_localisation_country->getCountry((int)($post_info['billing_country_id'] ?? 0));
+			$billing_zone = $this->model_localisation_zone->getZone((int)($post_info['billing_zone_id'] ?? 0));
+
+			if (!$billing_country) {
+				$json['error']['billing_country'] = 'Select a country.';
+			}
+
+			if (!$billing_zone || (int)$billing_zone['country_id'] !== (int)($billing_country['country_id'] ?? 0)) {
+				$json['error']['billing_zone'] = 'Select a state.';
+			}
+
+			$shipping_same = !empty($post_info['shipping_same']);
+
+			if (!$shipping_same) {
+				foreach (['shipping_address' => 'Shipping address', 'shipping_city' => 'Shipping city', 'shipping_postcode' => 'Shipping PIN'] as $field => $label) {
+					if (!oc_validate_length(trim((string)($post_info[$field] ?? '')), 1, 255)) {
+						$json['error'][$field] = $label . ' is required.';
+					}
+				}
+
+				$shipping_country = $this->model_localisation_country->getCountry((int)($post_info['shipping_country_id'] ?? 0));
+				$shipping_zone = $this->model_localisation_zone->getZone((int)($post_info['shipping_zone_id'] ?? 0));
+
+				if (!$shipping_country) {
+					$json['error']['shipping_country'] = 'Select a shipping country.';
+				}
+
+				if (!$shipping_zone || (int)$shipping_zone['country_id'] !== (int)($shipping_country['country_id'] ?? 0)) {
+					$json['error']['shipping_zone'] = 'Select a shipping state.';
+				}
+			}
+
+			$this->load->model('tool/upload');
+
+			foreach (['trade_license' => 'Trade license / GST certificate', 'pan_document' => 'PAN / business document'] as $field => $label) {
+				$code = (string)($post_info[$field] ?? '');
+				$upload = $code !== '' ? $this->model_tool_upload->getUploadByCode($code) : [];
+
+				if (!$upload) {
+					$json['error'][$field] = $label . ' is required.';
+				}
+			}
+
+			if (!empty($post_info['cheque'])) {
+				$cheque = $this->model_tool_upload->getUploadByCode((string)$post_info['cheque']);
+
+				if (!$cheque) {
+					$json['error']['cheque'] = 'The cancelled cheque upload could not be found.';
+				}
 			}
 
 			// Custom fields validation
@@ -273,6 +357,40 @@ class Register extends \Opencart\System\Engine\Controller {
 
 		if (!$json) {
 			$customer_id = $this->model_account_customer->addCustomer($post_info);
+
+			$shipping_same = !empty($post_info['shipping_same']);
+			$billing_country = $this->model_localisation_country->getCountry((int)$post_info['billing_country_id']);
+			$billing_zone = $this->model_localisation_zone->getZone((int)$post_info['billing_zone_id']);
+			$shipping_country = $shipping_same ? $billing_country : $this->model_localisation_country->getCountry((int)($post_info['shipping_country_id'] ?? 0));
+			$shipping_zone = $shipping_same ? $billing_zone : $this->model_localisation_zone->getZone((int)($post_info['shipping_zone_id'] ?? 0));
+
+			$this->load->model('account/trade');
+
+			$this->model_account_trade->addProfile($customer_id, [
+				'company'           => trim((string)$post_info['company']),
+				'contact'           => trim((string)$post_info['contact']),
+				'gstin'             => trim((string)$post_info['gstin']),
+				'pan'               => trim((string)$post_info['pan']),
+				'business_type'     => (string)$post_info['business_type'],
+				'monthly_purchase'  => trim((string)$post_info['monthly_purchase']),
+				'stores'            => trim((string)$post_info['stores']),
+				'website'           => trim((string)($post_info['website'] ?? '')),
+				'billing_address'   => trim((string)$post_info['billing_address']),
+				'billing_city'      => trim((string)$post_info['billing_city']),
+				'billing_postcode'  => trim((string)$post_info['billing_postcode']),
+				'billing_country'   => (string)($billing_country['name'] ?? ''),
+				'billing_zone'      => (string)($billing_zone['name'] ?? ''),
+				'shipping_same'     => $shipping_same ? 1 : 0,
+				'shipping_address'  => $shipping_same ? trim((string)$post_info['billing_address']) : trim((string)($post_info['shipping_address'] ?? '')),
+				'shipping_city'     => $shipping_same ? trim((string)$post_info['billing_city']) : trim((string)($post_info['shipping_city'] ?? '')),
+				'shipping_postcode' => $shipping_same ? trim((string)$post_info['billing_postcode']) : trim((string)($post_info['shipping_postcode'] ?? '')),
+				'shipping_country'  => (string)($shipping_country['name'] ?? ''),
+				'shipping_zone'     => (string)($shipping_zone['name'] ?? ''),
+				'trade_license'     => (string)$post_info['trade_license'],
+				'pan_document'      => (string)$post_info['pan_document'],
+				'cheque'            => (string)($post_info['cheque'] ?? ''),
+				'reference'         => trim((string)($post_info['reference'] ?? ''))
+			]);
 
 			// Login if requires approval
 			if (!$customer_group_info['approval']) {

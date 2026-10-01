@@ -35,22 +35,16 @@ class Banner extends \Opencart\System\Engine\Model {
 	 * @return array<int, array<string, string>>
 	 */
 	public function getPageBanners(string $name): array {
-		$query = $this->db->query("SELECT `bi`.`title`, `bi`.`link`, `bi`.`image` FROM `" . DB_PREFIX . "banner` `b` LEFT JOIN `" . DB_PREFIX . "banner_image` `bi` ON (`b`.`banner_id` = `bi`.`banner_id`) WHERE `b`.`name` = '" . $this->db->escape($name) . "' AND `b`.`status` = '1' AND `bi`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' ORDER BY `bi`.`sort_order` ASC, `bi`.`banner_image_id` ASC");
+		$query = $this->db->query("SELECT `bi`.`title`, `bi`.`link`, `bi`.`image`, `bi`.`mobile_image` FROM `" . DB_PREFIX . "banner` `b` LEFT JOIN `" . DB_PREFIX . "banner_image` `bi` ON (`b`.`banner_id` = `bi`.`banner_id`) WHERE `b`.`name` = '" . $this->db->escape($name) . "' AND `b`.`status` = '1' AND `bi`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' ORDER BY `bi`.`sort_order` ASC, `bi`.`banner_image_id` ASC");
 
 		$banners = [];
 
 		foreach ($query->rows as $row) {
-			$image = html_entity_decode((string)$row['image'], ENT_QUOTES, 'UTF-8');
+			$banner = $this->bannerImage($row);
 
-			if ($image === '' || !is_file(DIR_IMAGE . $image)) {
-				continue;
+			if ($banner) {
+				$banners[] = $banner;
 			}
-
-			$banners[] = [
-				'title' => (string)$row['title'],
-				'link'  => (string)$row['link'],
-				'image' => 'image/' . $image
-			];
 		}
 
 		return $banners;
@@ -62,7 +56,7 @@ class Banner extends \Opencart\System\Engine\Model {
 	 * @return array<int, array<string, string>>
 	 */
 	public function getAllPageBanners(): array {
-		$query = $this->db->query("SELECT `b`.`name`, `bi`.`title`, `bi`.`link`, `bi`.`image` FROM `" . DB_PREFIX . "banner` `b` LEFT JOIN `" . DB_PREFIX . "banner_image` `bi` ON (`b`.`banner_id` = `bi`.`banner_id`) WHERE `b`.`status` = '1' AND `bi`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' ORDER BY CASE WHEN `b`.`name` = 'Homepage' THEN 0 ELSE 1 END, `b`.`name` ASC, `bi`.`sort_order` ASC, `bi`.`banner_image_id` ASC");
+		$query = $this->db->query("SELECT `b`.`name`, `bi`.`title`, `bi`.`link`, `bi`.`image`, `bi`.`mobile_image` FROM `" . DB_PREFIX . "banner` `b` LEFT JOIN `" . DB_PREFIX . "banner_image` `bi` ON (`b`.`banner_id` = `bi`.`banner_id`) WHERE `b`.`status` = '1' AND `bi`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' ORDER BY CASE WHEN `b`.`name` = 'Homepage' THEN 0 ELSE 1 END, `b`.`name` ASC, `bi`.`sort_order` ASC, `bi`.`banner_image_id` ASC");
 
 		$banners = [];
 		$seen = [];
@@ -70,18 +64,49 @@ class Banner extends \Opencart\System\Engine\Model {
 		foreach ($query->rows as $row) {
 			$image = html_entity_decode((string)$row['image'], ENT_QUOTES, 'UTF-8');
 
-			if ($image === '' || str_starts_with($image, 'catalog/demo/') || isset($seen[$image]) || !is_file(DIR_IMAGE . $image)) {
+			if ($image === '' || str_starts_with($image, 'catalog/demo/') || isset($seen[$image])) {
+				continue;
+			}
+
+			$banner = $this->bannerImage($row);
+
+			if (!$banner) {
 				continue;
 			}
 
 			$seen[$image] = true;
-			$banners[] = [
-				'title' => (string)($row['title'] !== '' ? $row['title'] : $row['name']),
-				'link'  => (string)$row['link'],
-				'image' => 'image/' . $image
-			];
+			$banner['title'] = (string)($row['title'] !== '' ? $row['title'] : $row['name']);
+			$banners[] = $banner;
 		}
 
 		return $banners;
+	}
+
+	/**
+	 * @param array<string, mixed> $row
+	 *
+	 * @return array<string, string>|null
+	 */
+	private function bannerImage(array $row): ?array {
+		$image = html_entity_decode((string)$row['image'], ENT_QUOTES, 'UTF-8');
+
+		if ($image === '' || !is_file(DIR_IMAGE . $image)) {
+			return null;
+		}
+
+		$mobile = html_entity_decode((string)($row['mobile_image'] ?? ''), ENT_QUOTES, 'UTF-8');
+
+		if ($mobile === '' || !is_file(DIR_IMAGE . $mobile)) {
+			$mobile = '';
+		}
+
+		$base = rtrim((string)$this->config->get('config_url'), '/') . '/image/';
+
+		return [
+			'title'  => (string)$row['title'],
+			'link'   => (string)$row['link'],
+			'image'  => $base . $image,
+			'mobile' => $mobile !== '' ? $base . $mobile : ''
+		];
 	}
 }

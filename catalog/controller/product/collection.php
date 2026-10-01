@@ -36,15 +36,9 @@ class Collection extends \Opencart\System\Engine\Controller {
 		$this->load->model('design/banner');
 		$data['banners'] = $this->model_design_banner->getPageBanners($collection['name']);
 
-		if (!$data['banners']) {
-			$data['banners'] = [[
-				'title' => $collection['name'],
-				'link'  => '',
-				'image' => $collection['image']
-			]];
+		if ($data['banners']) {
+			$collection['image'] = $data['banners'][0]['image'];
 		}
-
-		$collection['image'] = $data['banners'][0]['image'];
 		$data['collection'] = $collection;
 		$data['collections'] = [];
 		$data['availability'] = $availability;

@@ -649,6 +649,24 @@ class Customer extends \Opencart\System\Engine\Controller {
 
 		$data['user_token'] = $this->session->data['user_token'];
 
+		$this->load->model('customer/trade');
+		$this->load->model('tool/upload');
+
+		$trade = $data['customer_id'] ? $this->model_customer_trade->getProfile((int)$data['customer_id']) : [];
+		$trade_fields = ['company', 'contact', 'gstin', 'pan', 'business_type', 'monthly_purchase', 'stores', 'website', 'billing_address', 'billing_city', 'billing_postcode', 'billing_country', 'billing_zone', 'shipping_same', 'shipping_address', 'shipping_city', 'shipping_postcode', 'shipping_country', 'shipping_zone', 'trade_license', 'pan_document', 'cheque', 'reference'];
+
+		foreach ($trade_fields as $field) {
+			$data[$field] = (string)($trade[$field] ?? '');
+		}
+
+		$data['business_types'] = ['Retailer', 'Wholesaler', 'Distributor', 'Reseller', 'Other'];
+		$data['upload_download'] = $this->url->link('tool/upload.download', 'user_token=' . $this->session->data['user_token']);
+
+		foreach (['trade_license', 'pan_document', 'cheque'] as $file_field) {
+			$upload = $data[$file_field] !== '' ? $this->model_tool_upload->getUploadByCode($data[$file_field]) : [];
+			$data[$file_field . '_name'] = (string)($upload['name'] ?? '');
+		}
+
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
@@ -777,6 +795,13 @@ class Customer extends \Opencart\System\Engine\Controller {
 				$json['customer_id'] = $this->model_customer_customer->addCustomer($post_info);
 			} else {
 				$this->model_customer_customer->editCustomer($post_info['customer_id'], $post_info);
+			}
+
+			$saved_id = (int)($json['customer_id'] ?? $post_info['customer_id']);
+
+			if ($saved_id && isset($this->request->post['company'])) {
+				$this->load->model('customer/trade');
+				$this->model_customer_trade->saveProfile($saved_id, $post_info);
 			}
 
 			$json['success'] = $this->language->get('text_success');

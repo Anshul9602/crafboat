@@ -1,8 +1,8 @@
 {{ header }}
-<section class="cb-hero" data-cb-banner{% if banners|length < 2 %} style="background-image:url('{{ banners[0].image }}')"{% endif %}>
+<section class="cb-hero" data-cb-banner{% if banners|length == 1 %} style="--cb-banner:url('{{ banners[0].image }}');{% if banners[0].mobile %}--cb-banner-mobile:url('{{ banners[0].mobile }}');{% endif %}"{% endif %}>
   {% if banners|length > 1 %}
     {% for banner in banners %}
-    <div class="cb-hero__slide{% if loop.first %} is-on{% endif %}" style="background-image:url('{{ banner.image }}')"></div>
+    <div class="cb-hero__slide{% if loop.first %} is-on{% endif %}" style="--cb-banner:url('{{ banner.image }}');{% if banner.mobile %}--cb-banner-mobile:url('{{ banner.mobile }}');{% endif %}"></div>
     {% endfor %}
   {% endif %}
   <div class="cb-hero__shade"></div>
