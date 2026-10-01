@@ -42,7 +42,7 @@ class Header extends \Opencart\System\Engine\Controller {
 		$data['bootstrap'] = 'catalog/view/stylesheet/bootstrap.css';
 		$data['icons'] = 'catalog/view/stylesheet/fonts/fontawesome/css/all.min.css';
 		$data['stylesheet'] = 'catalog/view/stylesheet/stylesheet.css';
-		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=mobile19';
+		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=mobile26';
 		$route = (string)($this->request->get['route'] ?? '');
 		$data['account_page'] = str_starts_with($route, 'account/');
 		$data['topbar_note'] = in_array(($this->request->get['route'] ?? ''), ['product/collection', 'product/category', 'product/product'], true) ? 'Ships from Jaipur, India  |   Opening order $500' : '';
@@ -82,12 +82,12 @@ class Header extends \Opencart\System\Engine\Controller {
 		}
 
 		$data['home'] = $this->url->link('common/home', 'language=' . $this->config->get('config_language'));
-		$data['register'] = $this->url->link('account/register', 'language=' . $this->config->get('config_language'));
+		$data['register'] = $this->url->link('account/register', 'language=' . $this->config->get('config_language') . '&account=trade');
 		$data['wishlist'] = $this->url->link('account/wishlist', 'language=' . $this->config->get('config_language') . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''));
 		$data['logged'] = $this->customer->isLogged();
 
 		if (!$this->customer->isLogged()) {
-			$data['register'] = $this->url->link('account/register', 'language=' . $this->config->get('config_language'));
+			$data['register'] = $this->url->link('account/register', 'language=' . $this->config->get('config_language') . '&account=trade');
 			$data['login'] = $this->url->link('account/login', 'language=' . $this->config->get('config_language'));
 		} else {
 			$data['account'] = $this->url->link('account/account', 'language=' . $this->config->get('config_language') . '&customer_token=' . $this->session->data['customer_token']);

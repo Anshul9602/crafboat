@@ -53,6 +53,12 @@ body.cb .cb-message { color: #fff; }
 
 .cb-topbar a { color: #fff; }
 
+.cb-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: #fff;
+}
 .cb-header {
   display: flex;
   align-items: center;
@@ -60,9 +66,23 @@ body.cb .cb-message { color: #fff; }
   gap: 24px;
   padding: 12px 70px;
   background: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 40;
+  position: relative;
+  z-index: 2;
+}
+@media (min-width: 701px) {
+  .cb-bar .cb-nav {
+    max-height: 72px;
+    overflow: hidden;
+    transition: max-height .2s ease;
+  }
+  .cb-bar.is-ready:not(.is-compact) .cb-nav { overflow: visible; }
+  .cb-bar.is-compact .cb-nav {
+    max-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    border-bottom-color: transparent;
+    pointer-events: none;
+  }
 }
 
 .cb-logo { display: block; width: 52px; height: 61px; flex: 0 0 auto; }
@@ -382,38 +402,155 @@ body.cb-acct h2 {
   font-weight: 400;
   font-size: 32px;
 }
-body.cb-acct .cb-acct-board {
+body.cb-acct .cb-acct-tiles {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-  align-items: start;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
 }
-body.cb-acct .cb-acct-stack {
-  display: grid;
-  gap: 20px;
-}
-body.cb-acct .cb-acct-card {
-  background: #fcfbfc;
-  border: 1px solid #dfdfdf;
-  padding: 28px 24px 8px;
-}
-body.cb-acct .cb-acct-card h2 {
-  margin: 0 0 8px;
-  font-size: 28px;
-  line-height: 1.15;
-}
-body.cb-acct .cb-acct-card a {
+body.cb-acct .cb-acct-tile {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px 0;
-  border-bottom: 1px solid #e6e1d8;
+  gap: 14px;
+  min-height: 108px;
+  padding: 18px 16px;
+  background: #fff;
+  border: 1px solid #e6e1d8;
+  border-radius: 8px;
   color: #000;
   text-decoration: none;
 }
-body.cb-acct .cb-acct-card a:last-child { border-bottom: 0; }
-body.cb-acct .cb-acct-card a::after { content: "→"; }
+body.cb-acct .cb-acct-tile__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  background: #f6f4f1;
+  border-radius: 8px;
+  font-size: 16px;
+}
+body.cb-acct .cb-acct-tile__copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+body.cb-acct .cb-acct-tile__copy strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+body.cb-acct .cb-acct-tile__copy em {
+  font-style: normal;
+  color: #69706f;
+  font-size: 13px;
+  line-height: 1.35;
+}
+body.cb-acct .cb-acct-tile__go {
+  margin-left: auto;
+  color: #69706f;
+}
+body.cb-acct .cb-acct-kicker {
+  margin: 36px 0 16px;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+body.cb-acct .cb-acct-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+body.cb-acct .cb-acct-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 96px;
+  background: #fff;
+  border: 1px solid #e6e1d8;
+  border-radius: 8px;
+  color: #000;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+body.cb-acct .cb-acct-action i { font-size: 16px; }
+.cb-auth__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  object-fit: cover;
+}
+.cb-auth__form {
+  box-sizing: border-box;
+  padding: 48px 40px 64px;
+}
+body.cb-acct .cb-auth__form h1 {
+  max-width: none;
+  margin: 0 0 12px;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -0.8px;
+  white-space: normal;
+}
+.cb-auth__form > p {
+  max-width: none;
+  margin: 0 0 20px;
+  color: #69706f;
+  line-height: 1.5;
+}
+body.cb-acct .cb-auth #content > form,
+body.cb-acct .cb-auth #content > p + form {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 8px 0 0;
+  max-width: none;
+}
+body.cb-acct .cb-auth #content .row {
+  --bs-gutter-x: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+body.cb-acct .cb-auth #content form .form-control,
+body.cb-acct .cb-auth #content form .form-select {
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+body.cb-acct .cb-auth #content .row.mb-3 { margin-bottom: 16px; }
+body.cb-acct .cb-auth #content form fieldset + fieldset { margin-top: 8px; }
+body.cb-acct .cb-auth #content form legend { margin: 20px 0 14px; font-size: 24px; }
+body.cb-acct .cb-auth #content form fieldset:first-of-type legend { margin-top: 4px; }
+body.cb-acct .cb-auth .text-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  text-align: left;
+}
+body.cb-acct .cb-auth .text-end .btn { margin-left: auto; }
+.cb-auth__types { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+.cb-auth__types a {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid #000;
+  border-radius: 160px;
+  color: #000;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+.cb-auth__types a.is-on { background: #000; color: #fff; }
+.cb-auth__note { margin-top: 28px; color: #69706f; font-size: 14px; }
+body.cb .cb-auth__note a { color: #000; }
 body.cb-acct .form-control,
 body.cb-acct .form-select {
   border: 1px solid #dfdfdf;
@@ -1356,7 +1493,8 @@ body.cb .cb-coll-story .cb-btn--black { color: #dee8dd; }
   .cb-mega { position: static; padding: 16px 0; box-shadow: none; }
   .cb-mega::before { display: none; }
   body.cb-acct .container { padding: 24px; }
-  body.cb-acct .cb-acct-board { grid-template-columns: 1fr; }
+  body.cb-acct .cb-acct-tiles { grid-template-columns: 1fr 1fr; }
+  body.cb-acct .cb-acct-actions { grid-template-columns: 1fr; }
   #checkout-cart .cb-bag__grid,
   #checkout-cart .cb-bag__item { grid-template-columns: 1fr; }
   #account-wishlist .cb-wish__actions { flex-direction: column; }
@@ -1645,6 +1783,10 @@ body.cb .cb-coll-story .cb-btn--black { color: #dee8dd; }
   .cb-specs dd { text-align: left; }
   body.cb-acct .container { padding: 16px 16px 48px; }
   body.cb-acct h1, body.cb-acct legend { font-size: 36px; }
+  body.cb-acct .cb-acct-tiles,
+  body.cb-acct .cb-acct-actions { grid-template-columns: 1fr; }
+  .cb-auth__img { min-height: 240px; height: 240px; }
+  .cb-auth__form { padding: 28px 16px 48px; }
   #account-wishlist .cb-grid {
     display: grid;
     grid-template-columns: 1fr;

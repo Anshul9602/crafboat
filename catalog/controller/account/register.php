@@ -37,7 +37,7 @@ class Register extends \Opencart\System\Engine\Controller {
 			'href' => $this->url->link('account/register', 'language=' . $this->config->get('config_language'))
 		];
 
-		$data['text_account_already'] = sprintf($this->language->get('text_account_already'), $this->url->link('account/login', 'language=' . $this->config->get('config_language')));
+		$data['text_account_already'] = sprintf($this->language->get('text_account_already'), $this->url->link('account/register', 'language=' . $this->config->get('config_language') . '&account=login'));
 
 		$data['error_upload_size'] = sprintf($this->language->get('error_upload_size'), $this->config->get('config_file_max_size'));
 
@@ -69,7 +69,28 @@ class Register extends \Opencart\System\Engine\Controller {
 			}
 		}
 
-		$data['customer_group_id'] = (int)$this->config->get('config_customer_group_id');
+		$account = (string)($this->request->get['account'] ?? 'trade');
+
+		if (!in_array($account, ['trade', 'wholesale', 'login'], true)) {
+			$account = 'trade';
+		}
+
+		$language = (string)$this->config->get('config_language');
+		$trade_id = $this->customerGroupId('Trade');
+		$wholesale_id = $this->customerGroupId('Wholesale');
+
+		$data['account'] = $account;
+		$data['photo'] = 'image/catalog/craftboat/trays.png';
+		$data['trade'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');
+		$data['wholesale'] = $this->url->link('account/register', 'language=' . $language . '&account=wholesale');
+		$data['signin'] = $this->url->link('account/register', 'language=' . $language . '&account=login');
+		$this->session->data['login_token'] = oc_token(26);
+		$data['login'] = $this->url->link('account/login.login', 'language=' . $language . '&login_token=' . $this->session->data['login_token']);
+		$data['forgotten'] = $this->url->link('account/forgotten', 'language=' . $language);
+		$data['customer_group_id'] = ($account === 'wholesale' && $wholesale_id) ? $wholesale_id : $trade_id;
+		$data['heading_title'] = $account === 'login' ? 'Sign in' : ($account === 'wholesale' ? 'Apply for a wholesale account' : 'Apply for a trade account');
+
+		$this->document->setTitle($data['heading_title']);
 
 		// Custom Fields
 		$data['custom_fields'] = [];
@@ -294,5 +315,14 @@ class Register extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * @return int
+	 */
+	private function customerGroupId(string $name): int {
+		$query = $this->db->query("SELECT `customer_group_id` FROM `" . DB_PREFIX . "customer_group_description` WHERE `name` = '" . $this->db->escape($name) . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+
+		return (int)($query->row['customer_group_id'] ?? 0);
 	}
 }

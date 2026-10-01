@@ -209,7 +209,7 @@ class Cart extends \Opencart\System\Engine\Controller {
 		$data['cart'] = $this->url->link('checkout/cart', $lang);
 		$data['checkout'] = $this->url->link('checkout/checkout', $lang);
 
-		$data['register'] = $this->url->link('account/register', $lang);
+		$data['register'] = $this->url->link('account/register', $lang . '&account=trade');
 		$data['login'] = $this->url->link('account/login', $lang);
 		$data['contact'] = $this->url->link('information/contact', $lang);
 		$data['ready'] = $this->url->link('product/category', $lang . '&path=100&availability=ready');

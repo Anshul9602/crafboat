@@ -36,7 +36,14 @@ class CustomerApproval extends \Opencart\System\Engine\Controller {
 
 		$data['customer_groups'] = $this->model_customer_customer_group->getCustomerGroups();
 
+		$trade_id = $this->customerGroupId('Trade');
+		$wholesale_id = $this->customerGroupId('Wholesale');
+		$token = $this->session->data['user_token'];
+		$data['trade_approval'] = $this->url->link('customer/customer_approval', 'user_token=' . $token . '&filter_customer_group_id=' . $trade_id);
+		$data['wholesale_approval'] = $this->url->link('customer/customer_approval', 'user_token=' . $token . '&filter_customer_group_id=' . $wholesale_id);
+
 		$data['list'] = $this->getList();
+		$data['tab'] = ((int)($this->request->get['filter_customer_group_id'] ?? 0) === $wholesale_id) ? 'wholesale' : 'trade';
 
 		$data['user_token'] = $this->session->data['user_token'];
 
@@ -64,6 +71,14 @@ class CustomerApproval extends \Opencart\System\Engine\Controller {
 	 * @return string
 	 */
 	public function getList(): string {
+		if (!isset($this->request->get['filter_customer_group_id']) || $this->request->get['filter_customer_group_id'] === '') {
+			$trade_id = $this->customerGroupId('Trade');
+
+			if ($trade_id) {
+				$this->request->get['filter_customer_group_id'] = $trade_id;
+			}
+		}
+
 		if (isset($this->request->get['filter_customer'])) {
 			$filter_customer = $this->request->get['filter_customer'];
 		} else {
@@ -300,5 +315,14 @@ class CustomerApproval extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * @return int
+	 */
+	private function customerGroupId(string $name): int {
+		$query = $this->db->query("SELECT `customer_group_id` FROM `" . DB_PREFIX . "customer_group_description` WHERE `name` = '" . $this->db->escape($name) . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+
+		return (int)($query->row['customer_group_id'] ?? 0);
 	}
 }

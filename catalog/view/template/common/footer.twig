@@ -8,7 +8,7 @@
     <h3>Wholesale</h3>
     <a href="{{ shop_all }}">Shop all</a>
     <a href="{{ collection }}">Collection</a>
-    <a href="index.php?route=account/register&amp;language=en-gb">Apply for an account</a>
+    <a href="index.php?route=account/register&amp;language=en-gb&amp;account=trade">Apply for an account</a>
     {% if logged %}
       <a href="{{ account }}">Account</a>
     {% else %}
@@ -168,6 +168,46 @@
     event.stopPropagation();
     send(heart);
   });
+  var bar = document.querySelector('.cb-bar');
+  var nav = bar ? bar.querySelector('.cb-nav') : null;
+  var desktop = window.matchMedia('(min-width: 701px)');
+  var barY = window.scrollY;
+  var compact = false;
+  function setCompact(next) {
+    if (!bar || compact === next) return;
+    compact = next;
+    if (next) {
+      bar.classList.remove('is-ready');
+      bar.classList.add('is-compact');
+    } else {
+      bar.classList.remove('is-compact');
+    }
+  }
+  if (nav) {
+    nav.addEventListener('transitionend', function (event) {
+      if (event.propertyName !== 'max-height' || compact) return;
+      bar.classList.add('is-ready');
+    });
+  }
+  if (bar && desktop.matches) bar.classList.add('is-ready');
+  window.addEventListener('scroll', function () {
+    if (!bar || !desktop.matches) {
+      setCompact(false);
+      if (bar) bar.classList.add('is-ready');
+      barY = window.scrollY;
+      return;
+    }
+    var y = window.scrollY;
+    if (y < 80) {
+      setCompact(false);
+      bar.classList.add('is-ready');
+    } else if (y > barY + 12) {
+      setCompact(true);
+    } else if (y < barY - 12) {
+      setCompact(false);
+    }
+    barY = y;
+  }, { passive: true });
   if (window.matchMedia('(max-width: 700px)').matches) {
     document.querySelectorAll('.cb-search input').forEach(function (input) {
       input.setAttribute('placeholder', 'Search products');

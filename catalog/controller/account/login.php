@@ -91,7 +91,9 @@ class Login extends \Opencart\System\Engine\Controller {
 		$this->session->data['login_token'] = oc_token(26);
 
 		$data['login'] = $this->url->link('account/login.login', 'language=' . $this->config->get('config_language') . '&login_token=' . $this->session->data['login_token']);
-		$data['register'] = $this->url->link('account/register', 'language=' . $this->config->get('config_language'));
+		$data['photo'] = 'image/catalog/craftboat/trays.png';
+		$data['register'] = $this->url->link('account/register', 'language=' . $this->config->get('config_language') . '&account=trade');
+		$data['register_wholesale'] = $this->url->link('account/register', 'language=' . $this->config->get('config_language') . '&account=wholesale');
 		$data['forgotten'] = $this->url->link('account/forgotten', 'language=' . $this->config->get('config_language'));
 
 		$data['column_left'] = $this->load->controller('common/column_left');

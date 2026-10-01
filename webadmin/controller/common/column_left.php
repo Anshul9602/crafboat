@@ -395,6 +395,25 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 					'href'     => $this->url->link('customer/customer_approval', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
+
+				$trade_group = $this->db->query("SELECT `customer_group_id` FROM `" . DB_PREFIX . "customer_group_description` WHERE `name` = 'Trade' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+				$wholesale_group = $this->db->query("SELECT `customer_group_id` FROM `" . DB_PREFIX . "customer_group_description` WHERE `name` = 'Wholesale' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+
+				if ($trade_group->row) {
+					$customer[] = [
+						'name'     => 'Trade',
+						'href'     => $this->url->link('customer/customer_approval', 'user_token=' . $this->session->data['user_token'] . '&filter_customer_group_id=' . (int)$trade_group->row['customer_group_id']),
+						'children' => []
+					];
+				}
+
+				if ($wholesale_group->row) {
+					$customer[] = [
+						'name'     => 'Wholesale',
+						'href'     => $this->url->link('customer/customer_approval', 'user_token=' . $this->session->data['user_token'] . '&filter_customer_group_id=' . (int)$wholesale_group->row['customer_group_id']),
+						'children' => []
+					];
+				}
 			}
 
 			if ($this->user->hasPermission('access', 'customer/gdpr')) {

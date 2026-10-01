@@ -458,7 +458,7 @@ class Product extends \Opencart\System\Engine\Controller {
 			$data['collection_href'] = $collection_code
 				? $this->url->link('product/collection', 'language=' . $language . '&collection=' . $collection_code)
 				: $this->url->link('product/category', 'language=' . $language . '&path=100');
-			$data['register'] = $this->url->link('account/register', 'language=' . $language);
+			$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');
 			$data['logged'] = $this->customer->isLogged();
 			$wholesale_group = $this->db->query("SELECT `customer_group_id` FROM `" . DB_PREFIX . "customer_group_description` WHERE `name` = 'Wholesale' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
 			$wholesale_group_id = $wholesale_group->num_rows ? (int)$wholesale_group->row['customer_group_id'] : 0;

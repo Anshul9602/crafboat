@@ -16,6 +16,10 @@
     </div>
   </div>
   <div class="container-fluid">
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item"><a class="nav-link{% if tab == 'trade' %} active{% endif %}" href="{{ trade_approval }}">Trade</a></li>
+      <li class="nav-item"><a class="nav-link{% if tab == 'wholesale' %} active{% endif %}" href="{{ wholesale_approval }}">Wholesale</a></li>
+    </ul>
     <div class="row">
       <div id="filter-customer" class="col-lg-3 col-md-12 order-lg-last d-none d-lg-block mb-3">
         <div class="card">

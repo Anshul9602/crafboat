@@ -50,7 +50,7 @@ class Collection extends \Opencart\System\Engine\Controller {
 		$data['availability'] = $availability;
 		$data['sort'] = $sort;
 		$data['products'] = $this->products($collection['location'], $availability, $sort);
-		$data['register'] = $this->url->link('account/register', 'language=' . $language);
+		$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');
 		$data['logged'] = $this->customer->isLogged();
 		$data['login'] = $this->url->link('account/login', 'language=' . $language);
 		$data['account'] = $this->url->link('account/account', 'language=' . $language . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''));
