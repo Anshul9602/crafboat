@@ -1,5 +1,6 @@
 {% if products %}
   {% if error_warning %}
+    <div id="cb-cart-block" data-message="{{ error_warning|e('html_attr') }}" hidden></div>
     <div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> {{ error_warning }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
   {% endif %}
   {% if error_stock %}
@@ -9,38 +10,80 @@
     <div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check"></i> {{ success }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
   {% endif %}
   {% if attention %}
-    <div class="alert alert-info"><i class="fa-solid fa-circle-info"></i> {{ attention }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    <div class="alert alert-info"><i class="fa-solid fa-circle-info"></i> {{ attention }}</div>
   {% endif %}
-  <div class="cb-bag">
-    <h1>{{ heading_title }}{% if weight %} <small>{{ weight }}</small>{% endif %}</h1>
+  <div class="cb-bag" data-units="{{ unit_count }}">
+    <h1>{{ heading_title }}<small>{% if weight %}{{ weight }} · {% endif %}{{ item_count }} item{% if item_count != 1 %}s{% endif %}</small></h1>
     <div class="cb-bag__grid">
-      <div id="output-cart" class="cb-bag__items">
-        <div class="cb-bag__items-head"><span>In your cart</span><span>{{ products|length }}</span></div>
-        {% for product in products %}
-          <article class="cb-bag__item">
-            <a class="cb-bag__thumb" href="{{ product.href }}">{% if product.thumb %}<img src="{{ product.thumb }}" alt="{{ product.name }}">{% endif %}</a>
-            <div class="cb-bag__copy">
-              <a class="cb-bag__name" href="{{ product.href }}">{{ product.name }}</a>
-              <em>{{ product.model }}</em>
-              {% for option in product.option %}
-                <em>{{ option.name }}: {{ option.value }}</em>
+      <div class="cb-bag__main">
+        <div id="output-cart" class="cb-bag__items">
+          <div class="cb-bag__items-head">
+            <label class="cb-check"><input type="checkbox" data-select-all checked> Select all items ({{ products|length }})</label>
+            <button type="button" class="cb-bag__remove-selected" data-remove-selected>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5h6v2M8 7l1 13h6l1-13"></path></svg>
+              Remove selected
+            </button>
+          </div>
+          {% for product in products %}
+            <article class="cb-bag__item">
+              <label class="cb-check"><input type="checkbox" class="cb-bag__check" checked></label>
+              <a class="cb-bag__thumb" href="{{ product.href }}">{% if product.thumb %}<img src="{{ product.thumb }}" alt="{{ product.name }}">{% endif %}</a>
+              <div class="cb-bag__copy">
+                <a class="cb-bag__name" href="{{ product.href }}">{{ product.name }}</a>
+                <em>{{ product.model }}</em>
+                {% for option in product.option %}
+                  <em>{{ option.name }}: {{ option.value }}</em>
+                {% endfor %}
+                {% if product.subscription %}<em>{{ product.subscription }}</em>{% endif %}
+                {% if product.pack > 1 %}<em class="cb-bag__pack">Case pack of {{ product.pack }}</em>{% endif %}
+                <form method="post" data-oc-target="#shopping-cart" data-step="{{ product.pack }}">
+                  <span class="cb-qty">
+                    <button type="button" class="cb-qty__btn" data-qty="-1" aria-label="Decrease quantity"{% if product.quantity <= product.pack %} disabled{% endif %}>−</button>
+                    <input type="text" name="quantity" value="{{ product.quantity }}" inputmode="numeric" class="form-control" aria-label="Quantity">
+                    <button type="button" class="cb-qty__btn" data-qty="1" aria-label="Increase quantity">+</button>
+                  </span>
+                  <input type="hidden" name="key" value="{{ product.cart_id }}">
+                  <button type="submit" formaction="{{ edit }}" class="cb-bag__update" hidden>{{ button_update }}</button>
+                  <a href="{{ product.remove }}" class="btn-danger cb-bag__remove">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5h6v2M8 7l1 13h6l1-13"></path></svg>
+                    {{ button_remove }}
+                  </a>
+                </form>
+              </div>
+              <div class="cb-bag__money">
+                <strong>{{ product.total }}</strong>
+                <span>{{ product.price }}</span>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+        {% if suggestions %}
+          <section class="cb-also">
+            <div class="cb-also__head">
+              <h2>You may also like</h2>
+              <a href="{{ shop }}">View all →</a>
+            </div>
+            <div class="cb-grid">
+              {% for item in suggestions %}
+                <a class="cb-card" href="{{ item.href }}">
+                  <span class="cb-badge">{{ item.badge }}</span>
+                  <span class="cb-heart" role="button" tabindex="0" data-wishlist="{{ item.product_id }}" aria-label="Save"><img src="catalog/view/image/craftboat/heart.svg" alt=""></span>
+                  <img class="cb-card__img" src="{{ item.image }}" alt="{{ item.name }}">
+                  <div>
+                    <div class="cb-meta"><span>{{ item.category }}</span><span>{{ item.sku }}</span></div>
+                    <h3>{{ item.name }}</h3>
+                    <p class="cb-collection">{{ item.collection }}</p>
+                  </div>
+                  <div>
+                    <p class="cb-ship{% if item.wait %} cb-ship--wait{% endif %}">{{ item.ship }}</p>
+                    <hr>
+                    <span class="cb-card__foot"><span>{% if item.role_price %}{% if item.role_base %}<s class="cb-card__was">{{ item.role_base }}</s>{% endif %}{{ item.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+                  </div>
+                </a>
               {% endfor %}
-              {% if product.subscription %}<em>{{ product.subscription }}</em>{% endif %}
-              <form method="post" data-oc-target="#shopping-cart">
-                <label>Qty</label>
-                <input type="text" name="quantity" value="{{ product.quantity }}" class="form-control{% if product.minimum %} is-invalid{% endif %}">
-                <input type="hidden" name="key" value="{{ product.cart_id }}">
-                <button type="submit" formaction="{{ edit }}" class="cb-bag__update">{{ button_update }}</button>
-                <a href="{{ product.remove }}" class="btn-danger cb-bag__remove">{{ button_remove }}</a>
-              </form>
-              {% if product.minimum %}<small class="cb-bag__note">{{ product.minimum }}</small>{% endif %}
             </div>
-            <div class="cb-bag__money">
-              <strong>{{ product.total }}</strong>
-              <span>{{ product.price }}</span>
-            </div>
-          </article>
-        {% endfor %}
+          </section>
+        {% endif %}
       </div>
       <aside class="cb-bag__summary">
         <h2>Order summary</h2>
@@ -54,10 +97,28 @@
             {% endfor %}
           </div>
         {% endif %}
-        <a class="cb-btn cb-btn--black" href="{{ checkout }}">{{ button_checkout }}</a>
+        <a class="cb-btn cb-btn--black" href="{{ checkout }}">{{ button_checkout }} →</a>
         <a class="cb-btn cb-btn--line" href="{{ continue }}">{{ button_shopping }}</a>
       </aside>
     </div>
+    <ul class="cb-trust">
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7zM7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm10 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path></svg>
+        <span><strong>Fast &amp; reliable shipping</strong><em>Worldwide delivery</em></span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path></svg>
+        <span><strong>Secure payment</strong><em>100% secure checkout</em></span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.6-7 10-7 10z"></path></svg>
+        <span><strong>Sustainable crafts</strong><em>Ethically sourced</em></span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0M4 13v4a2 2 0 0 0 2 2h1v-6H4zm16 0v4a2 2 0 0 1-2 2h-1v-6h3z"></path></svg>
+        <span><strong>Dedicated support</strong><em>Here to help</em></span>
+      </li>
+    </ul>
   </div>
 {% else %}
   <div class="cb-bag">

@@ -149,17 +149,53 @@ class Affiliate extends \Opencart\System\Engine\Controller {
 				$json['error']['payment_method'] = $this->language->get('error_payment_method');
 			}
 
-			if ($post_info['payment_method'] == 'cheque' && !$post_info['cheque']) {
-				$json['error']['cheque'] = $this->language->get('error_cheque');
-			} elseif ($post_info['payment_method'] == 'paypal' && ((oc_strlen($post_info['paypal']) > 96) || !filter_var($post_info['paypal'], FILTER_VALIDATE_EMAIL))) {
-				$json['error']['paypal'] = $this->language->get('error_paypal');
+			$company = trim((string)($post_info['company'] ?? ''));
+
+			if ($company !== '' && !preg_match('/^[\p{L}0-9][\p{L}0-9\s.&\'-]{1,254}$/u', $company)) {
+				$json['error']['company'] = 'Enter the company name using letters or numbers.';
+			}
+
+			$website = trim((string)($post_info['website'] ?? ''));
+
+			if ($website !== '' && !$this->validWebsite($website)) {
+				$json['error']['website'] = 'Enter a valid website, or leave it blank.';
+			}
+
+			$tax = strtoupper(preg_replace('/\s+/', '', (string)($post_info['tax'] ?? '')) ?? '');
+
+			if ($tax !== '' && !preg_match('/^[A-Z0-9]{5,20}$/', $tax)) {
+				$json['error']['tax'] = 'Enter a valid tax ID.';
+			}
+
+			if ($post_info['payment_method'] == 'cheque' && !preg_match('/^[\p{L}][\p{L}\s.\'-]{1,127}$/u', trim((string)$post_info['cheque']))) {
+				$json['error']['cheque'] = 'Enter the cheque payee name.';
+			} elseif ($post_info['payment_method'] == 'paypal' && !oc_validate_email((string)$post_info['paypal'])) {
+				$json['error']['paypal'] = 'Enter a valid PayPal email address.';
 			} elseif ($post_info['payment_method'] == 'bank') {
-				if ($post_info['bank_account_name'] == '') {
-					$json['error']['bank_account_name'] = $this->language->get('error_bank_account_name');
+				$bank_name = trim((string)($post_info['bank_name'] ?? ''));
+				$branch = strtoupper(preg_replace('/\s+/', '', (string)($post_info['bank_branch_number'] ?? '')) ?? '');
+				$swift = strtoupper(preg_replace('/\s+/', '', (string)($post_info['bank_swift_code'] ?? '')) ?? '');
+
+				if ($bank_name !== '' && !preg_match('/^[\p{L}0-9][\p{L}0-9\s.&\'-]{1,127}$/u', $bank_name)) {
+					$json['error']['bank_name'] = 'Enter the bank name.';
 				}
 
-				if ($post_info['bank_account_number'] == '') {
-					$json['error']['bank_account_number'] = $this->language->get('error_bank_account_number');
+				if ($branch !== '' && !preg_match('/^[A-Z0-9]{4,16}$/', $branch)) {
+					$json['error']['bank_branch_number'] = 'Enter a valid branch number.';
+				}
+
+				if ($swift !== '' && !preg_match('/^[A-Z0-9]{8}([A-Z0-9]{3})?$/', $swift)) {
+					$json['error']['bank_swift_code'] = 'Enter a valid SWIFT code.';
+				}
+
+				if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{1,127}$/u', trim((string)$post_info['bank_account_name']))) {
+					$json['error']['bank_account_name'] = 'Enter the account holder’s name.';
+				}
+
+				$account_number = preg_replace('/\s+/', '', (string)$post_info['bank_account_number']) ?? '';
+
+				if (!preg_match('/^[0-9]{6,20}$/', $account_number)) {
+					$json['error']['bank_account_number'] = 'Enter an account number of 6 to 20 digits.';
 				}
 			}
 
@@ -209,5 +245,11 @@ class Affiliate extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	private function validWebsite(string $value): bool {
+		$website = preg_match('#^https?://#i', $value) ? $value : 'https://' . $value;
+
+		return (bool)filter_var($website, FILTER_VALIDATE_URL) && (bool)preg_match('#\.[a-z]{2,}#i', $value);
 	}
 }

@@ -296,6 +296,8 @@ class Category extends \Opencart\System\Engine\Controller {
 				];
 			}
 
+			$data['cards'] = $this->model_catalog_product->withRolePrices($data['cards']);
+
 			$url = '';
 
 			if (isset($this->request->get['path'])) {

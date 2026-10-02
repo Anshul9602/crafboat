@@ -1,0 +1,85 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="button" data-url="{{ approve }}" class="btn btn-success"><i class="fa-solid fa-thumbs-up"></i> Approve</button>
+        <button type="button" data-url="{{ deny }}" class="btn btn-danger"><i class="fa-solid fa-thumbs-down"></i> Reject</button>
+        <a href="{{ back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a>
+      </div>
+      <h1>{{ customer }}</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-eye"></i> Trade application</div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-sm-3 text-muted">Customer</div>
+          <div class="col-sm-9">{{ customer }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-3 text-muted">E-mail</div>
+          <div class="col-sm-9">{{ email }}</div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-3 text-muted">Mobile</div>
+          <div class="col-sm-9">{{ telephone }}</div>
+        </div>
+        {% for field in fields %}
+          <div class="row mb-3">
+            <div class="col-sm-3 text-muted">{{ field.label }}</div>
+            <div class="col-sm-9">{{ field.value ?: '—' }}</div>
+          </div>
+        {% endfor %}
+        {% for document in documents %}
+          <div class="row mb-3">
+            <div class="col-sm-3 text-muted">{{ document.label }}</div>
+            <div class="col-sm-9">
+              {% if document.image %}
+                <a href="{{ document.href }}"><img src="{{ document.image }}" alt="{{ document.name }}" style="width:96px;height:96px;object-fit:cover;border:1px solid #ddd;border-radius:8px;"></a>
+              {% elseif document.href %}
+                <a href="{{ document.href }}">{{ document.name }}</a>
+              {% else %}
+                —
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+$('[data-url]').on('click', function() {
+    var element = this;
+
+    $.ajax({
+        url: $(element).attr('data-url'),
+        dataType: 'json',
+        beforeSend: function() {
+            $(element).button('loading');
+        },
+        complete: function() {
+            $(element).button('reset');
+        },
+        success: function(json) {
+            $('.alert-dismissible').remove();
+
+            if (json['error']) {
+                $('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + json['error'] + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+            }
+
+            if (json['success']) {
+                location = '{{ back }}';
+            }
+        }
+    });
+});
+//--></script>
+{{ footer }}

@@ -55,7 +55,7 @@
             </div>
             <div class="col-md-6 mb-3 required">
               <label class="form-label" for="input-telephone">Mobile number</label>
-              <input type="tel" name="telephone" id="input-telephone" class="form-control"/>
+              <input type="tel" name="telephone" id="input-telephone" class="form-control" inputmode="numeric" maxlength="16" placeholder="9876543210"/>
               <div id="error-telephone" class="invalid-feedback"></div>
             </div>
             <div class="col-md-6 mb-3 required">
@@ -97,7 +97,7 @@
             </div>
             <div class="col-md-6 mb-3 required">
               <label class="form-label" for="input-billing-postcode">PIN</label>
-              <input type="text" name="billing_postcode" id="input-billing-postcode" class="form-control"/>
+              <input type="text" name="billing_postcode" id="input-billing-postcode" class="form-control" inputmode="numeric" maxlength="6" placeholder="302001"/>
               <div id="error-billing-postcode" class="invalid-feedback"></div>
             </div>
           </div>
@@ -142,7 +142,7 @@
             </div>
             <div class="col-md-6 mb-3 required">
               <label class="form-label" for="input-shipping-postcode">PIN</label>
-              <input type="text" name="shipping_postcode" id="input-shipping-postcode" class="form-control"/>
+              <input type="text" name="shipping_postcode" id="input-shipping-postcode" class="form-control" inputmode="numeric" maxlength="6" placeholder="302001"/>
               <div id="error-shipping-postcode" class="invalid-feedback"></div>
             </div>
           </div>
@@ -152,12 +152,12 @@
           <div class="row">
             <div class="col-md-6 mb-3 required">
               <label class="form-label" for="input-gstin">GSTIN / Tax ID</label>
-              <input type="text" name="gstin" id="input-gstin" class="form-control"/>
+              <input type="text" name="gstin" id="input-gstin" class="form-control" maxlength="15" placeholder="22AAAAA0000A1Z5" autocapitalize="characters"/>
               <div id="error-gstin" class="invalid-feedback"></div>
             </div>
             <div class="col-md-6 mb-3 required">
               <label class="form-label" for="input-pan">PAN / business registration no.</label>
-              <input type="text" name="pan" id="input-pan" class="form-control"/>
+              <input type="text" name="pan" id="input-pan" class="form-control" maxlength="10" placeholder="ABCDE1234F" autocapitalize="characters"/>
               <div id="error-pan" class="invalid-feedback"></div>
             </div>
             <div class="col-md-6 mb-3 required">
@@ -172,17 +172,17 @@
             </div>
             <div class="col-md-6 mb-3 required">
               <label class="form-label" for="input-monthly-purchase">Expected monthly purchase</label>
-              <input type="text" name="monthly_purchase" id="input-monthly-purchase" class="form-control" placeholder="For example, 50000"/>
+              <input type="text" name="monthly_purchase" id="input-monthly-purchase" class="form-control" inputmode="decimal" placeholder="50000"/>
               <div id="error-monthly-purchase" class="invalid-feedback"></div>
             </div>
             <div class="col-md-6 mb-3 required">
               <label class="form-label" for="input-stores">Number of stores</label>
-              <input type="text" name="stores" id="input-stores" class="form-control"/>
+              <input type="number" name="stores" id="input-stores" class="form-control" min="1" step="1" inputmode="numeric"/>
               <div id="error-stores" class="invalid-feedback"></div>
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label" for="input-website">Website, if applicable</label>
-              <input type="text" name="website" id="input-website" class="form-control"/>
+              <input type="url" name="website" id="input-website" class="form-control" placeholder="https://example.com"/>
             </div>
             <div class="col-12 mb-3">
               <label class="form-label" for="input-reference">Reference / existing supplier</label>
@@ -195,19 +195,22 @@
           <div class="row">
             <div class="col-md-4 mb-3 required">
               <label class="form-label">Trade license / GST certificate</label>
-              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-trade-license" class="btn btn-light">Upload</button>
+              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-trade-license" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
+              <span class="cb-upload-preview"></span>
               <input type="hidden" name="trade_license" id="input-trade-license" value=""/>
               <div id="error-trade-license" class="invalid-feedback"></div>
             </div>
             <div class="col-md-4 mb-3 required">
               <label class="form-label">PAN / business document</label>
-              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-pan-document" class="btn btn-light">Upload</button>
+              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-pan-document" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
+              <span class="cb-upload-preview"></span>
               <input type="hidden" name="pan_document" id="input-pan-document" value=""/>
               <div id="error-pan-document" class="invalid-feedback"></div>
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">Cancelled cheque / bank details</label>
-              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-cheque" class="btn btn-light">Upload</button>
+              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-cheque" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
+              <span class="cb-upload-preview"></span>
               <input type="hidden" name="cheque" id="input-cheque" value=""/>
               <div id="error-cheque" class="invalid-feedback"></div>
             </div>

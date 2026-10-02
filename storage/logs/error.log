@@ -98,3 +98,139 @@ Backtrace: 2
 File: C:\xampp\htdocs\crafboat\index.php
 Line: 21
 Function: require_once
+2026-09-30 05:08:50 - Error: Failed to write cache file "C:/xampp/htdocs/crafboat/storage/cache/template/4c/4c2155ab04d6c435765ec4724b4c801c.php".
+File: C:\xampp\htdocs\crafboat\storage\vendor\twig\twig\src\Cache\FilesystemCache.php
+Line: 76
+
+Backtrace: 0
+File: C:\xampp\htdocs\crafboat\storage\vendor\twig\twig\src\Environment.php
+Line: 410
+Class: Twig\Cache\FilesystemCache
+Function: write
+
+Backtrace: 1
+File: C:\xampp\htdocs\crafboat\storage\vendor\twig\twig\src\Environment.php
+Line: 370
+Class: Twig\Environment
+Function: loadTemplate
+
+Backtrace: 2
+File: C:\xampp\htdocs\crafboat\storage\vendor\twig\twig\src\Environment.php
+Line: 333
+Class: Twig\Environment
+Function: load
+
+Backtrace: 3
+File: C:\xampp\htdocs\crafboat\system\library\template\twig.php
+Line: 119
+Class: Twig\Environment
+Function: render
+
+Backtrace: 4
+File: C:\xampp\htdocs\crafboat\system\library\template.php
+Line: 58
+Class: Opencart\System\Library\Template\Twig
+Function: render
+
+Backtrace: 5
+File: C:\xampp\htdocs\crafboat\system\engine\loader.php
+Line: 188
+Class: Opencart\System\Library\Template
+Function: render
+
+Backtrace: 6
+File: C:\xampp\htdocs\crafboat\catalog\controller\common\footer.php
+Line: 132
+Class: Opencart\System\Engine\Loader
+Function: view
+
+Backtrace: 7
+File: C:\xampp\htdocs\crafboat\system\engine\loader.php
+Line: 111
+Class: Opencart\Catalog\Controller\Common\Footer
+Function: index
+
+Backtrace: 8
+File: C:\xampp\htdocs\crafboat\catalog\controller\product\product.php
+Line: 574
+Class: Opencart\System\Engine\Loader
+Function: controller
+
+Backtrace: 9
+File: C:\xampp\htdocs\crafboat\system\engine\action.php
+Line: 96
+Class: Opencart\Catalog\Controller\Product\Product
+Function: index
+
+Backtrace: 10
+File: C:\xampp\htdocs\crafboat\system\framework.php
+Line: 275
+Class: Opencart\System\Engine\Action
+Function: execute
+
+Backtrace: 11
+File: C:\xampp\htdocs\crafboat\index.php
+Line: 21
+Function: require_once
+2026-10-01 07:39:28 - Error: Failed to write cache file "C:/xampp/htdocs/crafboat/storage/cache/template/1c/1cad4cb0cb34f96f8fcd05150bf00935.php".
+File: C:\xampp\htdocs\crafboat\storage\vendor\twig\twig\src\Cache\FilesystemCache.php
+Line: 76
+
+Backtrace: 0
+File: C:\xampp\htdocs\crafboat\storage\vendor\twig\twig\src\Environment.php
+Line: 410
+Class: Twig\Cache\FilesystemCache
+Function: write
+
+Backtrace: 1
+File: C:\xampp\htdocs\crafboat\storage\vendor\twig\twig\src\Environment.php
+Line: 370
+Class: Twig\Environment
+Function: loadTemplate
+
+Backtrace: 2
+File: C:\xampp\htdocs\crafboat\storage\vendor\twig\twig\src\Environment.php
+Line: 333
+Class: Twig\Environment
+Function: load
+
+Backtrace: 3
+File: C:\xampp\htdocs\crafboat\system\library\template\twig.php
+Line: 119
+Class: Twig\Environment
+Function: render
+
+Backtrace: 4
+File: C:\xampp\htdocs\crafboat\system\library\template.php
+Line: 58
+Class: Opencart\System\Library\Template\Twig
+Function: render
+
+Backtrace: 5
+File: C:\xampp\htdocs\crafboat\system\engine\loader.php
+Line: 188
+Class: Opencart\System\Library\Template
+Function: render
+
+Backtrace: 6
+File: C:\xampp\htdocs\crafboat\catalog\controller\common\home.php
+Line: 57
+Class: Opencart\System\Engine\Loader
+Function: view
+
+Backtrace: 7
+File: C:\xampp\htdocs\crafboat\system\engine\action.php
+Line: 96
+Class: Opencart\Catalog\Controller\Common\Home
+Function: index
+
+Backtrace: 8
+File: C:\xampp\htdocs\crafboat\system\framework.php
+Line: 275
+Class: Opencart\System\Engine\Action
+Function: execute
+
+Backtrace: 9
+File: C:\xampp\htdocs\crafboat\index.php
+Line: 21
+Function: require_once

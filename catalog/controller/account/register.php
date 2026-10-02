@@ -205,12 +205,14 @@ class Register extends \Opencart\System\Engine\Controller {
 				$json['error']['warning'] = $this->language->get('error_customer_group');
 			}
 
-			if (!oc_validate_length($post_info['firstname'], 1, 32)) {
-				$json['error']['firstname'] = $this->language->get('error_firstname');
-			}
+			if (!isset($this->request->post['contact'])) {
+				if (!oc_validate_length($post_info['firstname'], 1, 32)) {
+					$json['error']['firstname'] = $this->language->get('error_firstname');
+				}
 
-			if (!oc_validate_length($post_info['lastname'], 1, 32)) {
-				$json['error']['lastname'] = $this->language->get('error_lastname');
+				if (!oc_validate_length($post_info['lastname'], 1, 32)) {
+					$json['error']['lastname'] = $this->language->get('error_lastname');
+				}
 			}
 
 			if (!oc_validate_email($post_info['email'])) {
@@ -224,16 +226,16 @@ class Register extends \Opencart\System\Engine\Controller {
 				$json['error']['warning'] = $this->language->get('error_exists');
 			}
 
-			if (!oc_validate_length($post_info['telephone'], 3, 32)) {
-				$json['error']['telephone'] = $this->language->get('error_telephone');
+			if (!$this->validPhone((string)$post_info['telephone'])) {
+				$json['error']['telephone'] = 'Enter a 10-digit mobile number.';
 			}
 
-			if (!oc_validate_length((string)($post_info['company'] ?? ''), 2, 255)) {
-				$json['error']['company'] = 'Company / business name must be between 2 and 255 characters.';
+			if (!preg_match('/^[\p{L}0-9][\p{L}0-9\s.&\'-]{1,254}$/u', trim((string)($post_info['company'] ?? '')))) {
+				$json['error']['company'] = 'Enter the company name using letters or numbers.';
 			}
 
-			if (!oc_validate_length($contact, 2, 128)) {
-				$json['error']['contact'] = 'Contact person must be between 2 and 128 characters.';
+			if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{1,127}$/u', $contact)) {
+				$json['error']['contact'] = 'Enter the contact person’s name.';
 			}
 
 			$business_types = ['Retailer', 'Wholesaler', 'Distributor', 'Reseller', 'Other'];
@@ -242,10 +244,38 @@ class Register extends \Opencart\System\Engine\Controller {
 				$json['error']['business_type'] = 'Select a business type.';
 			}
 
-			foreach (['billing_address' => 'Billing address', 'billing_city' => 'City', 'billing_postcode' => 'PIN', 'gstin' => 'GSTIN / Tax ID', 'pan' => 'PAN / business registration number', 'monthly_purchase' => 'Expected monthly purchase', 'stores' => 'Number of stores'] as $field => $label) {
-				if (!oc_validate_length(trim((string)($post_info[$field] ?? '')), 1, 255)) {
-					$json['error'][$field] = $label . ' is required.';
-				}
+			if (!preg_match('/[\p{L}]/u', trim((string)($post_info['billing_address'] ?? ''))) || !oc_validate_length(trim((string)$post_info['billing_address']), 5, 255)) {
+				$json['error']['billing_address'] = 'Enter a billing address.';
+			}
+
+			if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{1,63}$/u', trim((string)($post_info['billing_city'] ?? '')))) {
+				$json['error']['billing_city'] = 'Enter a city name.';
+			}
+
+			if (!$this->validPin((string)($post_info['billing_postcode'] ?? ''))) {
+				$json['error']['billing_postcode'] = 'Enter a 6-digit PIN.';
+			}
+
+			if (!$this->validGstin((string)($post_info['gstin'] ?? ''))) {
+				$json['error']['gstin'] = 'Enter a valid GSTIN, for example 22AAAAA0000A1Z5.';
+			}
+
+			if (!$this->validPan((string)($post_info['pan'] ?? ''))) {
+				$json['error']['pan'] = 'Enter a valid PAN, for example ABCDE1234F.';
+			}
+
+			if (!$this->validAmount((string)($post_info['monthly_purchase'] ?? ''))) {
+				$json['error']['monthly_purchase'] = 'Expected monthly purchase must be a number.';
+			}
+
+			if (!preg_match('/^[1-9][0-9]{0,4}$/', trim((string)($post_info['stores'] ?? '')))) {
+				$json['error']['stores'] = 'Number of stores must be a whole number.';
+			}
+
+			$website = trim((string)($post_info['website'] ?? ''));
+
+			if ($website !== '' && !$this->validWebsite($website)) {
+				$json['error']['website'] = 'Enter a valid website, or leave it blank.';
 			}
 
 			$this->load->model('localisation/country');
@@ -265,10 +295,16 @@ class Register extends \Opencart\System\Engine\Controller {
 			$shipping_same = !empty($post_info['shipping_same']);
 
 			if (!$shipping_same) {
-				foreach (['shipping_address' => 'Shipping address', 'shipping_city' => 'Shipping city', 'shipping_postcode' => 'Shipping PIN'] as $field => $label) {
-					if (!oc_validate_length(trim((string)($post_info[$field] ?? '')), 1, 255)) {
-						$json['error'][$field] = $label . ' is required.';
-					}
+				if (!preg_match('/[\p{L}]/u', trim((string)($post_info['shipping_address'] ?? ''))) || !oc_validate_length(trim((string)($post_info['shipping_address'] ?? '')), 5, 255)) {
+					$json['error']['shipping_address'] = 'Enter a shipping address.';
+				}
+
+				if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{1,63}$/u', trim((string)($post_info['shipping_city'] ?? '')))) {
+					$json['error']['shipping_city'] = 'Enter a shipping city name.';
+				}
+
+				if (!$this->validPin((string)($post_info['shipping_postcode'] ?? ''))) {
+					$json['error']['shipping_postcode'] = 'Enter a 6-digit shipping PIN.';
 				}
 
 				$shipping_country = $this->model_localisation_country->getCountry((int)($post_info['shipping_country_id'] ?? 0));
@@ -286,19 +322,18 @@ class Register extends \Opencart\System\Engine\Controller {
 			$this->load->model('tool/upload');
 
 			foreach (['trade_license' => 'Trade license / GST certificate', 'pan_document' => 'PAN / business document'] as $field => $label) {
-				$code = (string)($post_info[$field] ?? '');
-				$upload = $code !== '' ? $this->model_tool_upload->getUploadByCode($code) : [];
+				$upload_error = $this->documentError((string)($post_info[$field] ?? ''), true);
 
-				if (!$upload) {
-					$json['error'][$field] = $label . ' is required.';
+				if ($upload_error) {
+					$json['error'][$field] = $label . ' ' . $upload_error;
 				}
 			}
 
 			if (!empty($post_info['cheque'])) {
-				$cheque = $this->model_tool_upload->getUploadByCode((string)$post_info['cheque']);
+				$upload_error = $this->documentError((string)$post_info['cheque'], false);
 
-				if (!$cheque) {
-					$json['error']['cheque'] = 'The cancelled cheque upload could not be found.';
+				if ($upload_error) {
+					$json['error']['cheque'] = 'Cancelled cheque ' . $upload_error;
 				}
 			}
 
@@ -433,6 +468,59 @@ class Register extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	private function validPhone(string $value): bool {
+		$digits = preg_replace('/\D+/', '', $value) ?? '';
+
+		if (str_starts_with($digits, '91') && strlen($digits) === 12) {
+			$digits = substr($digits, 2);
+		}
+
+		return (bool)preg_match('/^[6-9][0-9]{9}$/', $digits);
+	}
+
+	private function validPin(string $value): bool {
+		return (bool)preg_match('/^[1-9][0-9]{5}$/', trim($value));
+	}
+
+	private function validGstin(string $value): bool {
+		$gstin = strtoupper(preg_replace('/\s+/', '', $value) ?? '');
+
+		return (bool)preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/', $gstin);
+	}
+
+	private function validPan(string $value): bool {
+		$pan = strtoupper(preg_replace('/\s+/', '', $value) ?? '');
+
+		return (bool)preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]$/', $pan);
+	}
+
+	private function validAmount(string $value): bool {
+		$amount = preg_replace('/[,\s₹$]/u', '', trim($value)) ?? '';
+
+		return (bool)preg_match('/^\d+(\.\d{1,2})?$/', $amount) && (float)$amount > 0;
+	}
+
+	private function validWebsite(string $value): bool {
+		$website = preg_match('#^https?://#i', $value) ? $value : 'https://' . $value;
+
+		return (bool)filter_var($website, FILTER_VALIDATE_URL) && (bool)preg_match('#\.[a-z]{2,}#i', $value);
+	}
+
+	private function documentError(string $code, bool $required): string {
+		if ($code === '') {
+			return $required ? 'is required. Upload a JPG, PNG, WEBP or PDF.' : '';
+		}
+
+		$upload = $this->model_tool_upload->getUploadByCode($code);
+		$extension = strtolower(pathinfo((string)($upload['name'] ?? ''), PATHINFO_EXTENSION));
+
+		if (!$upload || !in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf'], true)) {
+			return 'must be a JPG, PNG, WEBP or PDF.';
+		}
+
+		return '';
 	}
 
 	/**

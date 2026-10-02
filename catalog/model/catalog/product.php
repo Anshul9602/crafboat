@@ -892,4 +892,89 @@ class Product extends \Opencart\System\Engine\Model {
 	public function addReport(int $product_id, string $ip, string $country = ''): void {
 		$this->db->query("INSERT INTO `" . DB_PREFIX . "product_report` SET `product_id` = '" . (int)$product_id . "', `store_id` = '" . (int)$this->config->get('config_store_id') . "', `ip` = '" . $this->db->escape($ip) . "', `country` = '" . $this->db->escape($country) . "', `date_added` = NOW()");
 	}
+
+	/**
+	 * @param array<int, array<string, mixed>> $cards
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	public function withRolePrices(array $cards): array {
+		if (!$cards || !$this->customer->isLogged()) {
+			return $cards;
+		}
+
+		$group = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$this->customer->getGroupId() . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+		$role = oc_strtolower((string)($group->row['name'] ?? ''));
+
+		if (!in_array($role, ['trade', 'wholesale'], true)) {
+			return $cards;
+		}
+
+		$ids = array_map('intval', array_column($cards, 'product_id'));
+		$ids = array_values(array_filter($ids));
+
+		if (!$ids) {
+			return $cards;
+		}
+
+		$list = implode(',', $ids);
+		$retail = [];
+		$prices = $this->db->query("SELECT `product_id`, `price`, `tax_class_id` FROM `" . DB_PREFIX . "product` WHERE `product_id` IN (" . $list . ")");
+
+		foreach ($prices->rows as $row) {
+			$retail[(int)$row['product_id']] = $row;
+		}
+
+		$offers = [];
+		$discounts = $this->db->query("SELECT `pd`.`product_id`, `pd`.`price`, `pd`.`type`, (CASE WHEN `pd`.`type` = 'P' THEN (`p`.`price` - (`p`.`price` * (`pd`.`price` / 100))) WHEN `pd`.`type` = 'S' THEN (`p`.`price` - `pd`.`price`) ELSE `pd`.`price` END) AS `value` FROM `" . DB_PREFIX . "product_discount` `pd` LEFT JOIN `" . DB_PREFIX . "product` `p` ON (`p`.`product_id` = `pd`.`product_id`) WHERE `pd`.`product_id` IN (" . $list . ") AND `pd`.`customer_group_id` = '" . (int)$this->customer->getGroupId() . "' AND `pd`.`quantity` = '1' AND ((`pd`.`date_start` = '0000-00-00' OR `pd`.`date_start` < NOW()) AND (`pd`.`date_end` = '0000-00-00' OR `pd`.`date_end` > NOW())) ORDER BY `pd`.`product_id` ASC, `pd`.`special` DESC, `pd`.`priority` ASC");
+
+		foreach ($discounts->rows as $row) {
+			$id = (int)$row['product_id'];
+
+			if (isset($offers[$id])) {
+				continue;
+			}
+
+			$offers[$id] = $row;
+		}
+
+		$label = $role === 'trade' ? 'Trade' : 'Wholesale';
+
+		foreach ($cards as $index => $card) {
+			$id = (int)$card['product_id'];
+
+			if (!isset($retail[$id])) {
+				continue;
+			}
+
+			$base = (float)$retail[$id]['price'];
+			$value = $base;
+			$off = '';
+			$tax_class_id = (int)$retail[$id]['tax_class_id'];
+
+			if (isset($offers[$id]) && (float)$offers[$id]['value'] < $base) {
+				$value = (float)$offers[$id]['value'];
+				$amount = (float)$offers[$id]['price'];
+
+				if ((string)$offers[$id]['type'] === 'P' && $amount > 0) {
+					$off = rtrim(rtrim(number_format($amount, 2, '.', ''), '0'), '.') . '% off';
+				} else {
+					$percent = $base > 0 ? (int)round((($base - $value) / $base) * 100) : 0;
+					$off = $percent > 0 ? $percent . '% off' : '';
+				}
+
+				$cards[$index]['role_base'] = $this->money($base, $tax_class_id);
+			}
+
+			$cards[$index]['role_price'] = $label . ' ' . $this->money($value, $tax_class_id) . ($off !== '' ? ' · ' . $off : '');
+		}
+
+		return $cards;
+	}
+
+	private function money(float $value, int $tax_class_id): string {
+		$formatted = $this->currency->format($this->tax->calculate($value, $tax_class_id, $this->config->get('config_tax')), $this->session->data['currency']);
+
+		return (string)preg_replace('/\.00$/', '', $formatted);
+	}
 }

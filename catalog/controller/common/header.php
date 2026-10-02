@@ -42,7 +42,7 @@ class Header extends \Opencart\System\Engine\Controller {
 		$data['bootstrap'] = 'catalog/view/stylesheet/bootstrap.css';
 		$data['icons'] = 'catalog/view/stylesheet/fonts/fontawesome/css/all.min.css';
 		$data['stylesheet'] = 'catalog/view/stylesheet/stylesheet.css';
-		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=mobile41';
+		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=form28';
 		$route = (string)($this->request->get['route'] ?? '');
 		$data['account_page'] = str_starts_with($route, 'account/');
 		$data['topbar_note'] = in_array(($this->request->get['route'] ?? ''), ['product/collection', 'product/category', 'product/product'], true) ? 'Ships from Jaipur, India  |   Opening order $500' : '';
@@ -127,14 +127,14 @@ class Header extends \Opencart\System\Engine\Controller {
 
 		$data['shop_all'] = $data['categories'][0]['href'] ?? $data['special'];
 		$lang = 'language=' . $this->config->get('config_language');
-		$category_url = fn(int $id): string => $this->url->link('product/category', $lang . '&path=' . $id);
+		$category_url = fn(int $id): string => $this->url->link('product/category', $lang . '&path=' . ($id === 100 ? '100' : '100_' . $id));
 		$collection_url = fn(string $code): string => $this->url->link('product/collection', $lang . '&collection=' . $code);
 		$data['nav'] = [
 			'catalog'    => $category_url(100),
-			'new'        => $this->url->link('product/search', $lang . '&tag=new'),
-			'favourites' => $this->url->link('product/search', $lang . '&tag=bestseller'),
-			'ready'      => $this->url->link('product/category', $lang . '&path=100&availability=ready'),
-			'holiday'    => $collection_url('holiday'),
+			'new'        => $category_url(108),
+			'favourites' => $category_url(109),
+			'ready'      => $category_url(110),
+			'holiday'    => $category_url(111),
 			'saffron'    => $collection_url('saffron'),
 			'marbled'    => $collection_url('marbled'),
 			'desk'       => $category_url(101),

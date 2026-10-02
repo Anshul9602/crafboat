@@ -1,5 +1,5 @@
 {{ header }}
-<div id="account-address" class="container">
+<div id="account-address" class="container cb-apply">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
       <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
@@ -10,56 +10,33 @@
       <h1>{{ text_address }}</h1>
       <form id="form-address" action="{{ save }}" method="post" data-oc-toggle="ajax">
         <fieldset>
-          <div class="row mb-3 required">
-            <label for="input-firstname" class="col-sm-2 col-form-label">{{ entry_firstname }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="firstname" value="{{ firstname }}" placeholder="{{ entry_firstname }}" id="input-firstname" class="form-control"/>
+          <div class="row">
+            <div class="col-md-6 mb-3 required">
+              <label class="form-label" for="input-firstname">{{ entry_firstname }}</label>
+              <input type="text" name="firstname" value="{{ firstname }}" id="input-firstname" class="form-control"/>
               <div id="error-firstname" class="invalid-feedback"></div>
             </div>
-          </div>
-          <div class="row mb-3 required">
-            <label for="input-lastname" class="col-sm-2 col-form-label">{{ entry_lastname }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="lastname" value="{{ lastname }}" placeholder="{{ entry_lastname }}" id="input-lastname" class="form-control"/>
+            <div class="col-md-6 mb-3 required">
+              <label class="form-label" for="input-lastname">{{ entry_lastname }}</label>
+              <input type="text" name="lastname" value="{{ lastname }}" id="input-lastname" class="form-control"/>
               <div id="error-lastname" class="invalid-feedback"></div>
             </div>
-          </div>
-          <div class="row mb-3">
-            <label for="input-company" class="col-sm-2 col-form-label">{{ entry_company }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="company" value="{{ company }}" placeholder="{{ entry_company }}" id="input-company" class="form-control"/>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="input-company">{{ entry_company }}</label>
+              <input type="text" name="company" value="{{ company }}" id="input-company" class="form-control"/>
+              <div id="error-company" class="invalid-feedback"></div>
             </div>
-          </div>
-          <div class="row mb-3 required">
-            <label for="input-address-1" class="col-sm-2 col-form-label">{{ entry_address_1 }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="address_1" value="{{ address_1 }}" placeholder="{{ entry_address_1 }}" id="input-address-1" class="form-control"/>
+            <div class="col-12 mb-3 required">
+              <label class="form-label" for="input-address-1">{{ entry_address_1 }}</label>
+              <input type="text" name="address_1" value="{{ address_1 }}" id="input-address-1" class="form-control"/>
               <div id="error-address-1" class="invalid-feedback"></div>
             </div>
-          </div>
-          <div class="row mb-3">
-            <label for="input-address-2" class="col-sm-2 col-form-label">{{ entry_address_2 }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="address_2" value="{{ address_2 }}" placeholder="{{ entry_address_2 }}" id="input-address-2" class="form-control"/>
+            <div class="col-12 mb-3">
+              <label class="form-label" for="input-address-2">{{ entry_address_2 }}</label>
+              <input type="text" name="address_2" value="{{ address_2 }}" id="input-address-2" class="form-control"/>
             </div>
-          </div>
-          <div class="row mb-3 required">
-            <label for="input-city" class="col-sm-2 col-form-label">{{ entry_city }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="city" value="{{ city }}" placeholder="{{ entry_city }}" id="input-city" class="form-control"/>
-              <div id="error-city" class="invalid-feedback"></div>
-            </div>
-          </div>
-          <div class="row mb-3 required">
-            <label for="input-postcode" class="col-sm-2 col-form-label">{{ entry_postcode }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="postcode" value="{{ postcode }}" placeholder="{{ entry_postcode }}" id="input-postcode" class="form-control"/>
-              <div id="error-postcode" class="invalid-feedback"></div>
-            </div>
-          </div>
-          <div class="row mb-3 required">
-            <label for="input-country" class="col-sm-2 col-form-label">{{ entry_country }}</label>
-            <div class="col-sm-10">
+            <div class="col-md-6 mb-3 required">
+              <label class="form-label" for="input-country">{{ entry_country }}</label>
               <select name="country_id" id="input-country" class="form-select">
                 <option value="0">{{ text_select }}</option>
                 {% for country in countries %}
@@ -68,10 +45,8 @@
               </select>
               <div id="error-country" class="invalid-feedback"></div>
             </div>
-          </div>
-          <div class="row mb-3 required">
-            <label for="input-zone" class="col-sm-2 col-form-label">{{ entry_zone }}</label>
-            <div class="col-sm-10">
+            <div class="col-md-6 mb-3 required">
+              <label class="form-label" for="input-zone">{{ entry_zone }}</label>
               <select name="zone_id" id="input-zone" class="form-select">
                 <option value="">{{ text_select }}</option>
                 {% for zone in zones %}
@@ -79,6 +54,16 @@
                 {% endfor %}
               </select>
               <div id="error-zone" class="invalid-feedback"></div>
+            </div>
+            <div class="col-md-6 mb-3 required">
+              <label class="form-label" for="input-city">{{ entry_city }}</label>
+              <input type="text" name="city" value="{{ city }}" id="input-city" class="form-control"/>
+              <div id="error-city" class="invalid-feedback"></div>
+            </div>
+            <div class="col-md-6 mb-3 required">
+              <label class="form-label" for="input-postcode">{{ entry_postcode }}</label>
+              <input type="text" name="postcode" value="{{ postcode }}" id="input-postcode" class="form-control" inputmode="numeric" maxlength="10"/>
+              <div id="error-postcode" class="invalid-feedback"></div>
             </div>
           </div>
 
@@ -196,18 +181,20 @@
 
           {% endfor %}
 
-          <div class="row mb-3">
-            <label class="col-sm-2 col-form-label">{{ entry_default }}</label>
-            <div class="col-sm-10">
-              <div class="form-check-inline">
+          <div class="row">
+          <div class="col-12 mb-3">
+            <label class="form-label">{{ entry_default }}</label>
+            <div class="cb-pay">
+              <div class="form-check">
                 <input type="radio" name="default" value="1" id="input-default-yes" class="form-check-input"{% if default %} checked{% endif %}/>
                 <label for="input-default-yes" class="form-check-label">{{ text_yes }}</label>
               </div>
-              <div class="form-check-inline">
+              <div class="form-check">
                 <input type="radio" name="default" value="0" id="input-default-no" class="form-check-input"{% if not default %} checked{% endif %}/>
                 <label for="input-default-no" class="form-check-label">{{ text_no }}</label>
               </div>
             </div>
+          </div>
           </div>
         </fieldset>
         <div class="row">
@@ -238,11 +225,7 @@ $('#input-country').on('change', function() {
             $('#input-zone').prop('disabled', false);
         },
         success: function(json) {
-            if (json['postcode_required'] == '1') {
-                $('#input-postcode').parent().parent().addClass('required');
-            } else {
-                $('#input-postcode').parent().parent().removeClass('required');
-            }
+            $('#input-postcode').closest('.mb-3').toggleClass('required', json['postcode_required'] == '1');
 
             html = '<option value="">{{ text_select|escape('js') }}</option>';
 

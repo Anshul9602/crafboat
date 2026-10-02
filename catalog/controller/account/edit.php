@@ -116,12 +116,12 @@ class Edit extends \Opencart\System\Engine\Controller {
 		}
 
 		if (!$json) {
-			if (!oc_validate_length($post_info['firstname'], 1, 32)) {
-				$json['error']['firstname'] = $this->language->get('error_firstname');
+			if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{0,31}$/u', trim((string)$post_info['firstname']))) {
+				$json['error']['firstname'] = 'Enter a first name.';
 			}
 
-			if (!oc_validate_length($post_info['lastname'], 1, 32)) {
-				$json['error']['lastname'] = $this->language->get('error_lastname');
+			if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{0,31}$/u', trim((string)$post_info['lastname']))) {
+				$json['error']['lastname'] = 'Enter a last name.';
 			}
 
 			if (!oc_validate_email($post_info['email'])) {
@@ -135,8 +135,10 @@ class Edit extends \Opencart\System\Engine\Controller {
 				$json['error']['warning'] = $this->language->get('error_exists');
 			}
 
-			if ($this->config->get('config_telephone_required') && !oc_validate_length($post_info['telephone'], 3, 32)) {
-				$json['error']['telephone'] = $this->language->get('error_telephone');
+			$telephone = trim((string)$post_info['telephone']);
+
+			if (($this->config->get('config_telephone_required') || $telephone !== '') && !$this->validPhone($telephone)) {
+				$json['error']['telephone'] = 'Enter a 10-digit mobile number.';
 			}
 
 			// Custom fields validation
@@ -160,6 +162,10 @@ class Edit extends \Opencart\System\Engine\Controller {
 			$this->model_account_customer->editCustomer($this->customer->getId(), $post_info);
 
 			$json['success'] = $this->language->get('text_success');
+			$json['popup'] = [
+				'title'   => 'Account updated',
+				'message' => $this->language->get('text_success')
+			];
 
 			// Update customer session details
 			$this->session->data['customer'] = [
@@ -181,5 +187,15 @@ class Edit extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	private function validPhone(string $value): bool {
+		$digits = preg_replace('/\D+/', '', $value) ?? '';
+
+		if (str_starts_with($digits, '91') && strlen($digits) === 12) {
+			$digits = substr($digits, 2);
+		}
+
+		return (bool)preg_match('/^[6-9][0-9]{9}$/', $digits);
 	}
 }

@@ -164,19 +164,20 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
         }
         // line 31
         yield "  </div>
+  <div class=\"cb-bar\">
   <header class=\"cb-header\">
     <a class=\"cb-logo\" href=\"";
-        // line 33
+        // line 34
         yield ($context["home"] ?? null);
         yield "\"><img src=\"catalog/view/image/craftboat/logo.svg\" alt=\"Craft Boat\"></a>
     <form class=\"cb-search\" action=\"";
-        // line 34
+        // line 35
         yield ($context["search_action"] ?? null);
         yield "\" method=\"post\">
       <label class=\"cb-search__field\">
         <img src=\"catalog/view/image/craftboat/search.svg\" alt=\"\">
         <input type=\"text\" name=\"search\" value=\"";
-        // line 37
+        // line 38
         yield ($context["search"] ?? null);
         yield "\" placeholder=\"Search products, SKU, material or colour\">
       </label>
@@ -184,43 +185,46 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
     </form>
     <div class=\"cb-tools\">
       ";
-        // line 42
+        // line 43
         if ((($tmp =  !($context["logged"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-            // line 43
+            // line 44
             yield "        <a href=\"";
             yield ($context["login"] ?? null);
             yield "\">Sign in</a>
       ";
         } else {
-            // line 45
+            // line 46
             yield "        <a href=\"";
             yield ($context["account"] ?? null);
             yield "\">Account</a>
       ";
         }
-        // line 47
+        // line 48
         yield "      <a href=\"";
         yield ($context["wishlist"] ?? null);
-        yield "\">Saved <span class=\"cb-pill\">";
+        yield "\">Saved <span class=\"cb-pill cb-saved-count\">";
         yield ($context["saved_count"] ?? null);
         yield "</span></a>
       <button type=\"button\" class=\"cb-tools__cart\" data-cart-open data-cart-url=\"";
-        // line 48
+        // line 49
         yield ($context["cart_drawer"] ?? null);
         yield "\">Cart <span class=\"cb-pill\">";
         yield ($context["cart_count"] ?? null);
         yield "</span></button>
       <a class=\"cb-btn cb-btn--black\" href=\"";
-        // line 49
+        // line 50
         yield ($context["register"] ?? null);
         yield "\">Apply to buy</a>
+      <button type=\"button\" class=\"cb-menu\" data-nav-toggle aria-expanded=\"false\" aria-controls=\"cb-nav\" aria-label=\"Menu\"><span></span></button>
     </div>
   </header>
-  <nav class=\"cb-nav\">
+  <button type=\"button\" class=\"cb-nav-backdrop\" data-nav-close aria-label=\"Close menu\"></button>
+  <nav class=\"cb-nav\" id=\"cb-nav\">
+    <button type=\"button\" class=\"cb-nav__close\" data-nav-close aria-label=\"Close menu\"><span></span></button>
     <div class=\"cb-nav__item\">
       <a href=\"";
-        // line 54
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "catalog", [], "any", false, false, false, 54);
+        // line 58
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "catalog", [], "any", false, false, false, 58);
         yield "\">Shop <img src=\"catalog/view/image/craftboat/plus.svg\" alt=\"\"></a>
       <div class=\"cb-mega\">
         <div class=\"cb-mega__shop\">
@@ -228,51 +232,51 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
             <p class=\"cb-mega__kicker\">Shop Craft Boat trade</p>
             <h2>Find the right pieces for your next buy.</h2>
             <a class=\"cb-mega__more\" href=\"";
-        // line 60
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "catalog", [], "any", false, false, false, 60);
+        // line 64
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "catalog", [], "any", false, false, false, 64);
         yield "\">View the full catalog →</a>
           </div>
           <div>
             <p class=\"cb-mega__label\">Shop by edit</p>
             <a href=\"";
-        // line 64
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "new", [], "any", false, false, false, 64);
+        // line 68
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "new", [], "any", false, false, false, 68);
         yield "\">New arrivals</a>
             <a href=\"";
-        // line 65
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "favourites", [], "any", false, false, false, 65);
+        // line 69
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "favourites", [], "any", false, false, false, 69);
         yield "\">Buyer favourites</a>
             <a href=\"";
-        // line 66
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "ready", [], "any", false, false, false, 66);
+        // line 70
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "ready", [], "any", false, false, false, 70);
         yield "\">Ready to ship</a>
             <a href=\"";
-        // line 67
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "holiday", [], "any", false, false, false, 67);
+        // line 71
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "holiday", [], "any", false, false, false, 71);
         yield "\">Holiday 2026</a>
           </div>
           <div>
             <p class=\"cb-mega__label\">Shop by need</p>
             <a href=\"";
-        // line 71
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "desk", [], "any", false, false, false, 71);
+        // line 75
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "desk", [], "any", false, false, false, 75);
         yield "\">Refresh the desk</a>
             <a href=\"";
-        // line 72
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "gifting", [], "any", false, false, false, 72);
+        // line 76
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "gifting", [], "any", false, false, false, 76);
         yield "\">Build a gifting table</a>
             <a href=\"";
-        // line 73
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 73);
+        // line 77
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 77);
         yield "\">Add home accents</a>
             <a href=\"";
-        // line 74
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "catalog", [], "any", false, false, false, 74);
+        // line 78
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "catalog", [], "any", false, false, false, 78);
         yield "\">Start with an assortment</a>
           </div>
           <a class=\"cb-mega__promo\" href=\"";
-        // line 76
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "ready", [], "any", false, false, false, 76);
+        // line 80
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "ready", [], "any", false, false, false, 80);
         yield "\" style=\"background-image:url('image/catalog/craftboat/trays.png')\">
             <span>Available now</span>
             <strong>Ready-stock lines dispatch in 3–5 days</strong>
@@ -283,8 +287,8 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
     </div>
     <div class=\"cb-nav__item\">
       <a href=\"";
-        // line 85
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "catalog", [], "any", false, false, false, 85);
+        // line 89
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "catalog", [], "any", false, false, false, 89);
         yield "\">Departments <img src=\"catalog/view/image/craftboat/plus.svg\" alt=\"\"></a>
       <div class=\"cb-mega\">
         <div class=\"cb-mega__depts\">
@@ -296,58 +300,58 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
           <div>
             <p class=\"cb-mega__label\">Home &amp; desk</p>
             <a href=\"";
-        // line 95
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 95);
+        // line 99
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 99);
         yield "\">Home accents</a>
             <a href=\"";
-        // line 96
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "storage", [], "any", false, false, false, 96);
+        // line 100
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "storage", [], "any", false, false, false, 100);
         yield "\">Storage &amp; organisation</a>
             <a href=\"";
-        // line 97
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 97);
+        // line 101
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 101);
         yield "\">Kitchen &amp; tabletop</a>
             <a href=\"";
-        // line 98
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "textiles", [], "any", false, false, false, 98);
+        // line 102
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "textiles", [], "any", false, false, false, 102);
         yield "\">Textiles &amp; bedding</a>
           </div>
           <div>
             <p class=\"cb-mega__label\">Paper &amp; gifting</p>
             <a href=\"";
-        // line 102
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "stationery", [], "any", false, false, false, 102);
+        // line 106
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "stationery", [], "any", false, false, false, 106);
         yield "\">Stationery &amp; writing</a>
             <a href=\"";
-        // line 103
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "gifting", [], "any", false, false, false, 103);
+        // line 107
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "gifting", [], "any", false, false, false, 107);
         yield "\">Gift wrapping</a>
             <a href=\"";
-        // line 104
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "desk", [], "any", false, false, false, 104);
+        // line 108
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "desk", [], "any", false, false, false, 108);
         yield "\">Craft materials</a>
             <a href=\"";
-        // line 105
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "textiles", [], "any", false, false, false, 105);
+        // line 109
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "textiles", [], "any", false, false, false, 109);
         yield "\">Accessories &amp; pouches</a>
           </div>
           <div>
             <p class=\"cb-mega__label\">Textile &amp; seasonal</p>
             <a href=\"";
-        // line 109
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 109);
+        // line 113
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 113);
         yield "\">Frames &amp; decorative objects</a>
             <a href=\"";
-        // line 110
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "storage", [], "any", false, false, false, 110);
+        // line 114
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "storage", [], "any", false, false, false, 114);
         yield "\">Desk organisation</a>
             <a href=\"";
-        // line 111
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 111);
+        // line 115
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "home", [], "any", false, false, false, 115);
         yield "\">Lighting &amp; lampshades</a>
             <a href=\"";
-        // line 112
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "seasonal", [], "any", false, false, false, 112);
+        // line 116
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "seasonal", [], "any", false, false, false, 116);
         yield "\">Holiday keepsakes</a>
           </div>
         </div>
@@ -355,7 +359,7 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
     </div>
     <div class=\"cb-nav__item\">
       <a href=\"";
-        // line 118
+        // line 122
         yield ($context["collections"] ?? null);
         yield "\">Collections <img src=\"catalog/view/image/craftboat/plus.svg\" alt=\"\"></a>
       <div class=\"cb-mega\">
@@ -364,27 +368,27 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
             <p class=\"cb-mega__kicker\">Editorial collections</p>
             <h2>Buy a cohesive colour and material story.</h2>
             <a class=\"cb-mega__more\" href=\"";
-        // line 124
+        // line 128
         yield ($context["collections"] ?? null);
         yield "\">Explore all collections →</a>
           </div>
           <a class=\"cb-mega__card\" href=\"";
-        // line 126
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "saffron", [], "any", false, false, false, 126);
+        // line 130
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "saffron", [], "any", false, false, false, 130);
         yield "\" style=\"background-image:url('image/catalog/craftboat/pouch.png')\">
             <strong>Saffron Valley</strong>
             <em>Florals and sun-warmed block print.</em>
           </a>
           <a class=\"cb-mega__card\" href=\"";
-        // line 130
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "marbled", [], "any", false, false, false, 130);
+        // line 134
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "marbled", [], "any", false, false, false, 134);
         yield "\" style=\"background-image:url('image/catalog/craftboat/trays.png')\">
             <strong>Marbled Stories</strong>
             <em>One-of-one colour pulled by hand.</em>
           </a>
           <a class=\"cb-mega__card\" href=\"";
-        // line 134
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "holiday", [], "any", false, false, false, 134);
+        // line 138
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "holiday", [], "any", false, false, false, 138);
         yield "\" style=\"background-image:url('image/catalog/craftboat/collection-holiday.png')\">
             <strong>Holiday 2026</strong>
             <em>Keepsake gifting for the season.</em>
@@ -393,20 +397,20 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
       </div>
     </div>
     <a href=\"";
-        // line 141
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "new", [], "any", false, false, false, 141);
+        // line 145
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "new", [], "any", false, false, false, 145);
         yield "\">New arrivals</a>
     <a href=\"";
-        // line 142
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "favourites", [], "any", false, false, false, 142);
+        // line 146
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "favourites", [], "any", false, false, false, 146);
         yield "\">Bestsellers</a>
     <a href=\"";
-        // line 143
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "ready", [], "any", false, false, false, 143);
+        // line 147
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "ready", [], "any", false, false, false, 147);
         yield "\"><i class=\"cb-dot\"></i> Ready to ship</a>
     <div class=\"cb-nav__item\">
       <a href=\"";
-        // line 145
+        // line 149
         yield ($context["about"] ?? null);
         yield "\">Crafts &amp; values <img src=\"catalog/view/image/craftboat/plus.svg\" alt=\"\"></a>
       <div class=\"cb-mega\">
@@ -415,34 +419,34 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
             <p class=\"cb-mega__kicker\">Shop by craft</p>
             <h2>Let the making story guide the assortment.</h2>
             <a class=\"cb-mega__more\" href=\"";
-        // line 151
+        // line 155
         yield ($context["about"] ?? null);
         yield "\">How Craft Boat makes →</a>
           </div>
           <div class=\"cb-craft\">
             <a href=\"";
-        // line 154
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "stationery", [], "any", false, false, false, 154);
+        // line 158
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "stationery", [], "any", false, false, false, 158);
         yield "\"><strong>Handmade paper</strong><span>Waste becomes paper. Paper becomes possibility.</span></a>
             <a href=\"";
-        // line 155
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "marbled", [], "any", false, false, false, 155);
+        // line 159
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "marbled", [], "any", false, false, false, 159);
         yield "\"><strong>Hand marbled</strong><span>No two pulls from the marbling table are the same.</span></a>
             <a href=\"";
-        // line 156
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "saffron", [], "any", false, false, false, 156);
+        // line 160
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "saffron", [], "any", false, false, false, 160);
         yield "\"><strong>Block printed</strong><span>Pattern, registered one colour at a time.</span></a>
             <a href=\"";
-        // line 157
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "textiles", [], "any", false, false, false, 157);
+        // line 161
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["nav"] ?? null), "textiles", [], "any", false, false, false, 161);
         yield "\"><strong>Natural dyed</strong><span>Colour with a material story.</span></a>
             <a class=\"is-wide\" href=\"";
-        // line 158
+        // line 162
         yield ($context["about"] ?? null);
         yield "\"><strong>Made in Jaipur</strong><span>A multidisciplinary studio, close to the hands that make.</span></a>
           </div>
           <a class=\"cb-mega__promo\" href=\"";
-        // line 160
+        // line 164
         yield ($context["contact"] ?? null);
         yield "\" style=\"background-image:url('image/catalog/craftboat/pouch.png')\">
             <span>Made for your store</span>
@@ -453,10 +457,11 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
       </div>
     </div>
     <a href=\"";
-        // line 168
+        // line 172
         yield ($context["contact"] ?? null);
         yield "\">Custom orders</a>
   </nav>
+  </div>
   <main>
 ";
         yield from [];
@@ -483,7 +488,7 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  457 => 168,  446 => 160,  441 => 158,  437 => 157,  433 => 156,  429 => 155,  425 => 154,  419 => 151,  410 => 145,  405 => 143,  401 => 142,  397 => 141,  387 => 134,  380 => 130,  373 => 126,  368 => 124,  359 => 118,  350 => 112,  346 => 111,  342 => 110,  338 => 109,  331 => 105,  327 => 104,  323 => 103,  319 => 102,  312 => 98,  308 => 97,  304 => 96,  300 => 95,  287 => 85,  275 => 76,  270 => 74,  266 => 73,  262 => 72,  258 => 71,  251 => 67,  247 => 66,  243 => 65,  239 => 64,  232 => 60,  223 => 54,  215 => 49,  209 => 48,  202 => 47,  196 => 45,  190 => 43,  188 => 42,  180 => 37,  174 => 34,  170 => 33,  166 => 31,  162 => 29,  156 => 27,  154 => 26,  144 => 21,  141 => 20,  131 => 19,  119 => 18,  103 => 17,  97 => 16,  93 => 15,  89 => 14,  85 => 13,  81 => 12,  76 => 11,  69 => 10,  63 => 9,  59 => 8,  55 => 7,  45 => 2,  42 => 1,);
+        return array (  461 => 172,  450 => 164,  445 => 162,  441 => 161,  437 => 160,  433 => 159,  429 => 158,  423 => 155,  414 => 149,  409 => 147,  405 => 146,  401 => 145,  391 => 138,  384 => 134,  377 => 130,  372 => 128,  363 => 122,  354 => 116,  350 => 115,  346 => 114,  342 => 113,  335 => 109,  331 => 108,  327 => 107,  323 => 106,  316 => 102,  312 => 101,  308 => 100,  304 => 99,  291 => 89,  279 => 80,  274 => 78,  270 => 77,  266 => 76,  262 => 75,  255 => 71,  251 => 70,  247 => 69,  243 => 68,  236 => 64,  227 => 58,  216 => 50,  210 => 49,  203 => 48,  197 => 46,  191 => 44,  189 => 43,  181 => 38,  175 => 35,  171 => 34,  166 => 31,  162 => 29,  156 => 27,  154 => 26,  144 => 21,  141 => 20,  131 => 19,  119 => 18,  103 => 17,  97 => 16,  93 => 15,  89 => 14,  85 => 13,  81 => 12,  76 => 11,  69 => 10,  63 => 9,  59 => 8,  55 => 7,  45 => 2,  42 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -519,6 +524,7 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
       <a href=\"https://www.faire.com/\" target=\"_blank\" rel=\"noopener\">Prefer Faire? Continue there ↗</a>
     {% endif %}
   </div>
+  <div class=\"cb-bar\">
   <header class=\"cb-header\">
     <a class=\"cb-logo\" href=\"{{ home }}\"><img src=\"catalog/view/image/craftboat/logo.svg\" alt=\"Craft Boat\"></a>
     <form class=\"cb-search\" action=\"{{ search_action }}\" method=\"post\">
@@ -534,12 +540,15 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
       {% else %}
         <a href=\"{{ account }}\">Account</a>
       {% endif %}
-      <a href=\"{{ wishlist }}\">Saved <span class=\"cb-pill\">{{ saved_count }}</span></a>
+      <a href=\"{{ wishlist }}\">Saved <span class=\"cb-pill cb-saved-count\">{{ saved_count }}</span></a>
       <button type=\"button\" class=\"cb-tools__cart\" data-cart-open data-cart-url=\"{{ cart_drawer }}\">Cart <span class=\"cb-pill\">{{ cart_count }}</span></button>
       <a class=\"cb-btn cb-btn--black\" href=\"{{ register }}\">Apply to buy</a>
+      <button type=\"button\" class=\"cb-menu\" data-nav-toggle aria-expanded=\"false\" aria-controls=\"cb-nav\" aria-label=\"Menu\"><span></span></button>
     </div>
   </header>
-  <nav class=\"cb-nav\">
+  <button type=\"button\" class=\"cb-nav-backdrop\" data-nav-close aria-label=\"Close menu\"></button>
+  <nav class=\"cb-nav\" id=\"cb-nav\">
+    <button type=\"button\" class=\"cb-nav__close\" data-nav-close aria-label=\"Close menu\"><span></span></button>
     <div class=\"cb-nav__item\">
       <a href=\"{{ nav.catalog }}\">Shop <img src=\"catalog/view/image/craftboat/plus.svg\" alt=\"\"></a>
       <div class=\"cb-mega\">
@@ -657,6 +666,7 @@ class __TwigTemplate_2c75bfcf68e74c00fab90870df2d9318 extends Template
     </div>
     <a href=\"{{ contact }}\">Custom orders</a>
   </nav>
+  </div>
   <main>
 ", "catalog/view/template/common/header.twig", "C:\\xampp\\htdocs\\crafboat\\catalog\\view\\template\\common\\header.twig");
     }

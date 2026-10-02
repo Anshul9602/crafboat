@@ -124,7 +124,13 @@ class __TwigTemplate_6932f78f718ccff3d2715aa600ffdde5 extends Template
             <small>";
                 // line 33
                 yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "quantity", [], "any", false, false, false, 33);
-                yield " units · price locked</small>
+                yield " units · ";
+                if ((($tmp = ($context["priced"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                    yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "total", [], "any", false, false, false, 33);
+                } else {
+                    yield "price locked";
+                }
+                yield "</small>
           </div>
           <a class=\"btn-danger cb-cart__remove\" href=\"";
                 // line 35
@@ -160,8 +166,22 @@ class __TwigTemplate_6932f78f718ccff3d2715aa600ffdde5 extends Template
       <p class=\"cb-cart__kicker\">Opening order guide</p>
       <span>\$500 minimum</span>
     </div>
-    <div class=\"cb-cart__bar\" aria-hidden=\"true\"><span></span></div>
-    <p>Sign in to reveal your draft value and progress.</p>
+    <div class=\"cb-cart__bar\" aria-hidden=\"true\"><span style=\"width: ";
+        // line 51
+        yield (((($tmp = ($context["priced"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) ? (($context["progress"] ?? null)) : (0));
+        yield "%\"></span></div>
+    <p>";
+        // line 52
+        if ((($tmp = ($context["priced"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+            yield "Draft value ";
+            yield ($context["draft_total"] ?? null);
+            yield " toward the \$500 opening order.";
+        } elseif ((($tmp = ($context["logged"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+            yield "Price stays locked for this account.";
+        } else {
+            yield "Sign in to reveal your draft value and progress.";
+        }
+        yield "</p>
   </section>
   <section class=\"cb-cart__ways\">
     <div class=\"cb-cart__head\">
@@ -226,7 +246,7 @@ class __TwigTemplate_6932f78f718ccff3d2715aa600ffdde5 extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  198 => 75,  189 => 69,  181 => 64,  173 => 59,  157 => 45,  153 => 43,  147 => 40,  143 => 39,  140 => 38,  131 => 35,  126 => 33,  122 => 32,  116 => 31,  107 => 29,  104 => 28,  99 => 27,  97 => 26,  92 => 24,  83 => 18,  79 => 17,  65 => 5,  58 => 4,  51 => 3,  45 => 2,  42 => 1,);
+        return array (  218 => 75,  209 => 69,  201 => 64,  193 => 59,  175 => 52,  171 => 51,  163 => 45,  159 => 43,  153 => 40,  149 => 39,  146 => 38,  137 => 35,  126 => 33,  122 => 32,  116 => 31,  107 => 29,  104 => 28,  99 => 27,  97 => 26,  92 => 24,  83 => 18,  79 => 17,  65 => 5,  58 => 4,  51 => 3,  45 => 2,  42 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -263,7 +283,7 @@ class __TwigTemplate_6932f78f718ccff3d2715aa600ffdde5 extends Template
           <div>
             <a href=\"{{ product.href }}\">{{ product.name }}</a>
             <em>{{ product.model }}</em>
-            <small>{{ product.quantity }} units · price locked</small>
+            <small>{{ product.quantity }} units · {% if priced %}{{ product.total }}{% else %}price locked{% endif %}</small>
           </div>
           <a class=\"btn-danger cb-cart__remove\" href=\"{{ product.remove }}\" aria-label=\"Remove\">×</a>
         </div>
@@ -281,8 +301,8 @@ class __TwigTemplate_6932f78f718ccff3d2715aa600ffdde5 extends Template
       <p class=\"cb-cart__kicker\">Opening order guide</p>
       <span>\$500 minimum</span>
     </div>
-    <div class=\"cb-cart__bar\" aria-hidden=\"true\"><span></span></div>
-    <p>Sign in to reveal your draft value and progress.</p>
+    <div class=\"cb-cart__bar\" aria-hidden=\"true\"><span style=\"width: {{ priced ? progress : 0 }}%\"></span></div>
+    <p>{% if priced %}Draft value {{ draft_total }} toward the \$500 opening order.{% elseif logged %}Price stays locked for this account.{% else %}Sign in to reveal your draft value and progress.{% endif %}</p>
   </section>
   <section class=\"cb-cart__ways\">
     <div class=\"cb-cart__head\">

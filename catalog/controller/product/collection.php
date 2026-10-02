@@ -140,6 +140,8 @@ class Collection extends \Opencart\System\Engine\Controller {
 			];
 		}
 
-		return $cards;
+		$this->load->model('catalog/product');
+
+		return $this->model_catalog_product->withRolePrices($cards);
 	}
 }

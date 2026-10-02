@@ -28,11 +28,11 @@
 </section>
 
 <nav class="cb-shopbar" aria-label="Start shopping">
-  <span>Start Shopping</span>
-  <a href="index.php?route=product/special&amp;language=en-gb">New Arrivals <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
-  <a href="index.php?route=product/special&amp;language=en-gb">Bestsellers <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
-  <a href="index.php?route=product/special&amp;language=en-gb">Ready to ship <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
-  <a href="index.php?route=product/special&amp;language=en-gb">Holiday 2026 <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
+  <a href="{{ shop }}">Start Shopping</a>
+  <a href="{{ arrivals }}">New Arrivals <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
+  <a href="{{ bestsellers_link }}">Bestsellers <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
+  <a href="{{ ready_link }}">Ready to ship <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
+  <a href="{{ holiday }}">Holiday 2026 <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
   <a href="{{ shop }}">All Products <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
 </nav>
 
@@ -120,7 +120,7 @@
       <div>
         <p class="cb-ship{% if product.wait %} cb-ship--wait{% endif %}">{{ product.ship }}</p>
         <hr>
-        <span class="cb-card__foot">{% if logged %}Signed in · pricing unlocks after approval{% else %}Sign in to view wholesale pricing{% endif %} <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+        <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
       </div>
     </a>
     {% endfor %}
@@ -229,7 +229,7 @@
       <div>
         <p class="cb-ship">{{ product.ship }}</p>
         <hr>
-        <span class="cb-card__foot">{% if logged %}Signed in · pricing unlocks after approval{% else %}Sign in to view wholesale pricing{% endif %} <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+        <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
       </div>
     </a>
     {% endfor %}

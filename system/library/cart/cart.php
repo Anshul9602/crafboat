@@ -353,6 +353,30 @@ class Cart {
 	}
 
 	/**
+	 * Raise every line to its case pack.
+	 *
+	 * A product cannot be bought below its minimum. Short lines are set to that pack.
+	 *
+	 * @return void
+	 */
+	public function applyMinimum(): void {
+		$updates = [];
+
+		foreach ($this->getProducts() as $product) {
+			$pack = max(1, (int)$product['minimum']);
+			$quantity = (int)$product['quantity'];
+
+			if ($quantity < $pack) {
+				$updates[(int)$product['cart_id']] = $pack;
+			}
+		}
+
+		foreach ($updates as $cart_id => $quantity) {
+			$this->update($cart_id, $quantity);
+		}
+	}
+
+	/**
 	 * Has
 	 *
 	 * @param int $cart_id primary key of the cart record

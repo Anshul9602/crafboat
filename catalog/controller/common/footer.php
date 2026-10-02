@@ -108,7 +108,7 @@ class Footer extends \Opencart\System\Engine\Controller {
 		}
 
 		$data['bootstrap'] = 'catalog/view/javascript/bootstrap/js/bootstrap.bundle.min.js';
-		$this->document->addScript('catalog/view/javascript/common.js', 'footer');
+		$this->document->addScript('catalog/view/javascript/common.js?v=form3', 'footer');
 		$data['scripts'] = $this->document->getScripts('footer');
 		$data['logged'] = $this->customer->isLogged();
 		$data['login'] = $this->url->link('account/login', 'language=' . $this->config->get('config_language'));

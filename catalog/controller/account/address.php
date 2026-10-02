@@ -286,20 +286,26 @@ class Address extends \Opencart\System\Engine\Controller {
 		}
 
 		if (!$json) {
-			if (!oc_validate_length((string)$post_info['firstname'], 1, 32)) {
-				$json['error']['firstname'] = $this->language->get('error_firstname');
+			if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{0,31}$/u', trim((string)$post_info['firstname']))) {
+				$json['error']['firstname'] = 'Enter a first name.';
 			}
 
-			if (!oc_validate_length((string)$post_info['lastname'], 1, 32)) {
-				$json['error']['lastname'] = $this->language->get('error_lastname');
+			if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{0,31}$/u', trim((string)$post_info['lastname']))) {
+				$json['error']['lastname'] = 'Enter a last name.';
 			}
 
-			if (!oc_validate_length((string)$post_info['address_1'], 3, 128)) {
-				$json['error']['address_1'] = $this->language->get('error_address_1');
+			$company = trim((string)($post_info['company'] ?? ''));
+
+			if ($company !== '' && !preg_match('/^[\p{L}0-9][\p{L}0-9\s.&\'-]{1,254}$/u', $company)) {
+				$json['error']['company'] = 'Enter the company name using letters or numbers.';
 			}
 
-			if (!oc_validate_length((string)$post_info['city'], 2, 128)) {
-				$json['error']['city'] = $this->language->get('error_city');
+			if (!preg_match('/[\p{L}]/u', trim((string)$post_info['address_1'])) || !oc_validate_length(trim((string)$post_info['address_1']), 3, 128)) {
+				$json['error']['address_1'] = 'Enter a street address.';
+			}
+
+			if (!preg_match('/^[\p{L}][\p{L}\s.\'-]{1,63}$/u', trim((string)$post_info['city']))) {
+				$json['error']['city'] = 'Enter a city name.';
 			}
 
 			// Country
@@ -307,7 +313,12 @@ class Address extends \Opencart\System\Engine\Controller {
 
 			$country_info = $this->model_localisation_country->getCountry((int)$post_info['country_id']);
 
-			if ($country_info && $country_info['postcode_required'] && !oc_validate_length((string)$post_info['postcode'], 2, 10)) {
+			$postcode = trim((string)$post_info['postcode']);
+			$india = $country_info && (($country_info['iso_code_2'] ?? '') === 'IN' || (int)$country_info['country_id'] === 99);
+
+			if ($india && !preg_match('/^[1-9][0-9]{5}$/', $postcode)) {
+				$json['error']['postcode'] = 'Enter a 6-digit PIN.';
+			} elseif ($country_info && $country_info['postcode_required'] && !oc_validate_length($postcode, 2, 10)) {
 				$json['error']['postcode'] = $this->language->get('error_postcode');
 			}
 

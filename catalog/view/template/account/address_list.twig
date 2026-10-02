@@ -1,15 +1,26 @@
 {% if addresses %}
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover">
-      {% for address in addresses %}
-        <tr>
-          <td>{{ address.address }}</td>
-          <td>{% if address.default %}<strong>{{ text_default }}</strong>{% endif %}</td>
-          <td class="text-end"><a href="{{ address.edit }}" data-bs-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa-regular fa-solid fa-pencil"></i></a> <a href="{{ address.delete }}" data-bs-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></a></td>
-        </tr>
-      {% endfor %}
-    </table>
+  <div class="cb-addr">
+    {% for address in addresses %}
+      <article class="cb-addr__card">
+        <div class="cb-addr__top">
+          <h2>{{ address.firstname }} {{ address.lastname }}</h2>
+          {% if address.default %}<span class="cb-addr__badge">{{ text_default }}</span>{% endif %}
+        </div>
+        {% if address.company %}
+          <p class="cb-addr__company">{{ address.company }}</p>
+        {% endif %}
+        <p>
+          {{ address.address_1 }}{% if address.address_2 %}<br>{{ address.address_2 }}{% endif %}<br>
+          {{ address.city }} {{ address.postcode }}<br>
+          {{ address.zone }}, {{ address.country }}
+        </p>
+        <div class="cb-addr__actions">
+          <a href="{{ address.edit }}" class="btn btn-light">{{ button_edit }}</a>
+          <a href="{{ address.delete }}" class="btn btn-danger">{{ button_delete }}</a>
+        </div>
+      </article>
+    {% endfor %}
   </div>
 {% else %}
-  <p>{{ text_no_results }}</p>
+  <p class="cb-addr__empty">{{ text_no_results }}</p>
 {% endif %}

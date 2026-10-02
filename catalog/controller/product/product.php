@@ -460,38 +460,26 @@ class Product extends \Opencart\System\Engine\Controller {
 				: $this->url->link('product/category', 'language=' . $language . '&path=100');
 			$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');
 			$data['logged'] = $this->customer->isLogged();
-			$wholesale_group = $this->db->query("SELECT `customer_group_id` FROM `" . DB_PREFIX . "customer_group_description` WHERE `name` = 'Wholesale' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
-			$wholesale_group_id = $wholesale_group->num_rows ? (int)$wholesale_group->row['customer_group_id'] : 0;
-			$data['wholesale'] = $data['logged'] && $wholesale_group_id && (int)$this->customer->getGroupId() === $wholesale_group_id;
+			$group_id = $data['logged'] ? (int)$this->customer->getGroupId() : 0;
+			$trade_group_id = $this->customerGroupId('Trade');
+			$wholesale_group_id = $this->customerGroupId('Wholesale');
+			$data['trade'] = $trade_group_id && $group_id === $trade_group_id;
+			$data['wholesale'] = $wholesale_group_id && $group_id === $wholesale_group_id;
 			$retail_row = $this->db->query("SELECT `price` FROM `" . DB_PREFIX . "product` WHERE `product_id` = '" . (int)$product_id . "'");
 			$retail_value = $retail_row->num_rows ? (float)$retail_row->row['price'] : (float)$product_info['price'];
-			$data['price'] = $this->currency->format($this->tax->calculate($retail_value, $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-			$wholesale_value = $retail_value;
-
-			if ($wholesale_group_id) {
-				$wholesale_row = $this->db->query("SELECT (CASE WHEN `pd`.`type` = 'P' THEN (`p`.`price` - (`p`.`price` * (`pd`.`price` / 100))) WHEN `pd`.`type` = 'S' THEN (`p`.`price` - `pd`.`price`) ELSE `pd`.`price` END) AS `price` FROM `" . DB_PREFIX . "product_discount` `pd` LEFT JOIN `" . DB_PREFIX . "product` `p` ON (`p`.`product_id` = `pd`.`product_id`) WHERE `pd`.`product_id` = '" . (int)$product_id . "' AND `pd`.`customer_group_id` = '" . (int)$wholesale_group_id . "' AND `pd`.`quantity` = '1' AND `pd`.`special` = '0' AND ((`pd`.`date_start` = '0000-00-00' OR `pd`.`date_start` < NOW()) AND (`pd`.`date_end` = '0000-00-00' OR `pd`.`date_end` > NOW())) ORDER BY `pd`.`priority` ASC, `pd`.`price` ASC LIMIT 1");
-
-				if ($wholesale_row->num_rows) {
-					$wholesale_value = (float)$wholesale_row->row['price'];
-				}
-			}
-
-			$data['wholesale_price'] = $data['wholesale']
-				? $this->currency->format($this->tax->calculate($wholesale_value, $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency'])
-				: '';
+			$tax_class_id = (int)$product_info['tax_class_id'];
+			$data['price'] = $this->money($retail_value, $tax_class_id);
+			$trade_offer = $this->groupOffer((int)$product_id, $trade_group_id, $retail_value);
+			$wholesale_offer = $this->groupOffer((int)$product_id, $wholesale_group_id, $retail_value);
+			$data['trade_price'] = $data['trade'] ? $this->money($trade_offer['value'], $tax_class_id) : '';
+			$data['trade_off'] = $data['trade'] ? $trade_offer['off'] : '';
+			$data['wholesale_price'] = $data['wholesale'] ? $this->money($wholesale_offer['value'], $tax_class_id) : '';
+			$data['wholesale_off'] = $data['wholesale'] ? $wholesale_offer['off'] : '';
 			$data['login'] = $this->url->link('account/login', 'language=' . $language);
 			$data['cart_add'] = $this->url->link('checkout/cart.add', 'language=' . $language);
 			$data['account'] = $this->url->link('account/account', 'language=' . $language . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''));
 			$data['about'] = $this->url->link('information/about', 'language=' . $language);
 			$data['view_all'] = $data['collection_href'];
-
-			if (!empty($data['price'])) {
-				$data['price'] = preg_replace('/\.00$/', '', (string)$data['price']);
-			}
-
-			if (!empty($data['wholesale_price'])) {
-				$data['wholesale_price'] = preg_replace('/\.00$/', '', (string)$data['wholesale_price']);
-			}
 
 			$image_file = (string)$product_info['image'];
 			$fit_name = basename($image_file);
@@ -547,6 +535,8 @@ class Product extends \Opencart\System\Engine\Controller {
 					'wait'       => $row_made
 				];
 			}
+
+			$data['related_products'] = $this->model_catalog_product->withRolePrices($data['related_products']);
 
 			$data['tags'] = [];
 
@@ -648,5 +638,47 @@ class Product extends \Opencart\System\Engine\Controller {
 		}
 
 		return false;
+	}
+
+	private function customerGroupId(string $name): int {
+		$query = $this->db->query("SELECT `customer_group_id` FROM `" . DB_PREFIX . "customer_group_description` WHERE `name` = '" . $this->db->escape($name) . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+
+		return $query->num_rows ? (int)$query->row['customer_group_id'] : 0;
+	}
+
+	/**
+	 * @return array{value: float, off: string}
+	 */
+	private function groupOffer(int $product_id, int $group_id, float $fallback): array {
+		$offer = ['value' => $fallback, 'off' => ''];
+
+		if (!$group_id) {
+			return $offer;
+		}
+
+		$row = $this->db->query("SELECT `pd`.`price`, `pd`.`type`, (CASE WHEN `pd`.`type` = 'P' THEN (`p`.`price` - (`p`.`price` * (`pd`.`price` / 100))) WHEN `pd`.`type` = 'S' THEN (`p`.`price` - `pd`.`price`) ELSE `pd`.`price` END) AS `value` FROM `" . DB_PREFIX . "product_discount` `pd` LEFT JOIN `" . DB_PREFIX . "product` `p` ON (`p`.`product_id` = `pd`.`product_id`) WHERE `pd`.`product_id` = '" . (int)$product_id . "' AND `pd`.`customer_group_id` = '" . (int)$group_id . "' AND `pd`.`quantity` = '1' AND ((`pd`.`date_start` = '0000-00-00' OR `pd`.`date_start` < NOW()) AND (`pd`.`date_end` = '0000-00-00' OR `pd`.`date_end` > NOW())) ORDER BY `pd`.`special` DESC, `pd`.`priority` ASC LIMIT 1");
+
+		if (!$row->num_rows || (float)$row->row['value'] >= $fallback) {
+			return $offer;
+		}
+
+		$offer['value'] = (float)$row->row['value'];
+		$amount = (float)$row->row['price'];
+
+		if ((string)$row->row['type'] === 'P' && $amount > 0) {
+			$offer['off'] = rtrim(rtrim(number_format($amount, 2, '.', ''), '0'), '.') . '% off';
+		} else {
+			$saved = $fallback - $offer['value'];
+			$percent = $fallback > 0 ? round(($saved / $fallback) * 100) : 0;
+			$offer['off'] = $percent > 0 ? $percent . '% off' : '';
+		}
+
+		return $offer;
+	}
+
+	private function money(float $value, int $tax_class_id): string {
+		$formatted = $this->currency->format($this->tax->calculate($value, $tax_class_id, $this->config->get('config_tax')), $this->session->data['currency']);
+
+		return (string)preg_replace('/\.00$/', '', $formatted);
 	}
 }

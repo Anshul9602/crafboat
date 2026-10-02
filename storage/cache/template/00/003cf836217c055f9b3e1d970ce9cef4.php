@@ -87,16 +87,63 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
   </div>
 </div>
 <script type=\"text/javascript\"><!--
+\$('#shopping-cart').on('click', '[data-qty]', function(e) {
+    e.preventDefault();
+
+    if (this.disabled) {
+        return;
+    }
+
+    var form = \$(this).closest('form');
+    var input = form.find('input[name=\"quantity\"]');
+    var pack = parseInt(form.attr('data-step'), 10) || 1;
+    var current = parseInt(input.val(), 10) || pack;
+    var delta = parseInt(\$(this).attr('data-qty'), 10);
+    var next = current;
+
+    if (delta > 0) {
+        next = current < pack ? pack : current + pack;
+    } else if (current > pack) {
+        next = current - pack;
+
+        if (next < pack) {
+            next = pack;
+        }
+    }
+
+    if (String(next) === String(input.val())) {
+        return;
+    }
+
+    input.val(next);
+    form.trigger('submit');
+});
+
+\$('#shopping-cart').on('change', 'input[name=\"quantity\"]', function() {
+    var input = \$(this);
+    var pack = parseInt(input.closest('form').attr('data-step'), 10) || 1;
+    var next = parseInt(input.val(), 10);
+
+    if (isNaN(next) || next < pack) {
+        next = pack;
+    } else if (next % pack !== 0) {
+        next = next + (pack - (next % pack));
+    }
+
+    input.val(next);
+    input.closest('form').trigger('submit');
+});
+
 \$('#shopping-cart').on('submit', '#output-cart form', function(e) {
     e.preventDefault();
 
     var element = this;
 
-    if (e.originalEvent !== undefined && e.originalEvent.submitter !== undefined) {
-        var button = e.originalEvent.submitter;
-    } else {
-        var button = '';
+    if (\$(element).data('saving')) {
+        return;
     }
+
+    var button = (e.originalEvent && e.originalEvent.submitter) ? e.originalEvent.submitter : \$(element).find('[formaction]').get(0);
 
     \$.ajax({
         url: \$(button).attr('formaction'),
@@ -104,10 +151,10 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
         data: \$(element).serialize(),
         dataType: 'json',
         beforeSend: function() {
-            \$(button).button('loading');
+            \$(element).data('saving', 1);
         },
         complete: function() {
-            \$(button).button('reset');
+            \$(element).data('saving', 0);
         },
         success: function(json) {
             if (json['redirect']) {
@@ -119,21 +166,100 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
             }
 
             if (json['success']) {
-                \$('#alert').prepend('<div class=\"alert alert-success alert-dismissible\"><i class=\"fa-solid fa-circle-exclamation\"></i> ' + json['success'] + ' <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button></div>');
-
                 \$('#shopping-cart').load('index.php?route=checkout/cart.list&language=";
-        // line 53
+        // line 98
         yield ($context["language"] ?? null);
         yield "', {}, function() {
-                    \$('#cart').load('index.php?route=common/cart.info&language=";
-        // line 54
-        yield ($context["language"] ?? null);
-        yield "');
+                    var units = \$('#shopping-cart [data-units]').attr('data-units');
+
+                    if (units !== undefined) {
+                        \$('.cb-tools__cart .cb-pill').text(units);
+                    }
                 });
             }
         },
         error: function(xhr, ajaxOptions, thrownError) {
             console.log(thrownError + \"\\r\\n\" + xhr.statusText + \"\\r\\n\" + xhr.responseText);
+        }
+    });
+});
+
+\$('#shopping-cart').on('change', '[data-select-all]', function() {
+    \$('#output-cart .cb-bag__check').prop('checked', this.checked);
+});
+
+\$('#shopping-cart').on('change', '.cb-bag__check', function() {
+    var boxes = \$('#output-cart .cb-bag__check');
+    \$('[data-select-all]').prop('checked', boxes.length > 0 && boxes.filter(':checked').length === boxes.length);
+});
+
+\$('#shopping-cart').on('click', '[data-remove-selected]', function(e) {
+    e.preventDefault();
+
+    var urls = [];
+
+    \$('#output-cart .cb-bag__check:checked').each(function() {
+        var href = \$(this).closest('.cb-bag__item').find('.cb-bag__remove').attr('href');
+
+        if (href) {
+            urls.push(href);
+        }
+    });
+
+    if (!urls.length) {
+        return;
+    }
+
+    var next = function() {
+        var url = urls.shift();
+
+        if (!url) {
+            \$('#shopping-cart').load('index.php?route=checkout/cart.list&language=";
+        // line 143
+        yield ($context["language"] ?? null);
+        yield "', {}, function() {
+                var units = \$('#shopping-cart [data-units]').attr('data-units');
+
+                if (units !== undefined) {
+                    \$('.cb-tools__cart .cb-pill').text(units);
+                }
+            });
+            return;
+        }
+
+        \$.ajax({ url: url, dataType: 'json', complete: next });
+    };
+
+    next();
+});
+
+\$('#shopping-cart').on('submit', '.cb-also form', function(e) {
+    e.preventDefault();
+
+    var form = this;
+
+    \$.ajax({
+        url: \$(form).attr('action'),
+        type: 'post',
+        data: \$(form).serialize(),
+        dataType: 'json',
+        success: function(json) {
+            if (json['redirect']) {
+                location = json['redirect'];
+            }
+
+            if (json['success']) {
+                \$('#shopping-cart').load('index.php?route=checkout/cart.list&language=";
+        // line 175
+        yield ($context["language"] ?? null);
+        yield "', {}, function() {
+                    var units = \$('#shopping-cart [data-units]').attr('data-units');
+
+                    if (units !== undefined) {
+                        \$('.cb-tools__cart .cb-pill').text(units);
+                    }
+                });
+            }
         }
     });
 });
@@ -165,7 +291,7 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
                 \$('#alert').prepend('<div class=\"alert alert-success alert-dismissible\"><i class=\"fa-solid fa-circle-exclamation\"></i> ' + json['success'] + ' <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button></div>');
 
                 \$('#shopping-cart').load('index.php?route=checkout/cart.list&language=";
-        // line 90
+        // line 213
         yield ($context["language"] ?? null);
         yield "');
             }
@@ -178,7 +304,7 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
 
 \$('#shopping-cart').observe(function(e) {
     \$('#cart').load('index.php?route=common/cart.info&language=";
-        // line 100
+        // line 223
         yield ($context["language"] ?? null);
         yield "');
 });
@@ -186,14 +312,22 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
 \$('#cart').on('submit', 'form', function(e) {
     window.setTimeout(function() {
         \$('#shopping-cart').load('index.php?route=checkout/cart.list&language=";
-        // line 105
+        // line 228
         yield ($context["language"] ?? null);
         yield "');
     }, 3000);
 });
+
+\$(function() {
+    var block = document.getElementById('cb-cart-block');
+
+    if (block && block.getAttribute('data-message') && window.cbShowNotice) {
+        cbShowNotice('Checkout', block.getAttribute('data-message'));
+    }
+});
 //--></script>
 ";
-        // line 109
+        // line 240
         yield ($context["footer"] ?? null);
         yield "
 ";
@@ -221,7 +355,7 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  197 => 109,  190 => 105,  182 => 100,  169 => 90,  130 => 54,  126 => 53,  85 => 15,  80 => 13,  76 => 12,  72 => 11,  67 => 9,  63 => 7,  52 => 5,  48 => 4,  42 => 1,);
+        return array (  331 => 240,  316 => 228,  308 => 223,  295 => 213,  254 => 175,  219 => 143,  171 => 98,  85 => 15,  80 => 13,  76 => 12,  72 => 11,  67 => 9,  63 => 7,  52 => 5,  48 => 4,  42 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -244,16 +378,63 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
   </div>
 </div>
 <script type=\"text/javascript\"><!--
+\$('#shopping-cart').on('click', '[data-qty]', function(e) {
+    e.preventDefault();
+
+    if (this.disabled) {
+        return;
+    }
+
+    var form = \$(this).closest('form');
+    var input = form.find('input[name=\"quantity\"]');
+    var pack = parseInt(form.attr('data-step'), 10) || 1;
+    var current = parseInt(input.val(), 10) || pack;
+    var delta = parseInt(\$(this).attr('data-qty'), 10);
+    var next = current;
+
+    if (delta > 0) {
+        next = current < pack ? pack : current + pack;
+    } else if (current > pack) {
+        next = current - pack;
+
+        if (next < pack) {
+            next = pack;
+        }
+    }
+
+    if (String(next) === String(input.val())) {
+        return;
+    }
+
+    input.val(next);
+    form.trigger('submit');
+});
+
+\$('#shopping-cart').on('change', 'input[name=\"quantity\"]', function() {
+    var input = \$(this);
+    var pack = parseInt(input.closest('form').attr('data-step'), 10) || 1;
+    var next = parseInt(input.val(), 10);
+
+    if (isNaN(next) || next < pack) {
+        next = pack;
+    } else if (next % pack !== 0) {
+        next = next + (pack - (next % pack));
+    }
+
+    input.val(next);
+    input.closest('form').trigger('submit');
+});
+
 \$('#shopping-cart').on('submit', '#output-cart form', function(e) {
     e.preventDefault();
 
     var element = this;
 
-    if (e.originalEvent !== undefined && e.originalEvent.submitter !== undefined) {
-        var button = e.originalEvent.submitter;
-    } else {
-        var button = '';
+    if (\$(element).data('saving')) {
+        return;
     }
+
+    var button = (e.originalEvent && e.originalEvent.submitter) ? e.originalEvent.submitter : \$(element).find('[formaction]').get(0);
 
     \$.ajax({
         url: \$(button).attr('formaction'),
@@ -261,10 +442,10 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
         data: \$(element).serialize(),
         dataType: 'json',
         beforeSend: function() {
-            \$(button).button('loading');
+            \$(element).data('saving', 1);
         },
         complete: function() {
-            \$(button).button('reset');
+            \$(element).data('saving', 0);
         },
         success: function(json) {
             if (json['redirect']) {
@@ -276,15 +457,91 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
             }
 
             if (json['success']) {
-                \$('#alert').prepend('<div class=\"alert alert-success alert-dismissible\"><i class=\"fa-solid fa-circle-exclamation\"></i> ' + json['success'] + ' <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button></div>');
-
                 \$('#shopping-cart').load('index.php?route=checkout/cart.list&language={{ language }}', {}, function() {
-                    \$('#cart').load('index.php?route=common/cart.info&language={{ language }}');
+                    var units = \$('#shopping-cart [data-units]').attr('data-units');
+
+                    if (units !== undefined) {
+                        \$('.cb-tools__cart .cb-pill').text(units);
+                    }
                 });
             }
         },
         error: function(xhr, ajaxOptions, thrownError) {
             console.log(thrownError + \"\\r\\n\" + xhr.statusText + \"\\r\\n\" + xhr.responseText);
+        }
+    });
+});
+
+\$('#shopping-cart').on('change', '[data-select-all]', function() {
+    \$('#output-cart .cb-bag__check').prop('checked', this.checked);
+});
+
+\$('#shopping-cart').on('change', '.cb-bag__check', function() {
+    var boxes = \$('#output-cart .cb-bag__check');
+    \$('[data-select-all]').prop('checked', boxes.length > 0 && boxes.filter(':checked').length === boxes.length);
+});
+
+\$('#shopping-cart').on('click', '[data-remove-selected]', function(e) {
+    e.preventDefault();
+
+    var urls = [];
+
+    \$('#output-cart .cb-bag__check:checked').each(function() {
+        var href = \$(this).closest('.cb-bag__item').find('.cb-bag__remove').attr('href');
+
+        if (href) {
+            urls.push(href);
+        }
+    });
+
+    if (!urls.length) {
+        return;
+    }
+
+    var next = function() {
+        var url = urls.shift();
+
+        if (!url) {
+            \$('#shopping-cart').load('index.php?route=checkout/cart.list&language={{ language }}', {}, function() {
+                var units = \$('#shopping-cart [data-units]').attr('data-units');
+
+                if (units !== undefined) {
+                    \$('.cb-tools__cart .cb-pill').text(units);
+                }
+            });
+            return;
+        }
+
+        \$.ajax({ url: url, dataType: 'json', complete: next });
+    };
+
+    next();
+});
+
+\$('#shopping-cart').on('submit', '.cb-also form', function(e) {
+    e.preventDefault();
+
+    var form = this;
+
+    \$.ajax({
+        url: \$(form).attr('action'),
+        type: 'post',
+        data: \$(form).serialize(),
+        dataType: 'json',
+        success: function(json) {
+            if (json['redirect']) {
+                location = json['redirect'];
+            }
+
+            if (json['success']) {
+                \$('#shopping-cart').load('index.php?route=checkout/cart.list&language={{ language }}', {}, function() {
+                    var units = \$('#shopping-cart [data-units]').attr('data-units');
+
+                    if (units !== undefined) {
+                        \$('.cb-tools__cart .cb-pill').text(units);
+                    }
+                });
+            }
         }
     });
 });
@@ -332,6 +589,14 @@ class __TwigTemplate_535d3b1caab8b99fdde98ec117f66058 extends Template
     window.setTimeout(function() {
         \$('#shopping-cart').load('index.php?route=checkout/cart.list&language={{ language }}');
     }, 3000);
+});
+
+\$(function() {
+    var block = document.getElementById('cb-cart-block');
+
+    if (block && block.getAttribute('data-message') && window.cbShowNotice) {
+        cbShowNotice('Checkout', block.getAttribute('data-message'));
+    }
 });
 //--></script>
 {{ footer }}

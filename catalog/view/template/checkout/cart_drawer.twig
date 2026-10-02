@@ -30,7 +30,7 @@
           <div>
             <a href="{{ product.href }}">{{ product.name }}</a>
             <em>{{ product.model }}</em>
-            <small>{{ product.quantity }} units · price locked</small>
+            <small>{{ product.quantity }} units · {% if priced %}{{ product.total }}{% else %}price locked{% endif %}</small>
           </div>
           <a class="btn-danger cb-cart__remove" href="{{ product.remove }}" aria-label="Remove">×</a>
         </div>
@@ -48,8 +48,8 @@
       <p class="cb-cart__kicker">Opening order guide</p>
       <span>$500 minimum</span>
     </div>
-    <div class="cb-cart__bar" aria-hidden="true"><span></span></div>
-    <p>Sign in to reveal your draft value and progress.</p>
+    <div class="cb-cart__bar" aria-hidden="true"><span style="width: {{ priced ? progress : 0 }}%"></span></div>
+    <p>{% if priced %}Draft value {{ draft_total }} toward the $500 opening order.{% elseif logged %}Price stays locked for this account.{% else %}Sign in to reveal your draft value and progress.{% endif %}</p>
   </section>
   <section class="cb-cart__ways">
     <div class="cb-cart__head">

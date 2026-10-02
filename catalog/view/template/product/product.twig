@@ -24,14 +24,24 @@
     <p class="cb-pdp__summary">{{ summary }}</p>
     <div class="cb-pdp__price">
       <div class="cb-pdp__figures">
-        <div>
-          <span>Suggested retail</span>
-          <strong>{{ price }}</strong>
-        </div>
-        <div>
-          <span>Wholesale</span>
-          <strong>{% if wholesale %}{{ wholesale_price }}{% else %}Locked{% endif %}</strong>
-        </div>
+        {% if trade or wholesale %}
+          <div>
+            <span>{% if trade %}Trade{% else %}Wholesale{% endif %}</span>
+            <strong>{{ trade ? trade_price : wholesale_price }}</strong>
+            <small class="cb-pdp__was{% if trade_off or wholesale_off %} is-off{% endif %}">{{ price }}</small>
+            {% if trade and trade_off %}<em class="cb-pdp__off">{{ trade_off }}</em>{% endif %}
+            {% if wholesale and wholesale_off %}<em class="cb-pdp__off">{{ wholesale_off }}</em>{% endif %}
+          </div>
+        {% else %}
+          <div>
+            <span>Suggested retail</span>
+            <strong>{{ price }}</strong>
+          </div>
+          <div>
+            <span>Your price</span>
+            <strong>Locked</strong>
+          </div>
+        {% endif %}
       </div>
       {% if logged %}
         <h2>Add this case pack to your order.</h2>
@@ -85,7 +95,7 @@
       <div>
         <p class="cb-ship{% if product.wait %} cb-ship--wait{% endif %}">{{ product.ship }}</p>
         <hr>
-        <span class="cb-card__foot">{% if wholesale %}Wholesale pricing unlocked{% elseif logged %}Wholesale price locked{% else %}Sign in to view wholesale pricing{% endif %} <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+        <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
       </div>
     </a>
     {% endfor %}

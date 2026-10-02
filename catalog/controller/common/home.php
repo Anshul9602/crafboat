@@ -29,6 +29,10 @@ class Home extends \Opencart\System\Engine\Controller {
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$language = $this->config->get('config_language');
 		$data['shop'] = $this->url->link('product/category', 'language=' . $language . '&path=100');
+		$data['arrivals'] = $this->url->link('product/category', 'language=' . $language . '&path=100_108');
+		$data['bestsellers_link'] = $this->url->link('product/category', 'language=' . $language . '&path=100_109');
+		$data['ready_link'] = $this->url->link('product/category', 'language=' . $language . '&path=100_110');
+		$data['holiday'] = $this->url->link('product/category', 'language=' . $language . '&path=100_111');
 		$data['paper'] = $this->url->link('product/category', 'language=' . $language . '&path=104');
 		$data['dept_home'] = $this->url->link('product/category', 'language=' . $language . '&path=102');
 		$data['dept_storage'] = $this->url->link('product/category', 'language=' . $language . '&path=107');
@@ -53,7 +57,7 @@ class Home extends \Opencart\System\Engine\Controller {
 	 * @return array<int, array<string, string>>
 	 */
 	private function homeCategories(): array {
-		$query = $this->db->query("SELECT `c`.`category_id`, `c`.`image`, `cd`.`name` FROM `" . DB_PREFIX . "category` `c` LEFT JOIN `" . DB_PREFIX . "category_description` `cd` ON (`c`.`category_id` = `cd`.`category_id`) WHERE `c`.`parent_id` = '100' AND `c`.`status` = '1' AND `cd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND `c`.`category_id` <> '107' ORDER BY `c`.`sort_order` ASC");
+		$query = $this->db->query("SELECT `c`.`category_id`, `c`.`image`, `cd`.`name` FROM `" . DB_PREFIX . "category` `c` LEFT JOIN `" . DB_PREFIX . "category_description` `cd` ON (`c`.`category_id` = `cd`.`category_id`) WHERE `c`.`parent_id` = '100' AND `c`.`status` = '1' AND `cd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND `c`.`category_id` NOT IN (107, 108, 109, 110, 111) ORDER BY `c`.`sort_order` ASC");
 
 		$categories = [];
 
@@ -64,7 +68,7 @@ class Home extends \Opencart\System\Engine\Controller {
 				'href'  => $this->url->link('product/category', 'language=' . $this->config->get('config_language') . '&path=' . $row['category_id'])
 			];
 		}
-
+0
 		return $categories;
 	}
 
@@ -94,6 +98,8 @@ class Home extends \Opencart\System\Engine\Controller {
 			];
 		}
 
-		return $cards;
+		$this->load->model('catalog/product');
+
+		return $this->model_catalog_product->withRolePrices($cards);
 	}
 }

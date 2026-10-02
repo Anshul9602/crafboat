@@ -72,6 +72,8 @@ class Cart extends \Opencart\System\Engine\Controller {
 	 * @return string
 	 */
 	public function getList(bool $drawer = false): string {
+		$this->cart->applyMinimum();
+
 		if (isset($this->session->data['error'])) {
 			$data['error_warning'] = $this->session->data['error'];
 
@@ -165,7 +167,8 @@ class Cart extends \Opencart\System\Engine\Controller {
 				'thumb'        => $this->model_tool_image->resize($product['image'] ?: 'catalog/craftboat/p1.png', 160, 160),
 				'subscription' => $subscription,
 				'stock'        => $product['stock_status'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
-				'minimum'      => !$product['minimum_status'] ? sprintf($this->language->get('error_minimum'), $product['minimum']) : 0,
+				'pack'         => max(1, (int)$product['minimum']),
+				'short'        => !$product['minimum_status'],
 				'price'        => $price_status ? $product['price_text'] : '',
 				'total'        => $price_status ? $product['total_text'] : '',
 				'href'         => $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $product['product_id']),
@@ -221,6 +224,63 @@ class Cart extends \Opencart\System\Engine\Controller {
 			$data['unit_count'] += (int)$product['quantity'];
 		}
 
+		$data['item_count'] = count($data['products']);
+		$data['shop'] = $this->url->link('product/category', $lang . '&path=100');
+		$data['cart_add'] = $this->url->link('checkout/cart.add', $lang);
+		$data['suggestions'] = [];
+
+		if (!$data['weight']) {
+			$data['weight'] = $this->weight->format($this->cart->getWeight(), $this->config->get('config_weight_class_id'), $this->language->get('decimal_point'), $this->language->get('thousand_point'));
+		}
+
+		if (!$drawer) {
+			$this->load->model('catalog/product');
+			$skip = array_map('intval', array_column($data['products'], 'product_id'));
+			$sql = "SELECT `p`.`product_id` FROM `" . DB_PREFIX . "product` `p` LEFT JOIN `" . DB_PREFIX . "product_to_store` `p2s` ON (`p`.`product_id` = `p2s`.`product_id`) WHERE `p`.`status` = '1' AND `p`.`date_available` <= NOW() AND `p2s`.`store_id` = '" . (int)$this->config->get('config_store_id') . "'";
+
+			if ($skip) {
+				$sql .= " AND `p`.`product_id` NOT IN (" . implode(',', $skip) . ")";
+			}
+
+			$sql .= " ORDER BY `p`.`sort_order` ASC, `p`.`product_id` ASC LIMIT 4";
+			$suggest = $this->db->query($sql);
+
+			foreach ($suggest->rows as $row) {
+				$info = $this->model_catalog_product->getProduct((int)$row['product_id']);
+
+				if (!$info) {
+					continue;
+				}
+
+				$tags = array_map('trim', explode(',', (string)($info['tag'] ?? '')));
+				$made = in_array('made', $tags, true);
+				$image = (string)($info['image'] ?? '');
+				$data['suggestions'][] = [
+					'product_id' => (int)$info['product_id'],
+					'name'       => $info['name'],
+					'sku'        => $info['model'],
+					'category'   => (string)($info['meta_keyword'] ?? ''),
+					'collection' => (string)($info['location'] ?? ''),
+					'image'      => 'image/' . ($image !== '' ? $image : 'catalog/craftboat/p1.png'),
+					'href'       => $this->url->link('product/product', $lang . '&product_id=' . (int)$info['product_id']),
+					'badge'      => in_array('new', $tags, true) ? 'new' : (in_array('bestseller', $tags, true) ? 'bestseller' : 'ready'),
+					'ship'       => $made ? 'Made to order · Ships in 10–12 days' : 'Ready to ship · Dispatches in 3–5 days',
+					'wait'       => $made
+				];
+			}
+
+			$data['suggestions'] = $this->model_catalog_product->withRolePrices($data['suggestions']);
+		}
+
+		$data['logged'] = $this->customer->isLogged();
+		$data['priced'] = false;
+
+		if ($data['logged']) {
+			$group_query = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$this->customer->getGroupId() . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+			$data['priced'] = in_array(oc_strtolower((string)($group_query->row['name'] ?? '')), ['trade', 'wholesale'], true);
+		}
+
+		$data['draft_total'] = $data['priced'] ? $this->currency->format((float)$total, $this->session->data['currency']) : '';
 		$data['progress'] = min(100, (int)round(((float)$total / 500) * 100));
 
 		return $this->load->view($drawer ? 'checkout/cart_drawer' : 'checkout/cart_list', $data);
@@ -307,7 +367,19 @@ class Cart extends \Opencart\System\Engine\Controller {
 		}
 
 		if (!$json) {
-			$this->cart->add($product_info['product_id'], $quantity, $option, $subscription_plan_id);
+			$minimum = max(1, (int)$product_info['minimum']);
+
+			if ($quantity < $minimum) {
+				$quantity = $minimum;
+			}
+
+			$existing = $this->db->query("SELECT `cart_id`, `quantity` FROM `" . DB_PREFIX . "cart` WHERE `store_id` = '" . (int)$this->config->get('config_store_id') . "' AND `customer_id` = '" . (int)$this->customer->getId() . "' AND `session_id` = '" . $this->db->escape($this->session->getId()) . "' AND `product_id` = '" . (int)$product_info['product_id'] . "' AND `subscription_plan_id` = '" . (int)$subscription_plan_id . "' AND `option` = '" . $this->db->escape(json_encode($option)) . "'");
+
+			if ($existing->num_rows && (int)$existing->row['quantity'] < $minimum) {
+				$this->cart->update((int)$existing->row['cart_id'], $minimum);
+			} else {
+				$this->cart->add($product_info['product_id'], $quantity, $option, $subscription_plan_id);
+			}
 
 			$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $product_info['product_id']), $product_info['name'], $this->url->link('checkout/cart', 'language=' . $this->config->get('config_language')));
 
@@ -345,6 +417,19 @@ class Cart extends \Opencart\System\Engine\Controller {
 			$quantity = (int)$this->request->post['quantity'];
 		} else {
 			$quantity = 1;
+		}
+
+		$pack = 1;
+
+		foreach ($this->cart->getProducts() as $product) {
+			if ((int)$product['cart_id'] === $key) {
+				$pack = max(1, (int)$product['minimum']);
+				break;
+			}
+		}
+
+		if ($quantity < $pack) {
+			$quantity = $pack;
 		}
 
 		// Handles single item update

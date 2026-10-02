@@ -10,22 +10,24 @@
   {% endif %}
   <div class="row">{{ column_left }}
     <div id="content" class="col">{{ content_top }}
-      <h1>{{ text_address_book }}</h1>
-      <div id="address">{{ list }}</div>
-      <div class="row">
-        <div class="col">
+      <div class="cb-addr-head">
+        <h1>{{ text_address_book }}</h1>
+        <div>
           <a href="{{ back }}" class="btn btn-light">{{ button_back }}</a>
-        </div>
-        <div class="col text-end">
           <a href="{{ add }}" class="btn btn-primary">{{ button_new_address }}</a>
         </div>
       </div>
+      <div id="address">{{ list }}</div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
 <script type="text/javascript"><!--
 $('#address').on('click', '.btn-danger', function(e) {
     e.preventDefault();
+
+    if (!window.confirm('Delete this address?')) {
+        return;
+    }
 
     var element = this;
 

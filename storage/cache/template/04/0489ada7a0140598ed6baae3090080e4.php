@@ -41,54 +41,168 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
         // line 1
         yield ($context["header"] ?? null);
         yield "
-<section class=\"cb-coll-hero\" style=\"background-image:url('";
+<section class=\"cb-coll-hero\" data-cb-banner";
         // line 2
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "image", [], "any", false, false, false, 2);
-        yield "')\">
-  <div class=\"cb-coll-hero__shade\"></div>
+        if ((Twig\Extension\CoreExtension::length($this->env->getCharset(), ($context["banners"] ?? null)) == 1)) {
+            yield " style=\"--cb-banner:url('";
+            yield CoreExtension::getAttribute($this->env, $this->source, (($_v0 = ($context["banners"] ?? null)) && is_array($_v0) || $_v0 instanceof ArrayAccess ? ($_v0[0] ?? null) : null), "image", [], "any", false, false, false, 2);
+            yield "');";
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, (($_v1 = ($context["banners"] ?? null)) && is_array($_v1) || $_v1 instanceof ArrayAccess ? ($_v1[0] ?? null) : null), "mobile", [], "any", false, false, false, 2)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                yield "--cb-banner-mobile:url('";
+                yield CoreExtension::getAttribute($this->env, $this->source, (($_v2 = ($context["banners"] ?? null)) && is_array($_v2) || $_v2 instanceof ArrayAccess ? ($_v2[0] ?? null) : null), "mobile", [], "any", false, false, false, 2);
+                yield "');";
+            }
+            yield "\"";
+        }
+        yield ">
+  ";
+        // line 3
+        if ((Twig\Extension\CoreExtension::length($this->env->getCharset(), ($context["banners"] ?? null)) > 1)) {
+            // line 4
+            yield "    ";
+            $context['_parent'] = $context;
+            $context['_seq'] = CoreExtension::ensureTraversable(($context["banners"] ?? null));
+            $context['loop'] = [
+              'parent' => $context['_parent'],
+              'index0' => 0,
+              'index'  => 1,
+              'first'  => true,
+            ];
+            if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof \Countable)) {
+                $length = count($context['_seq']);
+                $context['loop']['revindex0'] = $length - 1;
+                $context['loop']['revindex'] = $length;
+                $context['loop']['length'] = $length;
+                $context['loop']['last'] = 1 === $length;
+            }
+            foreach ($context['_seq'] as $context["_key"] => $context["banner"]) {
+                // line 5
+                yield "    <div class=\"cb-coll-hero__slide";
+                if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["loop"], "first", [], "any", false, false, false, 5)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                    yield " is-on";
+                }
+                yield "\" style=\"--cb-banner:url('";
+                yield CoreExtension::getAttribute($this->env, $this->source, $context["banner"], "image", [], "any", false, false, false, 5);
+                yield "');";
+                if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["banner"], "mobile", [], "any", false, false, false, 5)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                    yield "--cb-banner-mobile:url('";
+                    yield CoreExtension::getAttribute($this->env, $this->source, $context["banner"], "mobile", [], "any", false, false, false, 5);
+                    yield "');";
+                }
+                yield "\"></div>
+    ";
+                ++$context['loop']['index0'];
+                ++$context['loop']['index'];
+                $context['loop']['first'] = false;
+                if (isset($context['loop']['revindex0'], $context['loop']['revindex'])) {
+                    --$context['loop']['revindex0'];
+                    --$context['loop']['revindex'];
+                    $context['loop']['last'] = 0 === $context['loop']['revindex0'];
+                }
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_key'], $context['banner'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 7
+            yield "  ";
+        }
+        // line 8
+        yield "  <div class=\"cb-coll-hero__shade\"></div>
   <div class=\"cb-coll-hero__copy\">
     <p class=\"cb-kicker\">Wholesale collection · Pricing locked</p>
     <h1>";
-        // line 6
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "name", [], "any", false, false, false, 6);
+        // line 11
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "name", [], "any", false, false, false, 11);
         yield "</h1>
     <p>";
-        // line 7
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "summary", [], "any", false, false, false, 7);
+        // line 12
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "summary", [], "any", false, false, false, 12);
         yield "</p>
     <div class=\"cb-hero__actions\">
       <a class=\"cb-btn cb-btn--white\" href=\"#assortment\">Explore products</a>
       <a class=\"cb-btn cb-btn--ghost\" href=\"";
-        // line 10
+        // line 15
         yield ($context["register"] ?? null);
         yield "\">Apply for a Trade Account</a>
     </div>
   </div>
-  <img class=\"cb-hero__dots\" src=\"catalog/view/image/craftboat/dots.svg\" alt=\"\">
-</section>
+  ";
+        // line 18
+        if ((Twig\Extension\CoreExtension::length($this->env->getCharset(), ($context["banners"] ?? null)) > 1)) {
+            // line 19
+            yield "  <div class=\"cb-hero__dots cb-hero__dots--list\">
+    ";
+            // line 20
+            $context['_parent'] = $context;
+            $context['_seq'] = CoreExtension::ensureTraversable(($context["banners"] ?? null));
+            $context['loop'] = [
+              'parent' => $context['_parent'],
+              'index0' => 0,
+              'index'  => 1,
+              'first'  => true,
+            ];
+            if (is_array($context['_seq']) || (is_object($context['_seq']) && $context['_seq'] instanceof \Countable)) {
+                $length = count($context['_seq']);
+                $context['loop']['revindex0'] = $length - 1;
+                $context['loop']['revindex'] = $length;
+                $context['loop']['length'] = $length;
+                $context['loop']['last'] = 1 === $length;
+            }
+            foreach ($context['_seq'] as $context["_key"] => $context["banner"]) {
+                // line 21
+                yield "    <button type=\"button\" data-cb-dot";
+                if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["loop"], "first", [], "any", false, false, false, 21)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                    yield " class=\"is-on\"";
+                }
+                yield " aria-label=\"";
+                yield CoreExtension::getAttribute($this->env, $this->source, $context["banner"], "title", [], "any", false, false, false, 21);
+                yield "\"></button>
+    ";
+                ++$context['loop']['index0'];
+                ++$context['loop']['index'];
+                $context['loop']['first'] = false;
+                if (isset($context['loop']['revindex0'], $context['loop']['revindex'])) {
+                    --$context['loop']['revindex0'];
+                    --$context['loop']['revindex'];
+                    $context['loop']['last'] = 0 === $context['loop']['revindex0'];
+                }
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_key'], $context['banner'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 23
+            yield "  </div>
+  ";
+        } else {
+            // line 25
+            yield "  <img class=\"cb-hero__dots\" src=\"catalog/view/image/craftboat/dots.svg\" alt=\"\">
+  ";
+        }
+        // line 27
+        yield "</section>
 
 <nav class=\"cb-coll-switch\" aria-label=\"Explore collections\">
   <span>Explore collections</span>
   ";
-        // line 18
+        // line 31
         $context['_parent'] = $context;
         $context['_seq'] = CoreExtension::ensureTraversable(($context["collections"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["item"]) {
-            // line 19
+            // line 32
             yield "  <a href=\"";
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["item"], "href", [], "any", false, false, false, 19);
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["item"], "href", [], "any", false, false, false, 32);
             yield "\"";
-            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["item"], "active", [], "any", false, false, false, 19)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["item"], "active", [], "any", false, false, false, 32)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
                 yield " class=\"is-on\"";
             }
             yield ">
     <strong>";
-            // line 20
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["item"], "name", [], "any", false, false, false, 20);
+            // line 33
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["item"], "name", [], "any", false, false, false, 33);
             yield "</strong>
     <em>";
-            // line 21
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["item"], "blurb", [], "any", false, false, false, 21);
+            // line 34
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["item"], "blurb", [], "any", false, false, false, 34);
             yield "</em>
   </a>
   ";
@@ -96,7 +210,7 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_key'], $context['item'], $context['_parent']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 24
+        // line 37
         yield "</nav>
 
 <section class=\"cb-coll-note\">
@@ -120,8 +234,8 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
   <div class=\"cb-head\">
     <div>
       <p class=\"cb-kicker\">";
-        // line 46
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "heading", [], "any", false, false, false, 46);
+        // line 59
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "heading", [], "any", false, false, false, 59);
         yield "</p>
       <h2>Build the collection into your store.</h2>
     </div>
@@ -130,7 +244,7 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
   <div class=\"cb-coll-tools\">
     <div class=\"cb-coll-filters\">
       <a class=\"";
-        // line 53
+        // line 66
         if ((($context["availability"] ?? null) == "all")) {
             yield "is-on";
         }
@@ -138,7 +252,7 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
         yield ($context["filter_all"] ?? null);
         yield "\">All</a>
       <a class=\"";
-        // line 54
+        // line 67
         if ((($context["availability"] ?? null) == "ready")) {
             yield "is-on";
         }
@@ -146,7 +260,7 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
         yield ($context["filter_ready"] ?? null);
         yield "\">Ready to ship</a>
       <a class=\"";
-        // line 55
+        // line 68
         if ((($context["availability"] ?? null) == "made")) {
             yield "is-on";
         }
@@ -158,24 +272,24 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
       <input type=\"hidden\" name=\"route\" value=\"product/collection\">
       <input type=\"hidden\" name=\"language\" value=\"en-gb\">
       <input type=\"hidden\" name=\"collection\" value=\"";
-        // line 60
-        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "code", [], "any", false, false, false, 60);
+        // line 73
+        yield CoreExtension::getAttribute($this->env, $this->source, ($context["collection"] ?? null), "code", [], "any", false, false, false, 73);
         yield "\">
       <input type=\"hidden\" name=\"availability\" value=\"";
-        // line 61
+        // line 74
         yield ($context["availability"] ?? null);
         yield "\">
       <span>Sort</span>
       <label>
         <select name=\"sort\" aria-label=\"Sort\" onchange=\"this.form.submit()\">
           <option value=\"featured\"";
-        // line 65
+        // line 78
         if ((($context["sort"] ?? null) == "featured")) {
             yield " selected";
         }
         yield ">Featured</option>
           <option value=\"name\"";
-        // line 66
+        // line 79
         if ((($context["sort"] ?? null) == "name")) {
             yield " selected";
         }
@@ -187,75 +301,85 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
   </div>
   <div class=\"cb-grid\">
     ";
-        // line 73
+        // line 86
         $context['_parent'] = $context;
         $context['_seq'] = CoreExtension::ensureTraversable(($context["products"] ?? null));
         $context['_iterated'] = false;
         foreach ($context['_seq'] as $context["_key"] => $context["product"]) {
-            // line 74
+            // line 87
             yield "    <a class=\"cb-card\" href=\"";
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "href", [], "any", false, false, false, 74);
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "href", [], "any", false, false, false, 87);
             yield "\">
       <span class=\"cb-badge\">";
-            // line 75
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "badge", [], "any", false, false, false, 75);
+            // line 88
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "badge", [], "any", false, false, false, 88);
             yield "</span>
-      <img class=\"cb-heart\" src=\"catalog/view/image/craftboat/heart.svg\" alt=\"\">
+      <span class=\"cb-heart\" role=\"button\" tabindex=\"0\" data-wishlist=\"";
+            // line 89
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "product_id", [], "any", false, false, false, 89);
+            yield "\" aria-label=\"Save\"><img src=\"catalog/view/image/craftboat/heart.svg\" alt=\"\"></span>
       <img class=\"cb-card__img\" src=\"";
-            // line 77
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "image", [], "any", false, false, false, 77);
+            // line 90
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "image", [], "any", false, false, false, 90);
             yield "\" alt=\"";
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "name", [], "any", false, false, false, 77);
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "name", [], "any", false, false, false, 90);
             yield "\">
       <div>
         <div class=\"cb-meta\"><span>";
-            // line 79
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "category", [], "any", false, false, false, 79);
+            // line 92
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "category", [], "any", false, false, false, 92);
             yield "</span><span>";
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "sku", [], "any", false, false, false, 79);
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "sku", [], "any", false, false, false, 92);
             yield "</span></div>
         <h3>";
-            // line 80
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "name", [], "any", false, false, false, 80);
+            // line 93
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "name", [], "any", false, false, false, 93);
             yield "</h3>
         <p class=\"cb-collection\">";
-            // line 81
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "collection", [], "any", false, false, false, 81);
+            // line 94
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "collection", [], "any", false, false, false, 94);
             yield "</p>
       </div>
       <div>
         <p class=\"cb-ship";
-            // line 84
-            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "wait", [], "any", false, false, false, 84)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+            // line 97
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "wait", [], "any", false, false, false, 97)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
                 yield " cb-ship--wait";
             }
             yield "\">";
-            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "ship", [], "any", false, false, false, 84);
+            yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "ship", [], "any", false, false, false, 97);
             yield "</p>
         <hr>
-        <span class=\"cb-card__foot\">";
-            // line 86
-            if ((($tmp = ($context["logged"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                yield "Signed in · pricing unlocks after approval";
+        <span class=\"cb-card__foot\"><span>";
+            // line 99
+            if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "role_price", [], "any", false, false, false, 99)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                if ((($tmp = CoreExtension::getAttribute($this->env, $this->source, $context["product"], "role_base", [], "any", false, false, false, 99)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                    yield "<s class=\"cb-card__was\">";
+                    yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "role_base", [], "any", false, false, false, 99);
+                    yield "</s>";
+                }
+                yield CoreExtension::getAttribute($this->env, $this->source, $context["product"], "role_price", [], "any", false, false, false, 99);
+            } elseif ((($tmp = ($context["logged"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                yield "Pricing locked for this account";
             } else {
-                yield "Sign in to view wholesale pricing";
+                yield "Sign in to view pricing";
             }
-            yield " <img src=\"catalog/view/image/craftboat/arrow.svg\" alt=\"\"></span>
+            yield "</span> <img src=\"catalog/view/image/craftboat/arrow.svg\" alt=\"\"></span>
       </div>
     </a>
     ";
             $context['_iterated'] = true;
         }
-        // line 89
+        // line 102
         if (!$context['_iterated']) {
-            // line 90
+            // line 103
             yield "    <p class=\"cb-muted\">No products in this view yet.</p>
     ";
         }
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_key'], $context['product'], $context['_parent'], $context['_iterated']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 92
+        // line 105
         yield "  </div>
 </section>
 
@@ -266,7 +390,7 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
     <h2 class=\"cb-display\">Made as a family, finished by hand.</h2>
     <p>Hand-carved blocks register each colour separately before the printed cotton is wrapped, pleated, stitched or bound in Jaipur.</p>
     <p><a class=\"cb-btn cb-btn--black\" href=\"";
-        // line 101
+        // line 114
         yield ($context["about"] ?? null);
         yield "\">Discover Craft Boat’s process →</a></p>
   </div>
@@ -279,11 +403,11 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
   </div>
   <div class=\"cb-unlock__actions\">
     <a class=\"cb-btn cb-btn--black\" href=\"";
-        // line 111
+        // line 124
         yield ($context["register"] ?? null);
         yield "\">Apply for a trade account →</a>
     <a class=\"cb-unlock__login\" href=\"";
-        // line 112
+        // line 125
         yield (((($tmp = ($context["logged"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) ? (($context["account"] ?? null)) : (($context["login"] ?? null)));
         yield "\">";
         if ((($tmp = ($context["logged"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
@@ -304,7 +428,7 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
   <a class=\"cb-btn cb-btn--white\" href=\"https://www.seedsofanaar.com/\" target=\"_blank\" rel=\"noopener\">Seeds of Anaar <img src=\"catalog/view/image/craftboat/external.svg\" alt=\"\"></a>
 </section>
 ";
-        // line 124
+        // line 137
         yield ($context["footer"] ?? null);
         yield "
 ";
@@ -332,13 +456,18 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  308 => 124,  287 => 112,  283 => 111,  270 => 101,  259 => 92,  252 => 90,  250 => 89,  238 => 86,  229 => 84,  223 => 81,  219 => 80,  213 => 79,  206 => 77,  201 => 75,  196 => 74,  191 => 73,  179 => 66,  173 => 65,  166 => 61,  162 => 60,  150 => 55,  142 => 54,  134 => 53,  124 => 46,  100 => 24,  91 => 21,  87 => 20,  78 => 19,  74 => 18,  63 => 10,  57 => 7,  53 => 6,  46 => 2,  42 => 1,);
+        return array (  432 => 137,  411 => 125,  407 => 124,  394 => 114,  383 => 105,  376 => 103,  374 => 102,  355 => 99,  346 => 97,  340 => 94,  336 => 93,  330 => 92,  323 => 90,  319 => 89,  315 => 88,  310 => 87,  305 => 86,  293 => 79,  287 => 78,  280 => 74,  276 => 73,  264 => 68,  256 => 67,  248 => 66,  238 => 59,  214 => 37,  205 => 34,  201 => 33,  192 => 32,  188 => 31,  182 => 27,  178 => 25,  174 => 23,  153 => 21,  136 => 20,  133 => 19,  131 => 18,  125 => 15,  119 => 12,  115 => 11,  110 => 8,  107 => 7,  80 => 5,  62 => 4,  60 => 3,  46 => 2,  42 => 1,);
     }
 
     public function getSourceContext(): Source
     {
         return new Source("{{ header }}
-<section class=\"cb-coll-hero\" style=\"background-image:url('{{ collection.image }}')\">
+<section class=\"cb-coll-hero\" data-cb-banner{% if banners|length == 1 %} style=\"--cb-banner:url('{{ banners[0].image }}');{% if banners[0].mobile %}--cb-banner-mobile:url('{{ banners[0].mobile }}');{% endif %}\"{% endif %}>
+  {% if banners|length > 1 %}
+    {% for banner in banners %}
+    <div class=\"cb-coll-hero__slide{% if loop.first %} is-on{% endif %}\" style=\"--cb-banner:url('{{ banner.image }}');{% if banner.mobile %}--cb-banner-mobile:url('{{ banner.mobile }}');{% endif %}\"></div>
+    {% endfor %}
+  {% endif %}
   <div class=\"cb-coll-hero__shade\"></div>
   <div class=\"cb-coll-hero__copy\">
     <p class=\"cb-kicker\">Wholesale collection · Pricing locked</p>
@@ -349,7 +478,15 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
       <a class=\"cb-btn cb-btn--ghost\" href=\"{{ register }}\">Apply for a Trade Account</a>
     </div>
   </div>
+  {% if banners|length > 1 %}
+  <div class=\"cb-hero__dots cb-hero__dots--list\">
+    {% for banner in banners %}
+    <button type=\"button\" data-cb-dot{% if loop.first %} class=\"is-on\"{% endif %} aria-label=\"{{ banner.title }}\"></button>
+    {% endfor %}
+  </div>
+  {% else %}
   <img class=\"cb-hero__dots\" src=\"catalog/view/image/craftboat/dots.svg\" alt=\"\">
+  {% endif %}
 </section>
 
 <nav class=\"cb-coll-switch\" aria-label=\"Explore collections\">
@@ -412,7 +549,7 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
     {% for product in products %}
     <a class=\"cb-card\" href=\"{{ product.href }}\">
       <span class=\"cb-badge\">{{ product.badge }}</span>
-      <img class=\"cb-heart\" src=\"catalog/view/image/craftboat/heart.svg\" alt=\"\">
+      <span class=\"cb-heart\" role=\"button\" tabindex=\"0\" data-wishlist=\"{{ product.product_id }}\" aria-label=\"Save\"><img src=\"catalog/view/image/craftboat/heart.svg\" alt=\"\"></span>
       <img class=\"cb-card__img\" src=\"{{ product.image }}\" alt=\"{{ product.name }}\">
       <div>
         <div class=\"cb-meta\"><span>{{ product.category }}</span><span>{{ product.sku }}</span></div>
@@ -422,7 +559,7 @@ class __TwigTemplate_390683885bdf495e26ec9091c1aece13 extends Template
       <div>
         <p class=\"cb-ship{% if product.wait %} cb-ship--wait{% endif %}\">{{ product.ship }}</p>
         <hr>
-        <span class=\"cb-card__foot\">{% if logged %}Signed in · pricing unlocks after approval{% else %}Sign in to view wholesale pricing{% endif %} <img src=\"catalog/view/image/craftboat/arrow.svg\" alt=\"\"></span>
+        <span class=\"cb-card__foot\"><span>{% if product.role_price %}{% if product.role_base %}<s class=\"cb-card__was\">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src=\"catalog/view/image/craftboat/arrow.svg\" alt=\"\"></span>
       </div>
     </a>
     {% else %}

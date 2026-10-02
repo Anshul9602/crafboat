@@ -79,155 +79,170 @@ class __TwigTemplate_e8fa28b73ecc42e153ebb7343fcaa98a extends Template
         yield ($context["content_top"] ?? null);
         yield "
       <h1>Your trade account</h1>
-      <div class=\"cb-acct-board\">
-        <section class=\"cb-acct-card\">
-          <h2>";
-        // line 16
-        yield ($context["text_my_account"] ?? null);
-        yield "</h2>
-          <a href=\"";
-        // line 17
-        yield ($context["edit"] ?? null);
-        yield "\">";
-        yield ($context["text_edit"] ?? null);
-        yield "</a>
-          <a href=\"";
-        // line 18
-        yield ($context["password"] ?? null);
-        yield "\">";
-        yield ($context["text_password"] ?? null);
-        yield "</a>
-          <a href=\"";
-        // line 19
-        yield ($context["payment_method"] ?? null);
-        yield "\">";
-        yield ($context["text_payment_method"] ?? null);
-        yield "</a>
-          <a href=\"";
+      <div class=\"cb-acct-tiles\">
+        <a class=\"cb-acct-tile\" href=\"";
+        // line 15
+        yield ($context["wishlist"] ?? null);
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-heart\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Wishlist</strong><em>Save pieces for a later order.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
         // line 20
         yield ($context["address"] ?? null);
-        yield "\">";
-        yield ($context["text_address"] ?? null);
-        yield "</a>
-          <a href=\"";
-        // line 21
-        yield ($context["wishlist"] ?? null);
-        yield "\">";
-        yield ($context["text_wishlist"] ?? null);
-        yield "</a>
-        </section>
-        <section class=\"cb-acct-card\">
-          <h2>";
-        // line 24
-        yield ($context["text_my_orders"] ?? null);
-        yield "</h2>
-          <a href=\"";
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-location-dot\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Address book</strong><em>Shipping and billing addresses.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
         // line 25
+        yield ($context["password"] ?? null);
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-lock\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Password</strong><em>Change your account password.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
+        // line 30
         yield ($context["order"] ?? null);
-        yield "\">";
-        yield ($context["text_order"] ?? null);
-        yield "</a>
-          <a href=\"";
-        // line 26
-        yield ($context["subscription"] ?? null);
-        yield "\">";
-        yield ($context["text_subscription"] ?? null);
-        yield "</a>
-          <a href=\"";
-        // line 27
-        yield ($context["download"] ?? null);
-        yield "\">";
-        yield ($context["text_download"] ?? null);
-        yield "</a>
-          ";
-        // line 28
-        if ((($tmp = ($context["reward"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-            // line 29
-            yield "            <a href=\"";
-            yield ($context["reward"] ?? null);
-            yield "\">";
-            yield ($context["text_reward"] ?? null);
-            yield "</a>
-          ";
-        }
-        // line 31
-        yield "          <a href=\"";
-        yield ($context["return"] ?? null);
-        yield "\">";
-        yield ($context["text_return"] ?? null);
-        yield "</a>
-          <a href=\"";
-        // line 32
-        yield ($context["transaction"] ?? null);
-        yield "\">";
-        yield ($context["text_transaction"] ?? null);
-        yield "</a>
-        </section>
-        <div class=\"cb-acct-stack\">
-          ";
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-box\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Orders</strong><em>View your order history.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
         // line 35
-        if ((($tmp = ($context["affiliate"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-            // line 36
-            yield "            <section class=\"cb-acct-card\">
-              <h2>";
-            // line 37
-            yield ($context["text_my_affiliate"] ?? null);
-            yield "</h2>
-              ";
-            // line 38
-            if ((($tmp =  !($context["tracking"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
-                // line 39
-                yield "                <a href=\"";
-                yield ($context["affiliate"] ?? null);
-                yield "\">";
-                yield ($context["text_affiliate_add"] ?? null);
-                yield "</a>
-              ";
-            } else {
-                // line 41
-                yield "                <a href=\"";
-                yield ($context["affiliate"] ?? null);
-                yield "\">";
-                yield ($context["text_affiliate_edit"] ?? null);
-                yield "</a>
-                <a href=\"";
-                // line 42
-                yield ($context["tracking"] ?? null);
-                yield "\">";
-                yield ($context["text_tracking"] ?? null);
-                yield "</a>
-              ";
-            }
-            // line 44
-            yield "            </section>
-          ";
-        }
-        // line 46
-        yield "          <section class=\"cb-acct-card\">
-            <h2>";
-        // line 47
-        yield ($context["text_my_newsletter"] ?? null);
-        yield "</h2>
-            <a href=\"";
-        // line 48
+        yield ($context["download"] ?? null);
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-download\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Downloads</strong><em>Files from your orders.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
+        // line 40
+        yield ($context["return"] ?? null);
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-rotate-left\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Returns</strong><em>Manage your return requests.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
+        // line 45
         yield ($context["newsletter"] ?? null);
-        yield "\">";
-        yield ($context["text_newsletter"] ?? null);
-        yield "</a>
-          </section>
-        </div>
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-envelope\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Newsletter</strong><em>Studio notes and wholesale updates.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
+        // line 50
+        yield ($context["edit"] ?? null);
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-user\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Account</strong><em>Edit your name, email and phone.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
+        // line 55
+        yield ($context["payment_method"] ?? null);
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-credit-card\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Payment methods</strong><em>Cards saved for checkout.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
+        // line 60
+        yield ($context["subscription"] ?? null);
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-repeat\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Subscriptions</strong><em>Recurring orders on your account.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"";
+        // line 65
+        yield ($context["transaction"] ?? null);
+        yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-receipt\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Transactions</strong><em>Balance and account activity.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        ";
+        // line 70
+        if ((($tmp = ($context["reward"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+            // line 71
+            yield "        <a class=\"cb-acct-tile\" href=\"";
+            yield ($context["reward"] ?? null);
+            yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-star\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Reward points</strong><em>Points earned on your orders.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        ";
+        }
+        // line 77
+        yield "        ";
+        if ((($tmp = ($context["affiliate"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+            // line 78
+            yield "        <a class=\"cb-acct-tile\" href=\"";
+            yield ($context["affiliate"] ?? null);
+            yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-user-plus\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Affiliate</strong><em>";
+            // line 80
+            if ((($tmp =  !($context["tracking"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                yield "Register for an affiliate account.";
+            } else {
+                yield "Edit your affiliate information.";
+            }
+            yield "</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        ";
+            // line 83
+            if ((($tmp = ($context["tracking"] ?? null)) && $tmp instanceof Markup ? (string) $tmp : $tmp)) {
+                // line 84
+                yield "        <a class=\"cb-acct-tile\" href=\"";
+                yield ($context["tracking"] ?? null);
+                yield "\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-link\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Tracking</strong><em>Your affiliate tracking code.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        ";
+            }
+            // line 90
+            yield "        ";
+        }
+        // line 91
+        yield "      </div>
+      <h2 class=\"cb-acct-kicker\">Quick actions</h2>
+      <div class=\"cb-acct-actions\">
+        <a class=\"cb-acct-action\" href=\"";
+        // line 94
+        yield ($context["logout"] ?? null);
+        yield "\"><i class=\"fa-solid fa-arrow-right-from-bracket\"></i><span>Logout</span></a>
+        <a class=\"cb-acct-action\" href=\"";
+        // line 95
+        yield ($context["order"] ?? null);
+        yield "\"><i class=\"fa-solid fa-magnifying-glass\"></i><span>Track order</span></a>
+        <a class=\"cb-acct-action\" href=\"";
+        // line 96
+        yield ($context["continue"] ?? null);
+        yield "\"><i class=\"fa-solid fa-bag-shopping\"></i><span>Continue shopping</span></a>
       </div>
       ";
-        // line 52
+        // line 98
         yield ($context["content_bottom"] ?? null);
         yield "</div>
     ";
-        // line 53
+        // line 99
         yield ($context["column_right"] ?? null);
         yield "</div>
 </div>
 ";
-        // line 55
+        // line 101
         yield ($context["footer"] ?? null);
         yield "
 ";
@@ -255,7 +270,7 @@ class __TwigTemplate_e8fa28b73ecc42e153ebb7343fcaa98a extends Template
      */
     public function getDebugInfo(): array
     {
-        return array (  231 => 55,  226 => 53,  222 => 52,  213 => 48,  209 => 47,  206 => 46,  202 => 44,  195 => 42,  188 => 41,  180 => 39,  178 => 38,  174 => 37,  171 => 36,  169 => 35,  161 => 32,  154 => 31,  146 => 29,  144 => 28,  138 => 27,  132 => 26,  126 => 25,  122 => 24,  114 => 21,  108 => 20,  102 => 19,  96 => 18,  90 => 17,  86 => 16,  79 => 12,  74 => 11,  68 => 9,  66 => 8,  63 => 7,  52 => 5,  48 => 4,  42 => 1,);
+        return array (  246 => 101,  241 => 99,  237 => 98,  232 => 96,  228 => 95,  224 => 94,  219 => 91,  216 => 90,  206 => 84,  204 => 83,  194 => 80,  188 => 78,  185 => 77,  175 => 71,  173 => 70,  165 => 65,  157 => 60,  149 => 55,  141 => 50,  133 => 45,  125 => 40,  117 => 35,  109 => 30,  101 => 25,  93 => 20,  85 => 15,  79 => 12,  74 => 11,  68 => 9,  66 => 8,  63 => 7,  52 => 5,  48 => 4,  42 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -273,43 +288,89 @@ class __TwigTemplate_e8fa28b73ecc42e153ebb7343fcaa98a extends Template
   <div class=\"row\">{{ column_left }}
     <div id=\"content\" class=\"col\">{{ content_top }}
       <h1>Your trade account</h1>
-      <div class=\"cb-acct-board\">
-        <section class=\"cb-acct-card\">
-          <h2>{{ text_my_account }}</h2>
-          <a href=\"{{ edit }}\">{{ text_edit }}</a>
-          <a href=\"{{ password }}\">{{ text_password }}</a>
-          <a href=\"{{ payment_method }}\">{{ text_payment_method }}</a>
-          <a href=\"{{ address }}\">{{ text_address }}</a>
-          <a href=\"{{ wishlist }}\">{{ text_wishlist }}</a>
-        </section>
-        <section class=\"cb-acct-card\">
-          <h2>{{ text_my_orders }}</h2>
-          <a href=\"{{ order }}\">{{ text_order }}</a>
-          <a href=\"{{ subscription }}\">{{ text_subscription }}</a>
-          <a href=\"{{ download }}\">{{ text_download }}</a>
-          {% if reward %}
-            <a href=\"{{ reward }}\">{{ text_reward }}</a>
-          {% endif %}
-          <a href=\"{{ return }}\">{{ text_return }}</a>
-          <a href=\"{{ transaction }}\">{{ text_transaction }}</a>
-        </section>
-        <div class=\"cb-acct-stack\">
-          {% if affiliate %}
-            <section class=\"cb-acct-card\">
-              <h2>{{ text_my_affiliate }}</h2>
-              {% if not tracking %}
-                <a href=\"{{ affiliate }}\">{{ text_affiliate_add }}</a>
-              {% else %}
-                <a href=\"{{ affiliate }}\">{{ text_affiliate_edit }}</a>
-                <a href=\"{{ tracking }}\">{{ text_tracking }}</a>
-              {% endif %}
-            </section>
-          {% endif %}
-          <section class=\"cb-acct-card\">
-            <h2>{{ text_my_newsletter }}</h2>
-            <a href=\"{{ newsletter }}\">{{ text_newsletter }}</a>
-          </section>
-        </div>
+      <div class=\"cb-acct-tiles\">
+        <a class=\"cb-acct-tile\" href=\"{{ wishlist }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-heart\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Wishlist</strong><em>Save pieces for a later order.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ address }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-location-dot\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Address book</strong><em>Shipping and billing addresses.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ password }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-lock\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Password</strong><em>Change your account password.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ order }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-box\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Orders</strong><em>View your order history.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ download }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-download\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Downloads</strong><em>Files from your orders.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ return }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-rotate-left\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Returns</strong><em>Manage your return requests.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ newsletter }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-envelope\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Newsletter</strong><em>Studio notes and wholesale updates.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ edit }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-user\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Account</strong><em>Edit your name, email and phone.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ payment_method }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-credit-card\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Payment methods</strong><em>Cards saved for checkout.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ subscription }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-repeat\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Subscriptions</strong><em>Recurring orders on your account.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        <a class=\"cb-acct-tile\" href=\"{{ transaction }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-receipt\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Transactions</strong><em>Balance and account activity.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        {% if reward %}
+        <a class=\"cb-acct-tile\" href=\"{{ reward }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-regular fa-star\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Reward points</strong><em>Points earned on your orders.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        {% endif %}
+        {% if affiliate %}
+        <a class=\"cb-acct-tile\" href=\"{{ affiliate }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-user-plus\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Affiliate</strong><em>{% if not tracking %}Register for an affiliate account.{% else %}Edit your affiliate information.{% endif %}</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        {% if tracking %}
+        <a class=\"cb-acct-tile\" href=\"{{ tracking }}\">
+          <span class=\"cb-acct-tile__icon\"><i class=\"fa-solid fa-link\"></i></span>
+          <span class=\"cb-acct-tile__copy\"><strong>Tracking</strong><em>Your affiliate tracking code.</em></span>
+          <span class=\"cb-acct-tile__go\" aria-hidden=\"true\">→</span>
+        </a>
+        {% endif %}
+        {% endif %}
+      </div>
+      <h2 class=\"cb-acct-kicker\">Quick actions</h2>
+      <div class=\"cb-acct-actions\">
+        <a class=\"cb-acct-action\" href=\"{{ logout }}\"><i class=\"fa-solid fa-arrow-right-from-bracket\"></i><span>Logout</span></a>
+        <a class=\"cb-acct-action\" href=\"{{ order }}\"><i class=\"fa-solid fa-magnifying-glass\"></i><span>Track order</span></a>
+        <a class=\"cb-acct-action\" href=\"{{ continue }}\"><i class=\"fa-solid fa-bag-shopping\"></i><span>Continue shopping</span></a>
       </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>

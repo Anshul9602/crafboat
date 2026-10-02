@@ -96,7 +96,7 @@
       <div>
         <p class="cb-ship{% if product.wait %} cb-ship--wait{% endif %}">{{ product.ship }}</p>
         <hr>
-        <span class="cb-card__foot">{% if logged %}Signed in · pricing unlocks after approval{% else %}Sign in to view wholesale pricing{% endif %} <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+        <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
       </div>
     </a>
     {% else %}

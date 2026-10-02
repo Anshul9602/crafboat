@@ -85,6 +85,38 @@ $(document).ready(function() {
     }(jQuery);
 });
 
+function cbShowNotice(title, message) {
+    var notice = document.getElementById('cb-notice');
+    var noticeTitle = document.getElementById('cb-notice-title');
+    var noticeMessage = document.getElementById('cb-notice-message');
+
+    if (!notice || !noticeTitle || !noticeMessage) {
+        return;
+    }
+
+    noticeTitle.textContent = title || 'Please check the form';
+    noticeMessage.textContent = message;
+    notice.hidden = false;
+}
+
+function cbFormProblems(error) {
+    var messages = [];
+
+    if (typeof error == 'string' && error) {
+        messages.push(error);
+    }
+
+    if (error && typeof error == 'object') {
+        for (var key in error) {
+            if (typeof error[key] == 'string' && error[key] && messages.indexOf(error[key]) === -1) {
+                messages.push(error[key]);
+            }
+        }
+    }
+
+    return messages;
+}
+
 // Forms
 $(document).on('submit', 'form', function (e) {
     var element = this;
@@ -123,19 +155,17 @@ $(document).on('submit', 'form', function (e) {
                 $(element).find('.invalid-feedback').removeClass('d-block');
 
 				if (json['popup'] && json['popup']['message']) {
-                    var notice = document.getElementById('cb-notice');
-                    var noticeTitle = document.getElementById('cb-notice-title');
-                    var noticeMessage = document.getElementById('cb-notice-message');
-
-                    if (notice && noticeTitle && noticeMessage) {
-                        noticeTitle.textContent = json['popup']['title'] || 'Account';
-                        noticeMessage.textContent = json['popup']['message'];
-                        notice.hidden = false;
-                    }
+                    cbShowNotice(json['popup']['title'] || 'Account', json['popup']['message']);
                 }
 
                 if (json['redirect']) {
                     location = json['redirect'];
+                }
+
+                var problems = cbFormProblems(json['error']);
+
+                if (problems.length && !json['redirect']) {
+                    cbShowNotice('Please check the form', problems.join('\n'));
                 }
 
                 if (typeof json['error'] == 'string') {
@@ -172,6 +202,7 @@ $(document).on('submit', 'form', function (e) {
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                cbShowNotice('Form not submitted', 'The form could not be submitted. Please try again.');
             }
         });
     }
@@ -184,13 +215,23 @@ $(document).on('click', 'button[data-oc-toggle=\'upload\']', function() {
     if (!$(element).prop('disabled')) {
         $('#form-upload').remove();
 
-        $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" value=""/></form>');
+        $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" accept="' + ($(element).attr('accept') || '') + '" value=""/></form>');
 
         $('#form-upload input[name=\'file\']').trigger('click');
 
         $('#form-upload input[name=\'file\']').on('change', function(e) {
-            if ((this.files[0].size / 1024) > parseInt($(element).attr('data-oc-size-max'), 10)) {
-                alert($(element).attr('data-oc-size-error'));
+            var file = this.files[0];
+            var accept = ($(element).attr('data-oc-accept') || '').toLowerCase().split(',').filter(Boolean);
+            var extension = file && file.name.indexOf('.') !== -1 ? file.name.split('.').pop().toLowerCase() : '';
+
+            if (accept.length && accept.indexOf(extension) === -1) {
+                cbShowNotice('Wrong file type', 'Upload a JPG, PNG, WEBP or PDF.');
+                $(this).val('');
+                return;
+            }
+
+            if (file && (file.size / 1024) > parseInt($(element).attr('data-oc-size-max'), 10)) {
+                cbShowNotice('File too large', $(element).attr('data-oc-size-error') || 'This file is too large.');
 
                 $(this).val('');
             }
@@ -220,15 +261,33 @@ $(document).on('click', 'button[data-oc-toggle=\'upload\']', function() {
                     },
                     success: function(json) {
                         if (json['error']) {
-                            alert(json['error']);
-                        }
-
-                        if (json['success']) {
-                            alert(json['success']);
+                            cbShowNotice('Upload failed', json['error']);
                         }
 
                         if (json['code']) {
                             $($(element).attr('data-oc-target')).attr('value', json['code']);
+
+                            var file = $('#form-upload input[name=\'file\']')[0].files[0];
+                            var preview = $(element).siblings('.cb-upload-preview');
+
+                            if (!preview.length) {
+                                preview = $('<span class="cb-upload-preview"></span>');
+                                $(element).after(preview);
+                            }
+
+                            var previous = preview.find('img').attr('src') || '';
+
+                            if (previous.indexOf('blob:') === 0) {
+                                URL.revokeObjectURL(previous);
+                            }
+
+                            preview.empty();
+
+                            if (file && file.type.indexOf('image/') === 0) {
+                                preview.append($('<img>', { src: URL.createObjectURL(file), alt: file.name }));
+                            } else if (file) {
+                                preview.append($('<span class="cb-upload-file"></span>').text(file.name));
+                            }
                         }
                     },
                     error: function(xhr, ajaxOptions, thrownError) {

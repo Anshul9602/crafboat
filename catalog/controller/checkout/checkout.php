@@ -12,9 +12,33 @@ class Checkout extends \Opencart\System\Engine\Controller {
 	 * @return void
 	 */
 	public function index(): void {
+		$this->cart->applyMinimum();
+
 		// Validate cart to see if it has products and has stock.
 		if (!$this->cart->hasProducts() || (!$this->cart->hasStock() && !$this->config->get('config_stock_checkout')) || !$this->cart->hasMinimum()) {
+			$messages = [];
+
+			if (!$this->cart->hasProducts()) {
+				$messages[] = 'Your cart is empty.';
+			}
+
+			foreach ($this->cart->getProducts() as $product) {
+				if (!$product['stock_status'] && !$this->config->get('config_stock_checkout')) {
+					$messages[] = $product['name'] . ' is not available in that quantity.';
+				}
+
+				if (!$product['minimum_status']) {
+					$messages[] = $product['name'] . ' must be ordered in a case pack of ' . (int)$product['minimum'] . '.';
+				}
+			}
+
+			if ($messages) {
+				$this->session->data['error'] = implode(' ', $messages);
+			}
+
 			$this->response->redirect($this->url->link('checkout/cart', 'language=' . $this->config->get('config_language'), true));
+
+			return;
 		}
 
 		$this->load->language('checkout/checkout');
