@@ -68,7 +68,7 @@ class Home extends \Opencart\System\Engine\Controller {
 				'href'  => $this->url->link('product/category', 'language=' . $this->config->get('config_language') . '&path=' . $row['category_id'])
 			];
 		}
-0
+
 		return $categories;
 	}
 
