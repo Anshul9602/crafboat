@@ -68,7 +68,7 @@
                 <a class="cb-card" href="{{ item.href }}">
                   <span class="cb-badge">{{ item.badge }}</span>
                   <span class="cb-heart" role="button" tabindex="0" data-wishlist="{{ item.product_id }}" aria-label="Save"><img src="catalog/view/image/craftboat/heart.svg" alt=""></span>
-                  <img class="cb-card__img" src="{{ item.image }}" alt="{{ item.name }}">
+                  <span class="cb-card__media"><img class="cb-card__img" src="{{ item.image }}" alt="{{ item.name }}"></span>
                   <div>
                     <div class="cb-meta"><span>{{ item.category }}</span><span>{{ item.sku }}</span></div>
                     <h3>{{ item.name }}</h3>
@@ -77,7 +77,7 @@
                   <div>
                     <p class="cb-ship{% if item.wait %} cb-ship--wait{% endif %}">{{ item.ship }}</p>
                     <hr>
-                    <span class="cb-card__foot"><span>{% if item.role_price %}{% if item.role_base %}<s class="cb-card__was">{{ item.role_base }}</s>{% endif %}{{ item.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+                    <span class="cb-card__foot"><span>{% if item.role_price %}{% if item.role_base %}<s class="cb-card__was">{{ item.role_base }}</s>{% endif %}{{ item.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <span class="cb-arrow" aria-hidden="true"></span></span>
                   </div>
                 </a>
               {% endfor %}
@@ -97,7 +97,13 @@
             {% endfor %}
           </div>
         {% endif %}
+        {% if can_buy %}
         <a class="cb-btn cb-btn--black" href="{{ checkout }}">{{ button_checkout }} →</a>
+        {% elseif logged %}
+        <a class="cb-btn cb-btn--black" href="{{ login }}">Sign in with Trade / Wholesale</a>
+        {% else %}
+        <a class="cb-btn cb-btn--black" href="{{ login }}">Sign in to checkout</a>
+        {% endif %}
         <a class="cb-btn cb-btn--line" href="{{ continue }}">{{ button_shopping }}</a>
       </aside>
     </div>

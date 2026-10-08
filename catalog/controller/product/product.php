@@ -465,10 +465,11 @@ class Product extends \Opencart\System\Engine\Controller {
 			$wholesale_group_id = $this->customerGroupId('Wholesale');
 			$data['trade'] = $trade_group_id && $group_id === $trade_group_id;
 			$data['wholesale'] = $wholesale_group_id && $group_id === $wholesale_group_id;
+			$data['can_buy'] = $data['trade'] || $data['wholesale'];
 			$retail_row = $this->db->query("SELECT `price` FROM `" . DB_PREFIX . "product` WHERE `product_id` = '" . (int)$product_id . "'");
 			$retail_value = $retail_row->num_rows ? (float)$retail_row->row['price'] : (float)$product_info['price'];
 			$tax_class_id = (int)$product_info['tax_class_id'];
-			$data['price'] = $this->money($retail_value, $tax_class_id);
+			$data['price'] = $data['can_buy'] ? $this->money($retail_value, $tax_class_id) : '';
 			$trade_offer = $this->groupOffer((int)$product_id, $trade_group_id, $retail_value);
 			$wholesale_offer = $this->groupOffer((int)$product_id, $wholesale_group_id, $retail_value);
 			$data['trade_price'] = $data['trade'] ? $this->money($trade_offer['value'], $tax_class_id) : '';

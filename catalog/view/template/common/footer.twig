@@ -27,11 +27,11 @@
     <p>New collections, trade show dates and wholesale updates. No noise.</p>
     <form class="cb-news" action="{{ newsletter }}" method="get">
       <input type="email" name="email" placeholder="Email address" aria-label="Email address">
-      <button type="submit" aria-label="Subscribe"><img src="catalog/view/image/craftboat/arrow.svg" alt=""></button>
+      <button type="submit" aria-label="Subscribe"><span class="cb-arrow" aria-hidden="true"></span></button>
     </form>
   </div>
 </footer>
-<a class="cb-message" href="{{ contact }}">Message Craft Boat <img src="catalog/view/image/craftboat/arrow.svg" alt=""></a>
+<a class="cb-message" href="{{ contact }}">Message Craft Boat <span class="cb-arrow" aria-hidden="true"></span></a>
 <div class="cb-drawer" id="cb-drawer" hidden>
   <button type="button" class="cb-drawer__backdrop" data-cart-close aria-label="Close cart"></button>
   <div class="cb-drawer__panel" id="cb-drawer-panel"></div>
@@ -336,6 +336,89 @@ document.querySelectorAll('[data-cb-banner]').forEach(function (hero) {
   hero.addEventListener('mouseleave', play);
   play();
 });
+</script>
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sections = document.querySelectorAll([
+    '.cb-section',
+    '.cb-peach',
+    '.cb-ready',
+    '.cb-cream',
+    '.cb-confidence',
+    '.cb-collections',
+    '.cb-shopbar',
+    '.cb-bestsellers',
+    '.cb-coll-note',
+    '.cb-coll-products',
+    '.cb-coll-story',
+    '.cb-coll-switch',
+    '.cb-unlock',
+    '.cb-retail',
+    '.cb-hero__copy',
+    '.cb-coll-hero__copy',
+    '.cb-pdp',
+    '.cb-story'
+  ].join(','));
+
+  if (!sections.length) return;
+
+  var childSel = [
+    '.cb-card',
+    '.cb-dept',
+    '.cb-cat',
+    '.cb-tile',
+    '.cb-assort article',
+    '.cb-steps article',
+    '.cb-chips a',
+    '.cb-head > *',
+    '.cb-confidence__copy > *',
+    '.cb-photos > *',
+    '.cb-story__photo',
+    '.cb-story__copy > *',
+    '.cb-coll-note__list > *',
+    '.cb-coll-story__photo',
+    '.cb-coll-story__copy > *',
+    '.cb-unlock > *',
+    '.cb-retail > *'
+  ].join(',');
+
+  sections.forEach(function (section, index) {
+    if (section.classList.contains('cb-anim')) return;
+    section.classList.add('cb-anim');
+    if (section.classList.contains('cb-confidence__copy') || section.classList.contains('cb-story__copy')) {
+      section.classList.add('cb-anim--left');
+    }
+    if (section.classList.contains('cb-photos') || section.classList.contains('cb-story__photo')) {
+      section.classList.add('cb-anim--right');
+    }
+    section.querySelectorAll(childSel).forEach(function (child, i) {
+      if (child.closest('.cb-anim') !== section && child.classList.contains('cb-anim')) return;
+      child.classList.add('cb-anim-item');
+      child.style.setProperty('--cb-delay', (Math.min(i, 10) * 0.08) + 's');
+    });
+    if (reduce || index === 0 && section.getBoundingClientRect().top < window.innerHeight * 0.85) {
+      section.classList.add('is-in');
+    }
+  });
+
+  if (reduce || !('IntersectionObserver' in window)) {
+    sections.forEach(function (section) { section.classList.add('is-in'); });
+    return;
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-in');
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+
+  sections.forEach(function (section) {
+    if (!section.classList.contains('is-in')) io.observe(section);
+  });
+})();
 </script>
 {% for script in scripts %}<script src="{{ script.href }}" type="text/javascript"></script>{% endfor %}
 </body></html>

@@ -24,7 +24,7 @@
     <p class="cb-pdp__summary">{{ summary }}</p>
     <div class="cb-pdp__price">
       <div class="cb-pdp__figures">
-        {% if trade or wholesale %}
+        {% if can_buy %}
           <div>
             <span>{% if trade %}Trade{% else %}Wholesale{% endif %}</span>
             <strong>{{ trade ? trade_price : wholesale_price }}</strong>
@@ -35,7 +35,7 @@
         {% else %}
           <div>
             <span>Suggested retail</span>
-            <strong>{{ price }}</strong>
+            <strong>Locked</strong>
           </div>
           <div>
             <span>Your price</span>
@@ -43,7 +43,7 @@
           </div>
         {% endif %}
       </div>
-      {% if logged %}
+      {% if can_buy %}
         <h2>Add this case pack to your order.</h2>
         <p>Case pack of {{ minimum }}. The cart opens with this quantity.</p>
         <form class="cb-pdp__actions" action="{{ cart_add }}" method="post" data-oc-toggle="ajax">
@@ -52,6 +52,13 @@
           <button type="submit" class="cb-btn cb-btn--black">Add to cart</button>
           <a class="cb-btn cb-btn--line" href="{{ account }}">Go to your account</a>
         </form>
+      {% elseif logged %}
+        <h2>Wholesale pricing is reserved for approved stockists.</h2>
+        <p>Your account can browse the catalog. Pricing and ordering unlock once you are approved for Trade or Wholesale.</p>
+        <div class="cb-pdp__actions">
+          <a class="cb-btn cb-btn--black" href="{{ account }}">Go to your account</a>
+          <a class="cb-btn cb-btn--line" href="{{ register }}">Apply for Trade</a>
+        </div>
       {% else %}
         <h2>Wholesale pricing is reserved for approved stockists.</h2>
         <p>Sign in to view price, margin, inventory and quick-add controls.</p>
@@ -86,7 +93,7 @@
     <a class="cb-card" href="{{ product.href }}">
       <span class="cb-badge">{{ product.badge }}</span>
       <span class="cb-heart" role="button" tabindex="0" data-wishlist="{{ product.product_id }}" aria-label="Save"><img src="catalog/view/image/craftboat/heart.svg" alt=""></span>
-      <img class="cb-card__img" src="{{ product.image }}" alt="{{ product.name }}">
+      <span class="cb-card__media"><img class="cb-card__img" src="{{ product.image }}" alt="{{ product.name }}"></span>
       <div>
         <div class="cb-meta"><span>{{ product.category }}</span><span>{{ product.sku }}</span></div>
         <h3>{{ product.name }}</h3>
@@ -95,7 +102,7 @@
       <div>
         <p class="cb-ship{% if product.wait %} cb-ship--wait{% endif %}">{{ product.ship }}</p>
         <hr>
-        <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+        <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <span class="cb-arrow" aria-hidden="true"></span></span>
       </div>
     </a>
     {% endfor %}

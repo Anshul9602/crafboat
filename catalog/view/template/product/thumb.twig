@@ -1,7 +1,7 @@
 <a class="cb-card" href="{{ href }}">
   <span class="cb-badge">{{ badge }}</span>
   <span class="cb-heart" role="button" tabindex="0" data-wishlist="{{ product_id }}" aria-label="Save"><img src="catalog/view/image/craftboat/heart.svg" alt=""></span>
-  <img class="cb-card__img" src="{{ thumb }}" alt="{{ name }}">
+  <span class="cb-card__media"><img class="cb-card__img" src="{{ thumb }}" alt="{{ name }}"></span>
   <div>
     <div class="cb-meta"><span>{{ category_name }}</span><span>{{ sku }}</span></div>
     <h3>{{ name }}</h3>
@@ -10,6 +10,6 @@
   <div>
     <p class="cb-ship{% if ship_wait %} cb-ship--wait{% endif %}">{{ ship }}</p>
     <hr>
-    <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <img src="catalog/view/image/craftboat/arrow.svg" alt=""></span>
+    <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view pricing{% endif %}</span> <span class="cb-arrow" aria-hidden="true"></span></span>
   </div>
 </a>

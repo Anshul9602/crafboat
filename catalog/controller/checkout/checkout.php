@@ -12,6 +12,24 @@ class Checkout extends \Opencart\System\Engine\Controller {
 	 * @return void
 	 */
 	public function index(): void {
+		if (!$this->customer->isLogged()) {
+			$this->session->data['redirect'] = $this->url->link('checkout/checkout', 'language=' . $this->config->get('config_language'), true);
+			$this->session->data['error'] = 'Please sign in with an approved Trade or Wholesale account to checkout.';
+			$this->response->redirect($this->url->link('account/login', 'language=' . $this->config->get('config_language'), true));
+
+			return;
+		}
+
+		$group = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$this->customer->getGroupId() . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+		$role = oc_strtolower((string)($group->row['name'] ?? ''));
+
+		if (!in_array($role, ['trade', 'wholesale'], true)) {
+			$this->session->data['error'] = 'Checkout is available to approved Trade and Wholesale accounts only.';
+			$this->response->redirect($this->url->link('checkout/cart', 'language=' . $this->config->get('config_language'), true));
+
+			return;
+		}
+
 		$this->cart->applyMinimum();
 
 		// Validate cart to see if it has products and has stock.

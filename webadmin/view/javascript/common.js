@@ -187,13 +187,53 @@ $(document).on('submit', 'form', function(e) {
                 }
 
                 if (typeof json['error'] == 'object') {
-                    if (json['error']['warning']) {
-                        $('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + json['error']['warning'] + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
-                    }
+                    var fieldErrors = [];
 
                     for (key in json['error']) {
+                        if (key === 'warning') {
+                            continue;
+                        }
+
+                        fieldErrors.push(json['error'][key]);
+
                         $('#input-' + key.replaceAll('_', '-')).addClass('is-invalid').find('.form-control, .form-select, .form-check-input, .form-check-label').addClass('is-invalid');
                         $('#error-' + key.replaceAll('_', '-')).html(json['error'][key]).addClass('d-block');
+                    }
+
+                    if (json['error']['warning']) {
+                        var warningHtml = json['error']['warning'];
+
+                        if (fieldErrors.length) {
+                            warningHtml += '<ul class="mb-0 mt-2 ps-3">';
+
+                            for (var i = 0; i < fieldErrors.length; i++) {
+                                warningHtml += '<li>' + fieldErrors[i] + '</li>';
+                            }
+
+                            warningHtml += '</ul>';
+                        }
+
+                        $('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + warningHtml + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+                    }
+
+                    var $firstError = $(element).find('.invalid-feedback.d-block').first();
+
+                    if ($firstError.length) {
+                        $firstError.parents('.tab-pane').get().reverse().forEach(function(pane) {
+                            if (!pane.id) {
+                                return;
+                            }
+
+                            var trigger = document.querySelector('a[data-bs-toggle="tab"][href="#' + pane.id + '"]');
+
+                            if (trigger && typeof bootstrap !== 'undefined') {
+                                bootstrap.Tab.getOrCreateInstance(trigger).show();
+                            }
+                        });
+
+                        $('html, body').animate({
+                            scrollTop: $firstError.offset().top - 120
+                        }, 250);
                     }
                 }
 

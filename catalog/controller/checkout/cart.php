@@ -273,12 +273,10 @@ class Cart extends \Opencart\System\Engine\Controller {
 		}
 
 		$data['logged'] = $this->customer->isLogged();
-		$data['priced'] = false;
-
-		if ($data['logged']) {
-			$group_query = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$this->customer->getGroupId() . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
-			$data['priced'] = in_array(oc_strtolower((string)($group_query->row['name'] ?? '')), ['trade', 'wholesale'], true);
-		}
+		$data['priced'] = $this->canBuy();
+		$data['can_buy'] = $data['priced'];
+		$data['login'] = $this->url->link('account/login', $lang);
+		$data['register'] = $this->url->link('account/register', $lang . '&account=trade');
 
 		$data['draft_total'] = $data['priced'] ? $this->currency->format((float)$total, $this->session->data['currency']) : '';
 		$data['progress'] = min(100, (int)round(((float)$total / 500) * 100));
@@ -295,6 +293,16 @@ class Cart extends \Opencart\System\Engine\Controller {
 		$this->load->language('checkout/cart');
 
 		$json = [];
+
+		if (!$this->canBuy()) {
+			$json['error']['warning'] = 'Please sign in with an approved Trade or Wholesale account to add products to your cart.';
+			$json['redirect'] = $this->url->link('account/login', 'language=' . $this->config->get('config_language'), true);
+
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+
+			return;
+		}
 
 		if (isset($this->request->post['product_id'])) {
 			$product_id = (int)$this->request->post['product_id'];
@@ -407,6 +415,16 @@ class Cart extends \Opencart\System\Engine\Controller {
 
 		$json = [];
 
+		if (!$this->canBuy()) {
+			$json['error']['warning'] = 'Please sign in with an approved Trade or Wholesale account to update your cart.';
+			$json['redirect'] = $this->url->link('account/login', 'language=' . $this->config->get('config_language'), true);
+
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+
+			return;
+		}
+
 		if (isset($this->request->post['key'])) {
 			$key = (int)$this->request->post['key'];
 		} else {
@@ -486,5 +504,16 @@ class Cart extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	private function canBuy(): bool {
+		if (!$this->customer->isLogged()) {
+			return false;
+		}
+
+		$query = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$this->customer->getGroupId() . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+		$role = oc_strtolower((string)($query->row['name'] ?? ''));
+
+		return in_array($role, ['trade', 'wholesale'], true);
 	}
 }

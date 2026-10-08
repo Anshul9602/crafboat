@@ -31,7 +31,13 @@
   </div>
   <div class="cb-bar">
   <header class="cb-header">
-    <a class="cb-logo" href="{{ home }}"><img src="catalog/view/image/craftboat/logo.svg" alt="Craft Boat"></a>
+    <a class="cb-logo" href="{{ home }}">
+      {% if logo %}
+        <img src="{{ logo }}" alt="{{ name }}">
+      {% else %}
+        <img src="catalog/view/image/craftboat/logo.svg" alt="Craft Boat">
+      {% endif %}
+    </a>
     <form class="cb-search" action="{{ search_action }}" method="post">
       <label class="cb-search__field">
         <img src="catalog/view/image/craftboat/search.svg" alt="">
