@@ -1795,6 +1795,8 @@ body.cb-acct #content>#wishlist {
     display: flex;
     gap: 16px;
     overflow-x: auto;
+    overflow-y: visible;
+    padding: 4px 0;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -1813,13 +1815,13 @@ body.cb-acct #content>#wishlist {
     padding: 0 24px 24px;
     color: #000;
     text-decoration: none;
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.45s ease;
+    transition: border-color 0.35s ease, box-shadow 0.45s ease, background-color 0.35s ease;
 }
 
 .cb-cat:hover {
-    transform: translateY(-6px);
     border-color: #123942;
-    box-shadow: 0 14px 28px rgba(18, 57, 66, 0.1);
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(18, 57, 66, 0.1);
 }
 
 .cb-cat__photo {
@@ -6538,10 +6540,6 @@ body.cb .cb-cart .cb-btn--line {
 .cb-anim.is-in .cb-card:hover,
 .cb-anim.is-in .cb-card:focus-visible {
     transform: translateY(-10px) scale(1.01);
-}
-
-.cb-anim.is-in .cb-cat:hover {
-    transform: translateY(-6px);
 }
 
 .cb-anim.is-in .cb-assort article:hover {
