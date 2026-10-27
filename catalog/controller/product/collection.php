@@ -9,14 +9,33 @@ class Collection extends \Opencart\System\Engine\Controller {
 	 */
 	public function index(): void {
 		$language = (string)$this->config->get('config_language');
-		$key = (string)($this->request->get['collection'] ?? 'saffron');
-		$catalog = $this->catalog();
+		$this->load->model('catalog/collection');
+		$rows = $this->model_catalog_collection->getCollections();
+		$key = (string)($this->request->get['collection'] ?? ($rows[0]['code'] ?? ''));
+		$legacy = [
+			'saffron'      => 'classic-stripe',
+			'marbled'      => 'ocean-collection',
+			'holiday'      => 'holiday-collection-ready-to-ship',
+			'holiday-2026' => 'holiday-collection-ready-to-ship'
+		];
 
-		if (!isset($catalog[$key])) {
-			$key = 'saffron';
+		if (isset($legacy[$key])) {
+			$this->response->redirect($this->url->link('product/collection', 'language=' . $language . '&collection=' . $legacy[$key]));
+
+			return;
+		}
+		$collection = $this->model_catalog_collection->getCollectionByCode($key);
+
+		if (!$collection && $rows) {
+			$collection = $rows[0];
+			$key = (string)$collection['code'];
 		}
 
-		$collection = $catalog[$key];
+		if (!$collection) {
+			$this->response->redirect($this->url->link('common/home', 'language=' . $language));
+
+			return;
+		}
 		$availability = (string)($this->request->get['availability'] ?? 'all');
 
 		if (!in_array($availability, ['all', 'ready', 'made'], true)) {
@@ -25,7 +44,11 @@ class Collection extends \Opencart\System\Engine\Controller {
 
 		$sort = (string)($this->request->get['sort'] ?? 'featured');
 
-		if (!in_array($sort, ['featured', 'name'], true)) {
+		if ($sort === 'name') {
+			$sort = 'name_asc';
+		}
+
+		if (!in_array($sort, ['featured', 'name_asc', 'name_desc', 'price_asc', 'price_desc', 'newest', 'sku'], true)) {
 			$sort = 'featured';
 		}
 
@@ -33,6 +56,8 @@ class Collection extends \Opencart\System\Engine\Controller {
 		$this->document->setDescription($collection['summary']);
 
 		$collection['code'] = $key;
+		$collection['heading'] = $collection['name'];
+		$collection['location'] = $collection['name'];
 		$this->load->model('design/banner');
 		$data['banners'] = $this->model_design_banner->getPageBanners($collection['name']);
 
@@ -43,19 +68,28 @@ class Collection extends \Opencart\System\Engine\Controller {
 		$data['collections'] = [];
 		$data['availability'] = $availability;
 		$data['sort'] = $sort;
-		$data['products'] = $this->products($collection['location'], $availability, $sort);
+		$limit = 16;
+		$page = max(1, (int)($this->request->get['page'] ?? 1));
+		$total = $this->productTotal($collection['location'], $availability);
+		$pages = max(1, (int)ceil($total / $limit));
+
+		if ($page > $pages) {
+			$page = $pages;
+		}
+
+		$data['products'] = $this->products($collection['location'], $availability, $sort, ($page - 1) * $limit, $limit);
 		$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');
 		$data['logged'] = $this->customer->isLogged();
 		$data['login'] = $this->url->link('account/login', 'language=' . $language);
 		$data['account'] = $this->url->link('account/account', 'language=' . $language . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''));
 		$data['about'] = $this->url->link('information/about', 'language=' . $language);
 
-		foreach ($catalog as $code => $item) {
+		foreach ($rows as $item) {
 			$data['collections'][] = [
 				'name'   => $item['name'],
 				'blurb'  => $item['blurb'],
-				'active' => $code === $key,
-				'href'   => $this->url->link('product/collection', 'language=' . $language . '&collection=' . $code)
+				'active' => $item['code'] === $key,
+				'href'   => $this->url->link('product/collection', 'language=' . $language . '&collection=' . $item['code'])
 			];
 		}
 
@@ -64,6 +98,16 @@ class Collection extends \Opencart\System\Engine\Controller {
 		$data['filter_ready'] = $this->url->link('product/collection', $base . '&availability=ready');
 		$data['filter_made'] = $this->url->link('product/collection', $base . '&availability=made');
 		$data['sort_action'] = $this->url->link('product/collection', 'language=' . $language . '&collection=' . $key . '&availability=' . $availability);
+		$page_query = 'language=' . $language . '&collection=' . $key . '&availability=' . $availability . '&sort=' . $sort;
+		$data['pagination'] = $total > $limit ? $this->load->controller('common/pagination', [
+			'total' => $total,
+			'page'  => $page,
+			'limit' => $limit,
+			'url'   => $this->url->link('product/collection', $page_query . '&page={page}')
+		]) : '';
+		$data['results'] = $total
+			? sprintf('Showing %d to %d of %d', (($page - 1) * $limit) + 1, min($page * $limit, $total), $total)
+			: '';
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['footer'] = $this->load->controller('common/footer');
@@ -72,52 +116,12 @@ class Collection extends \Opencart\System\Engine\Controller {
 	}
 
 	/**
-	 * @return array<string, array<string, string>>
-	 */
-	private function catalog(): array {
-		return [
-			'saffron' => [
-				'name'     => 'Saffron Valley',
-				'location' => 'Saffron valley',
-				'blurb'    => 'Florals and sun-warmed block print.',
-				'summary'  => 'A sun-warmed family of garden florals, soft greens and saffron cloth—built to merchandise across paper, textile and small home objects.',
-				'image'    => 'catalog/view/image/craftboat/collection-hero.png',
-				'heading'  => 'The Saffron Valley assortment'
-			],
-			'marbled' => [
-				'name'     => 'Marbled Stories',
-				'location' => 'Marbled Stories',
-				'blurb'    => 'One-of-one colour pulled by hand.',
-				'summary'  => 'Hand-marbled colour, pulled sheet by sheet and finished into boxes, trays and desk objects for a collected shelf.',
-				'image'    => 'catalog/view/image/craftboat/collection-marbled.png',
-				'heading'  => 'The Marbled Stories assortment'
-			],
-			'holiday' => [
-				'name'     => 'Holiday 2026',
-				'location' => 'Holiday 2026',
-				'blurb'    => 'Keepsake gifting for the season.',
-				'summary'  => 'Seasonal paper, textile and home pieces gathered for a keepsake gifting table.',
-				'image'    => 'catalog/view/image/craftboat/collection-holiday.png',
-				'heading'  => 'The Holiday 2026 assortment'
-			]
-		];
-	}
-
-	/**
 	 * @return array<int, array<string, mixed>>
 	 */
-	private function products(string $location, string $availability, string $sort): array {
-		$sql = "SELECT `p`.`product_id`, `p`.`model`, `p`.`image`, `p`.`location`, `pd`.`name`, `pd`.`tag`, `pd`.`meta_keyword` FROM `" . DB_PREFIX . "product` `p` LEFT JOIN `" . DB_PREFIX . "product_description` `pd` ON (`p`.`product_id` = `pd`.`product_id`) WHERE `p`.`status` = '1' AND `pd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND `p`.`location` = '" . $this->db->escape($location) . "'";
-
-		if ($availability === 'ready') {
-			$sql .= " AND FIND_IN_SET('ready', `pd`.`tag`) AND NOT FIND_IN_SET('made', `pd`.`tag`)";
-		}
-
-		if ($availability === 'made') {
-			$sql .= " AND FIND_IN_SET('made', `pd`.`tag`)";
-		}
-
-		$sql .= ($sort === 'name') ? " ORDER BY LCASE(`pd`.`name`) ASC" : " ORDER BY `p`.`sort_order` ASC";
+	private function products(string $location, string $availability, string $sort, int $start, int $limit): array {
+		$sql = $this->productSql($location, $availability);
+		$sql .= $this->orderSql($sort);
+		$sql .= " LIMIT " . (int)$start . "," . (int)$limit;
 
 		$query = $this->db->query($sql);
 		$cards = [];
@@ -143,5 +147,40 @@ class Collection extends \Opencart\System\Engine\Controller {
 		$this->load->model('catalog/product');
 
 		return $this->model_catalog_product->withRolePrices($cards);
+	}
+
+	private function productTotal(string $location, string $availability): int {
+		$sql = $this->productSql($location, $availability);
+		$from = strpos($sql, ' FROM ');
+		$query = $this->db->query("SELECT COUNT(*) AS `total`" . substr($sql, $from));
+
+		return (int)$query->row['total'];
+	}
+
+	private function orderSql(string $sort): string {
+		$orders = [
+			'name_asc'   => " ORDER BY LCASE(`pd`.`name`) ASC",
+			'name_desc'  => " ORDER BY LCASE(`pd`.`name`) DESC",
+			'price_asc'  => " ORDER BY `p`.`price` ASC, LCASE(`pd`.`name`) ASC",
+			'price_desc' => " ORDER BY `p`.`price` DESC, LCASE(`pd`.`name`) ASC",
+			'newest'     => " ORDER BY `p`.`date_added` DESC, `p`.`product_id` DESC",
+			'sku'        => " ORDER BY `p`.`model` ASC"
+		];
+
+		return $orders[$sort] ?? " ORDER BY `p`.`sort_order` ASC, `p`.`product_id` ASC";
+	}
+
+	private function productSql(string $location, string $availability): string {
+		$sql = "SELECT `p`.`product_id`, `p`.`model`, `p`.`image`, `p`.`location`, `pd`.`name`, `pd`.`tag`, `pd`.`meta_keyword` FROM `" . DB_PREFIX . "product` `p` LEFT JOIN `" . DB_PREFIX . "product_description` `pd` ON (`p`.`product_id` = `pd`.`product_id`) WHERE `p`.`status` = '1' AND `pd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND `p`.`location` = '" . $this->db->escape($location) . "'";
+
+		if ($availability === 'ready') {
+			$sql .= " AND FIND_IN_SET('ready', `pd`.`tag`) AND NOT FIND_IN_SET('made', `pd`.`tag`)";
+		}
+
+		if ($availability === 'made') {
+			$sql .= " AND FIND_IN_SET('made', `pd`.`tag`)";
+		}
+
+		return $sql;
 	}
 }

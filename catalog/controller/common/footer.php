@@ -71,7 +71,11 @@ class Footer extends \Opencart\System\Engine\Controller {
 		$data['about'] = $this->url->link('information/about', 'language=' . $this->config->get('config_language'));
 		$data['instagram'] = 'https://www.instagram.com/makeawish_bypreetysolanki';
 		$data['shop_all'] = $this->url->link('product/special', 'language=' . $this->config->get('config_language'));
-		$data['collection'] = $this->url->link('product/collection', 'language=' . $this->config->get('config_language') . '&collection=saffron');
+		$this->load->model('catalog/collection');
+		$collections = $this->model_catalog_collection->getCollections();
+		$data['collection'] = $collections
+			? $this->url->link('product/collection', 'language=' . $this->config->get('config_language') . '&collection=' . $collections[0]['code'])
+			: $this->url->link('common/home', 'language=' . $this->config->get('config_language'));
 
 		$this->load->model('catalog/category');
 

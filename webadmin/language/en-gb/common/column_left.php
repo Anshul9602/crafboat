@@ -45,6 +45,7 @@ $_['text_localisation']        = 'Localisation';
 $_['text_location']            = 'Store Location';
 $_['text_maintenance']         = 'Maintenance';
 $_['text_manufacturer']        = 'Manufacturers';
+$_['text_collection']          = 'Collections';
 $_['text_marketing']           = 'Marketing';
 $_['text_marketplace']         = 'Marketplace';
 $_['text_modification']        = 'Modification';

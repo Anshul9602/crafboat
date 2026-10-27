@@ -1,96 +1,73 @@
 {{ header }}
-<div id="information-about" class="tck-about">
-  <section class="tck-about__hero">
-    <div class="tck-wrap">
-      <p class="tck-about__eyebrow">Make A Wish · by Preety Solanki</p>
-      <h1>Cakes for the wishes you make out loud.</h1>
-      <p class="tck-about__lead">A home bakery for birthdays, baby showers, anniversaries and every celebration that deserves something made only for you.</p>
-      <div class="tck-about__actions">
-        <a class="tck-cta" href="{{ shop }}">Shop cakes</a>
-        <a class="tck-cta tck-cta--ghost" href="{{ instagram }}" target="_blank" rel="noopener">
-          <i class="fa-brands fa-instagram"></i> {{ instagram_handle }}
-        </a>
-      </div>
+<section class="cb-coll-hero cb-about-hero" style="background-image:url('catalog/view/image/craftboat/paper-mill.png')">
+  <div class="cb-coll-hero__shade"></div>
+  <div class="cb-coll-hero__copy">
+    <p class="cb-kicker">Our story · Jaipur</p>
+    <h1>Slowly crafted by hand.</h1>
+    <p>In a world of abundance and fast production, we aim to create a niche one product at a time.</p>
+    <div class="cb-hero__actions">
+      <a class="cb-btn cb-btn--white" href="{{ shop }}">Shop wholesale</a>
+      <a class="cb-btn cb-btn--ghost" href="{{ register }}">Apply for a Trade Account</a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="tck-section">
-    <div class="tck-wrap tck-about__story">
-      <div class="tck-about__portrait">
-        {% if logo %}
-          <img src="{{ logo }}" alt="{{ name }}"/>
-        {% endif %}
-        <span>Preety Solanki</span>
-      </div>
-      <div>
-        <p class="tck-about__eyebrow">Where it began</p>
-        <h2>A baker, a wish, and an Instagram kitchen.</h2>
-        <p>Make A Wish is Preety Solanki’s bakery — started at home, shared first on <a href="{{ instagram }}" target="_blank" rel="noopener">Instagram</a>, and grown by people who wanted a cake that looked like their theme and tasted freshly made.</p>
-        <p>You will find her work as <strong>{{ instagram_handle }}</strong>: custom cream cakes, character cakes, brownies, bomboloni and gifting tins. Each bake is made to order, not pulled from a shop window.</p>
-        <p>The name is the brief. Tell us the wish — a birthday, a baby’s name, a colour, a cartoon, a quiet anniversary — and we bake it into something you can put on the table.</p>
-      </div>
+<section class="cb-section cb-about-story">
+  <div class="cb-story">
+    <div class="cb-story__photo" style="background-image:url('catalog/view/image/craftboat/collection-story.png')"></div>
+    <div class="cb-story__copy">
+      <p class="cb-kicker">About us</p>
+      <h2 class="cb-display">A studio tied to the craft of Jaipur.</h2>
+      <p>Based in Jaipur, India, our roots are tied to the multitude of art and design this city harbours. Working extensively with recycled paper and natural-fibre textile, we connect these endeavours with traditional Indian craftsmanship.</p>
+      <p>The collections reflect an <strong>intentional use of material and craft</strong>, and an honouring of slower processes. We have always aimed to make long-lasting, functional products. Today, led by the same beliefs, Craft Boat has grown into a <strong>multidisciplinary design and manufacturing studio</strong>.</p>
+      <p>Partnering with businesses that encourage artisan-made products, we hope to make space for <strong>kinder choices</strong> to exist and flourish — a sense of harmony and flexibility that radiates well beyond our studio walls.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="tck-section tck-about__believe">
-    <div class="tck-wrap">
-      <p class="tck-about__eyebrow">How we bake</p>
-      <h2>Made to order. Designed for the day.</h2>
-      <div class="tck-about__points">
-        <article>
-          <h3>Custom, not copy-paste</h3>
-          <p>Themes, names, colours and figures are built for your celebration — the same way Preety shares new cakes on Instagram every week.</p>
-        </article>
-        <article>
-          <h3>Fresh cream, real batter</h3>
-          <p>Cakes, brownies, tea cakes and bomboloni are mixed and finished for the order. No long shelf, no factory line.</p>
-        </article>
-        <article>
-          <h3>Sent with care</h3>
-          <p>Delhi NCR orders can arrive the next day. Pan-India boxes go out packed for the journey, so the wish still looks like the photo.</p>
-        </article>
-      </div>
+<section class="cb-cream cb-about-values">
+  <div class="cb-head">
+    <div>
+      <p class="cb-kicker">What we value</p>
+      <h2>Four pillars, held in the work.</h2>
     </div>
-  </section>
+    <p>Here are the core pillars that reflect what we truly value.</p>
+  </div>
+  <div class="cb-about__pillars">
+    <article id="craft">
+      <p class="cb-num">01</p>
+      <h3>Craft &amp; community</h3>
+      <p>At the heart of Craft Boat there is a fundamental <strong>understanding of the core behaviour</strong> of Indian craft techniques, and of the interactions between people, ideas, craft and material.</p>
+      <p>Our community is what holds us afloat — our boat. We try to make choices that <strong>nurture connections</strong> and <strong>foster a community</strong> of like-minded people who come together to celebrate crafts and makers from across India.</p>
+    </article>
+    <article id="circularity">
+      <p class="cb-num">02</p>
+      <h3>Circularity</h3>
+      <p>In the studio there is always an <strong>organic discussion</strong> about how to reuse materials and reduce waste when designing any product. New craft techniques have let us <strong>close the loop</strong> and reimagine waste through a <em>shift of form</em>.</p>
+      <p><a href="{{ paper }}">Read more about how we close the loop →</a></p>
+    </article>
+    <article id="analog">
+      <p class="cb-num">03</p>
+      <h3>Analog</h3>
+      <p>Over the years we have tried to design <strong>timeless pieces</strong> which radiate thoughtfulness. Following the traditions of product utility and primitive design techniques, we want the generations after us to <strong>use and cherish</strong> the objects we make.</p>
+    </article>
+    <article id="flow">
+      <p class="cb-num">04</p>
+      <h3>Flow</h3>
+      <p><strong>Continuously experimenting</strong> with form and function, open to new craft techniques, and always <strong>connecting the dots</strong> with like-minded brands — this is how we have stayed <strong>fluid</strong> in our design process.</p>
+      <p><a href="{{ collaborations }}" target="_blank" rel="noopener">Read more about our collaborations →</a></p>
+    </article>
+  </div>
+</section>
 
-  {% if categories %}
-  <section class="tck-section">
-    <div class="tck-wrap">
-      <p class="tck-about__eyebrow">The menu</p>
-      <h2>What we love to make</h2>
-      <div class="tck-about__cats">
-        {% for category in categories %}
-          <a href="{{ category.href }}">
-            {% if category.image %}<img src="{{ category.image }}" alt="{{ category.name }}">{% endif %}
-            <strong>{{ category.name }}</strong>
-          </a>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-  {% endif %}
-
-  {% if products %}
-  <section class="tck-section">
-    <div class="tck-wrap">
-      <p class="tck-about__eyebrow">From the studio</p>
-      <h2>Recent wishes</h2>
-      <div class="tck-about__gallery tck-grid">
-        {% for product in products %}
-          <div>{% include 'catalog/view/template/product/card.twig' %}</div>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-  {% endif %}
-
-  <section class="tck-about__follow">
-    <div class="tck-wrap">
-      <i class="fa-brands fa-instagram"></i>
-      <h2>See the cakes as they leave the kitchen.</h2>
-      <p>New designs, behind-the-scenes bakes and customer tables live on Instagram first.</p>
-      <a class="tck-cta" href="{{ instagram }}" target="_blank" rel="noopener">Follow {{ instagram_handle }}</a>
-    </div>
-  </section>
-</div>
+<section class="cb-unlock">
+  <div>
+    <p class="cb-kicker">The studio</p>
+    <h2 class="cb-display">To know more about the work, reach us.</h2>
+  </div>
+  <div class="cb-unlock__actions">
+    <a class="cb-btn cb-btn--black" href="{{ email }}">info@shopcraftboat.com</a>
+    <a class="cb-unlock__login" href="{{ contact }}">Or send a note from the contact page</a>
+  </div>
+</section>
 {{ footer }}

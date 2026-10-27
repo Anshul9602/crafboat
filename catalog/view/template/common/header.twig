@@ -112,13 +112,13 @@
             <a href="{{ nav.stationery }}">Stationery &amp; writing</a>
             <a href="{{ nav.gifting }}">Gift wrapping</a>
             <a href="{{ nav.desk }}">Craft materials</a>
-            <a href="{{ nav.textiles }}">Accessories &amp; pouches</a>
+            <a href="{{ nav.pouches }}">Accessories &amp; pouches</a>
           </div>
           <div>
             <p class="cb-mega__label">Textile &amp; seasonal</p>
             <a href="{{ nav.home }}">Frames &amp; decorative objects</a>
             <a href="{{ nav.storage }}">Desk organisation</a>
-            <a href="{{ nav.home }}">Lighting &amp; lampshades</a>
+            <a href="{{ nav.lighting }}">Lighting &amp; lampshades</a>
             <a href="{{ nav.seasonal }}">Holiday keepsakes</a>
           </div>
         </div>
@@ -133,18 +133,11 @@
             <h2>Buy a cohesive colour and material story.</h2>
             <a class="cb-mega__more" href="{{ collections }}">Explore all collections →</a>
           </div>
-          <a class="cb-mega__card" href="{{ nav.saffron }}" style="background-image:url('image/catalog/craftboat/pouch.png')">
-            <strong>Saffron Valley</strong>
-            <em>Florals and sun-warmed block print.</em>
+          {% for collection in menu_collections %}
+          <a class="cb-mega__card" href="{{ collection.href }}" style="background-image:url('{{ collection.image }}')">
+            <strong>{{ collection.name }}</strong>
           </a>
-          <a class="cb-mega__card" href="{{ nav.marbled }}" style="background-image:url('image/catalog/craftboat/trays.png')">
-            <strong>Marbled Stories</strong>
-            <em>One-of-one colour pulled by hand.</em>
-          </a>
-          <a class="cb-mega__card" href="{{ nav.holiday }}" style="background-image:url('image/catalog/craftboat/collection-holiday.png')">
-            <strong>Holiday 2026</strong>
-            <em>Keepsake gifting for the season.</em>
-          </a>
+          {% endfor %}
         </div>
       </div>
     </div>

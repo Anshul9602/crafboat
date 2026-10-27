@@ -42,11 +42,33 @@ class Header extends \Opencart\System\Engine\Controller {
 		$data['bootstrap'] = 'catalog/view/stylesheet/bootstrap.css';
 		$data['icons'] = 'catalog/view/stylesheet/fonts/fontawesome/css/all.min.css';
 		$data['stylesheet'] = 'catalog/view/stylesheet/stylesheet.css';
-		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=form53';
+		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=form64';
 		$route = (string)($this->request->get['route'] ?? '');
 		$data['account_page'] = str_starts_with($route, 'account/');
 		$data['topbar_note'] = in_array(($this->request->get['route'] ?? ''), ['product/collection', 'product/category', 'product/product'], true) ? 'Ships from Jaipur, India  |   Opening order $500' : '';
-		$data['collections'] = $this->url->link('product/collection', 'language=' . $this->config->get('config_language') . '&collection=saffron');
+		$this->load->model('catalog/collection');
+		$menu_collections = $this->model_catalog_collection->getCollections();
+		$first_code = (string)($menu_collections[0]['code'] ?? '');
+		$data['collections'] = $first_code
+			? $this->url->link('product/collection', 'language=' . $this->config->get('config_language') . '&collection=' . $first_code)
+			: $this->url->link('common/home', 'language=' . $this->config->get('config_language'));
+		$data['menu_collections'] = [];
+		$menu_rows = array_slice($menu_collections, 0, 3);
+		$photos = [];
+		$photo_query = $this->db->query("SELECT `p`.`location`, `p`.`image` FROM `" . DB_PREFIX . "product` `p` INNER JOIN (SELECT `location`, MIN(`product_id`) AS `product_id` FROM `" . DB_PREFIX . "product` WHERE `status` = '1' AND `image` <> '' GROUP BY `location`) `first` ON `first`.`product_id` = `p`.`product_id`");
+
+		foreach ($photo_query->rows as $photo) {
+			$photos[$photo['location']] = $photo['image'];
+		}
+
+		foreach ($menu_rows as $row) {
+			$image = $row['image'] ?: ($photos[$row['name']] ?? '');
+			$data['menu_collections'][] = [
+				'name'  => $row['name'],
+				'href'  => $this->url->link('product/collection', 'language=' . $this->config->get('config_language') . '&collection=' . $row['code']),
+				'image' => $image ? 'image/' . $image : 'image/catalog/craftboat/pouch.png'
+			];
+		}
 
 		// Hard coding scripts, so they can be replaced via the event's system.
 		$data['jquery'] = 'catalog/view/javascript/jquery/jquery-3.7.1.min.js';
@@ -133,17 +155,19 @@ class Header extends \Opencart\System\Engine\Controller {
 			'catalog'    => $category_url(100),
 			'new'        => $category_url(108),
 			'favourites' => $category_url(109),
-			'ready'      => $category_url(110),
-			'holiday'    => $category_url(111),
-			'saffron'    => $collection_url('saffron'),
-			'marbled'    => $collection_url('marbled'),
-			'desk'       => $category_url(101),
-			'home'       => $category_url(102),
-			'textiles'   => $category_url(103),
-			'stationery' => $category_url(104),
-			'gifting'    => $category_url(105),
-			'seasonal'   => $category_url(106),
-			'storage'    => $category_url(107)
+			'ready'      => $collection_url('holiday-collection-ready-to-ship'),
+			'holiday'    => $collection_url('holiday-collection-ready-to-ship'),
+			'saffron'    => $collection_url('classic-stripe'),
+			'marbled'    => $collection_url('ocean-collection'),
+			'desk'       => $collection_url('desk-organization-moss-green-story'),
+			'home'       => $collection_url('picture-frames'),
+			'textiles'   => $collection_url('home-decor-textiles-moss-green-story'),
+			'stationery' => $collection_url('stationery-paper-goods-moss-green-story'),
+			'gifting'    => $collection_url('jewellery-pouch-a-small-object-with-a-lot-of-charm'),
+			'seasonal'   => $collection_url('holiday-collection-ready-to-ship'),
+			'storage'    => $collection_url('handcrafted-trays-catchalls-moss-green-story'),
+			'lighting'   => $collection_url('lampshades-lighting-moss-green-story'),
+			'pouches'    => $collection_url('travel-essentials-moss-green-story')
 		];
 
 		$data['language'] = $this->load->controller('common/language');

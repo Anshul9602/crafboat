@@ -38,6 +38,8 @@ class Category extends \Opencart\System\Engine\Controller {
 			$order = 'ASC';
 		}
 
+		[$sort, $order, $sort_key] = $this->catalogSort((string)$sort, (string)$order);
+
 		if (isset($this->request->get['page'])) {
 			$page = (int)$this->request->get['page'];
 		} else {
@@ -424,6 +426,10 @@ class Category extends \Opencart\System\Engine\Controller {
 				$url .= '&limit=' . $this->request->get['limit'];
 			}
 
+			if ($availability !== 'all') {
+				$url .= '&availability=' . $availability;
+			}
+
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 
 			$data['pagination'] = $this->load->controller('common/pagination', [
@@ -468,15 +474,22 @@ class Category extends \Opencart\System\Engine\Controller {
 			$data['login'] = $this->url->link('account/login', 'language=' . $language);
 			$data['account'] = $this->url->link('account/account', 'language=' . $language . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''));
 			$data['about'] = $this->url->link('information/about', 'language=' . $language);
-			$data['sort_name'] = $sort === 'pd.name';
-			$data['collections'] = [
-				['name' => 'Saffron Valley', 'blurb' => 'Florals and sun-warmed block print.', 'href' => $this->url->link('product/collection', 'language=' . $language . '&collection=saffron'), 'active' => false],
-				['name' => 'Marbled Stories', 'blurb' => 'One-of-one colour pulled by hand.', 'href' => $this->url->link('product/collection', 'language=' . $language . '&collection=marbled'), 'active' => false],
-				['name' => 'Holiday 2026', 'blurb' => 'Keepsake gifting for the season.', 'href' => $this->url->link('product/collection', 'language=' . $language . '&collection=holiday'), 'active' => false]
-			];
-			$data['filter_all'] = $this->url->link('product/category', 'language=' . $language . '&path=' . $request_path . '&availability=all');
-			$data['filter_ready'] = $this->url->link('product/category', 'language=' . $language . '&path=' . $request_path . '&availability=ready');
-			$data['filter_made'] = $this->url->link('product/category', 'language=' . $language . '&path=' . $request_path . '&availability=made');
+			$data['sort_key'] = $sort_key;
+			$this->load->model('catalog/collection');
+			$data['collections'] = [];
+
+			foreach ($this->model_catalog_collection->getCollections() as $item) {
+				$data['collections'][] = [
+					'name'   => $item['name'],
+					'blurb'  => $item['blurb'],
+					'href'   => $this->url->link('product/collection', 'language=' . $language . '&collection=' . $item['code']),
+					'active' => false
+				];
+			}
+			$sort_keep = $sort_key !== 'featured' ? '&sort=' . $sort_key : '';
+			$data['filter_all'] = $this->url->link('product/category', 'language=' . $language . '&path=' . $request_path . '&availability=all' . $sort_keep);
+			$data['filter_ready'] = $this->url->link('product/category', 'language=' . $language . '&path=' . $request_path . '&availability=ready' . $sort_keep);
+			$data['filter_made'] = $this->url->link('product/category', 'language=' . $language . '&path=' . $request_path . '&availability=made' . $sort_keep);
 
 			$data['column_left'] = '';
 			$data['column_right'] = $this->load->controller('common/column_right');
@@ -491,5 +504,46 @@ class Category extends \Opencart\System\Engine\Controller {
 		}
 
 		return null;
+	}
+
+	/**
+	 * @return array{0: string, 1: string, 2: string}
+	 */
+	private function catalogSort(string $sort, string $order): array {
+		$aliases = [
+			'featured'   => ['p.sort_order', 'ASC', 'featured'],
+			'name'       => ['pd.name', 'ASC', 'name_asc'],
+			'name_asc'   => ['pd.name', 'ASC', 'name_asc'],
+			'name_desc'  => ['pd.name', 'DESC', 'name_desc'],
+			'price_asc'  => ['p.price', 'ASC', 'price_asc'],
+			'price_desc' => ['p.price', 'DESC', 'price_desc'],
+			'newest'     => ['p.date_added', 'DESC', 'newest'],
+			'sku'        => ['p.model', 'ASC', 'sku']
+		];
+
+		if (isset($aliases[$sort])) {
+			return $aliases[$sort];
+		}
+
+		$allowed = ['pd.name', 'p.model', 'p.quantity', 'p.price', 'rating', 'p.sort_order', 'p.date_added'];
+
+		if (!in_array($sort, $allowed, true)) {
+			$sort = 'p.sort_order';
+		}
+
+		$order = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC';
+		$key = 'featured';
+
+		if ($sort === 'pd.name') {
+			$key = $order === 'DESC' ? 'name_desc' : 'name_asc';
+		} elseif ($sort === 'p.price') {
+			$key = $order === 'DESC' ? 'price_desc' : 'price_asc';
+		} elseif ($sort === 'p.date_added' && $order === 'DESC') {
+			$key = 'newest';
+		} elseif ($sort === 'p.model' && $order === 'ASC') {
+			$key = 'sku';
+		}
+
+		return [$sort, $order, $key];
 	}
 }

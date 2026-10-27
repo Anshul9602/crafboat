@@ -28,19 +28,24 @@ class Home extends \Opencart\System\Engine\Controller {
 		$data['content_top'] = $this->load->controller('common/content_top');
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$language = $this->config->get('config_language');
+		$collection_url = fn(string $code): string => $this->url->link('product/collection', 'language=' . $language . '&collection=' . $code);
 		$data['shop'] = $this->url->link('product/category', 'language=' . $language . '&path=100');
 		$data['arrivals'] = $this->url->link('product/category', 'language=' . $language . '&path=100_108');
 		$data['bestsellers_link'] = $this->url->link('product/category', 'language=' . $language . '&path=100_109');
-		$data['ready_link'] = $this->url->link('product/category', 'language=' . $language . '&path=100_110');
-		$data['holiday'] = $this->url->link('product/category', 'language=' . $language . '&path=100_111');
-		$data['paper'] = $this->url->link('product/category', 'language=' . $language . '&path=104');
-		$data['dept_home'] = $this->url->link('product/category', 'language=' . $language . '&path=102');
-		$data['dept_storage'] = $this->url->link('product/category', 'language=' . $language . '&path=107');
-		$data['dept_stationery'] = $this->url->link('product/category', 'language=' . $language . '&path=104');
+		$data['ready_link'] = $collection_url('holiday-collection-ready-to-ship');
+		$data['holiday'] = $collection_url('holiday-collection-ready-to-ship');
+		$data['paper'] = $collection_url('stationery-paper-goods-moss-green-story');
+		$data['dept_home'] = $collection_url('picture-frames');
+		$data['dept_storage'] = $collection_url('desk-organization-moss-green-story');
+		$data['dept_stationery'] = $collection_url('stationery-paper-goods-moss-green-story');
+		$data['dept_lighting'] = $collection_url('lampshades-lighting-moss-green-story');
+		$data['dept_pouches'] = $collection_url('travel-essentials-moss-green-story');
+		$data['dept_gifting'] = $collection_url('jewellery-pouch-a-small-object-with-a-lot-of-charm');
 		$this->load->model('design/banner');
 		$data['banners'] = $this->model_design_banner->getPageBanners('Homepage');
 
 		$data['categories'] = $this->homeCategories();
+		$data['home_collections'] = $this->homeCollections();
 		$data['bestsellers'] = $this->homeCards('featured', 8);
 		$data['ready'] = $this->homeCards('readyline', 4);
 		$data['logged'] = $this->customer->isLogged();
@@ -62,14 +67,54 @@ class Home extends \Opencart\System\Engine\Controller {
 		$categories = [];
 
 		foreach ($query->rows as $row) {
+			$collection_codes = [
+				'Paper & Desk' => 'stationery-paper-goods-moss-green-story',
+				'Home'         => 'picture-frames',
+				'Textiles'     => 'home-decor-textiles-moss-green-story',
+				'Stationery'   => 'stationery-paper-goods-moss-green-story',
+				'Gifting'      => 'jewellery-pouch-a-small-object-with-a-lot-of-charm',
+				'Holiday'      => 'holiday-collection-ready-to-ship'
+			];
+			$code = $collection_codes[$row['name']] ?? '';
 			$categories[] = [
 				'name'  => $row['name'],
 				'image' => 'image/' . $row['image'],
-				'href'  => $this->url->link('product/category', 'language=' . $this->config->get('config_language') . '&path=' . $row['category_id'])
+				'href'  => $code
+					? $this->url->link('product/collection', 'language=' . $this->config->get('config_language') . '&collection=' . $code)
+					: $this->url->link('product/category', 'language=' . $this->config->get('config_language') . '&path=' . $row['category_id'])
 			];
 		}
 
 		return $categories;
+	}
+
+	/**
+	 * @return array<int, array<string, string>>
+	 */
+	private function homeCollections(): array {
+		$this->load->model('catalog/collection');
+		$photos = [];
+		$photo_query = $this->db->query("SELECT `p`.`location`, `p`.`image` FROM `" . DB_PREFIX . "product` `p` INNER JOIN (SELECT `location`, MIN(`product_id`) AS `product_id` FROM `" . DB_PREFIX . "product` WHERE `status` = '1' AND `image` <> '' GROUP BY `location`) `first` ON `first`.`product_id` = `p`.`product_id`");
+
+		foreach ($photo_query->rows as $photo) {
+			$photos[$photo['location']] = $photo['image'];
+		}
+
+		$collections = [];
+		$index = 1;
+
+		foreach ($this->model_catalog_collection->getCollections() as $row) {
+			$image = $row['image'] ?: ($photos[$row['name']] ?? '');
+			$collections[] = [
+				'name'  => $row['name'],
+				'num'   => str_pad((string)$index, 2, '0', STR_PAD_LEFT),
+				'image' => $image ? 'image/' . $image : '',
+				'href'  => $this->url->link('product/collection', 'language=' . $this->config->get('config_language') . '&collection=' . $row['code'])
+			];
+			$index++;
+		}
+
+		return $collections;
 	}
 
 	/**

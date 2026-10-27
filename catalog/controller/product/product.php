@@ -442,21 +442,14 @@ class Product extends \Opencart\System\Engine\Controller {
 			$data['collection_name'] = $product_info['location'];
 			$data['category_name'] = $product_info['meta_keyword'];
 			$data['summary'] = trim(strip_tags(html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8')));
-
-			if ((int)$product_id === 100) {
-				$data['summary'] = 'Hand-finished scalloped forms wrapped in printed cotton paper, designed for gifting tables, desks and collected interiors.';
-			}
 			$data['ship'] = $made ? 'Made to order · Ships in 10–12 days' : 'Ready to ship · Dispatches in 3–5 days';
 			$data['ship_wait'] = $made;
 			$data['lead'] = $made ? 'Ships in 10–12 days' : 'Dispatches in 3–5 days';
 			$language = (string)$this->config->get('config_language');
-			$collection_code = [
-				'Saffron valley' => 'saffron',
-				'Marbled Stories' => 'marbled',
-				'Holiday 2026' => 'holiday'
-			][$product_info['location']] ?? '';
-			$data['collection_href'] = $collection_code
-				? $this->url->link('product/collection', 'language=' . $language . '&collection=' . $collection_code)
+			$this->load->model('catalog/collection');
+			$matched = $this->model_catalog_collection->getCollectionByName((string)$product_info['location']);
+			$data['collection_href'] = $matched
+				? $this->url->link('product/collection', 'language=' . $language . '&collection=' . $matched['code'])
 				: $this->url->link('product/category', 'language=' . $language . '&path=100');
 			$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');
 			$data['logged'] = $this->customer->isLogged();
@@ -489,33 +482,21 @@ class Product extends \Opencart\System\Engine\Controller {
 				? 'image/catalog/craftboat/pdp-fit/' . $fit_name
 				: ($image_file !== '' ? 'image/' . $image_file : 'catalog/view/image/craftboat/pdp-main.png');
 
-			if ((int)$product_id === 100) {
-				$data['gallery'] = [
-					'catalog/view/image/craftboat/pdp-main.png',
-					'catalog/view/image/craftboat/pdp-alt.png',
-					'catalog/view/image/craftboat/pdp-detail.png'
-				];
-				$data['dimensions'] = 'Set of 3 · 12 × 9 in largest';
-				$data['material'] = 'Printed cotton paper over board';
-				$data['technique'] = 'Each edge is cut, wrapped and aligned by hand';
-				$data['packing'] = 'Nested, tissue wrapped · 4 sets per carton';
-			} else {
-				$data['gallery'] = [$main_image];
+			$data['gallery'] = [$main_image];
 
-				foreach ($this->model_catalog_product->getImages($product_id) as $extra) {
-					if (!empty($extra['image'])) {
-						$data['gallery'][] = 'image/' . ltrim((string)$extra['image'], '/');
-					}
+			foreach ($this->model_catalog_product->getImages($product_id) as $extra) {
+				if (!empty($extra['image'])) {
+					$data['gallery'][] = 'image/' . ltrim((string)$extra['image'], '/');
 				}
-
-				if (count($data['gallery']) < 3) {
-					$data['gallery'] = [$main_image, $main_image, $main_image];
-				}
-				$data['dimensions'] = ((float)$product_info['length'] > 0) ? rtrim(rtrim((string)$product_info['length'], '0'), '.') . ' × ' . rtrim(rtrim((string)$product_info['width'], '0'), '.') . ' cm' : 'See the product notes';
-				$data['material'] = 'Handmade in the Jaipur studio';
-				$data['technique'] = 'Finished by hand';
-				$data['packing'] = 'Case pack of ' . (int)$data['minimum'];
 			}
+
+			if (count($data['gallery']) < 3) {
+				$data['gallery'] = [$main_image, $main_image, $main_image];
+			}
+			$data['dimensions'] = ((float)$product_info['length'] > 0) ? rtrim(rtrim((string)$product_info['length'], '0'), '.') . ' × ' . rtrim(rtrim((string)$product_info['width'], '0'), '.') . ' cm' : 'See the product notes';
+			$data['material'] = 'Handmade in the Jaipur studio';
+			$data['technique'] = 'Finished by hand';
+			$data['packing'] = 'Case pack of ' . (int)$data['minimum'];
 
 			$related_query = $this->db->query("SELECT `p`.`product_id`, `p`.`model`, `p`.`image`, `p`.`location`, `pd`.`name`, `pd`.`tag`, `pd`.`meta_keyword` FROM `" . DB_PREFIX . "product` `p` LEFT JOIN `" . DB_PREFIX . "product_description` `pd` ON (`p`.`product_id` = `pd`.`product_id`) WHERE `p`.`status` = '1' AND `p`.`product_id` <> '" . (int)$product_id . "' AND `pd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND `p`.`location` = '" . $this->db->escape((string)$product_info['location']) . "' ORDER BY `p`.`sort_order` ASC LIMIT 8");
 			$data['related_products'] = [];

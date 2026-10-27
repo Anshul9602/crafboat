@@ -397,7 +397,7 @@ document.querySelectorAll('[data-cb-banner]').forEach(function (hero) {
       child.classList.add('cb-anim-item');
       child.style.setProperty('--cb-delay', (Math.min(i, 10) * 0.08) + 's');
     });
-    if (reduce || index === 0 && section.getBoundingClientRect().top < window.innerHeight * 0.85) {
+    if (reduce || section.getBoundingClientRect().top < window.innerHeight * 0.92) {
       section.classList.add('is-in');
     }
   });
@@ -413,7 +413,7 @@ document.querySelectorAll('[data-cb-banner]').forEach(function (hero) {
       entry.target.classList.add('is-in');
       io.unobserve(entry.target);
     });
-  }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+  }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
 
   sections.forEach(function (section) {
     if (!section.classList.contains('is-in')) io.observe(section);

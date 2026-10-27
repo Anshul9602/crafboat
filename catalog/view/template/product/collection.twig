@@ -28,30 +28,37 @@
 
 <nav class="cb-coll-switch" aria-label="Explore collections">
   <span>Explore collections</span>
-  {% for item in collections %}
-  <a href="{{ item.href }}"{% if item.active %} class="is-on"{% endif %}>
-    <strong>{{ item.name }}</strong>
-    <em>{{ item.blurb }}</em>
-  </a>
-  {% endfor %}
+  <div class="cb-coll-switch__track" id="cb-coll-track" tabindex="0">
+    {% for item in collections %}
+    <a href="{{ item.href }}"{% if item.active %} class="is-on"{% endif %}>{{ item.name }}</a>
+    {% endfor %}
+  </div>
+  <div class="cb-coll-switch__nav">
+    <button type="button" class="cb-hscroll__btn" id="cb-coll-prev" aria-label="Previous collections"><span class="cb-arrow" aria-hidden="true"></span></button>
+    <button type="button" class="cb-hscroll__btn" id="cb-coll-next" aria-label="Next collections"><span class="cb-arrow" aria-hidden="true"></span></button>
+  </div>
 </nav>
-
-<section class="cb-coll-note">
-  <div>
-    <p class="cb-kicker">Browse before you apply</p>
-    <h2 class="cb-display">Everything needed to understand the product. Trade figures unlock after approval.</h2>
-  </div>
-  <div class="cb-coll-note__list">
-    <div>
-      <h3>Visible now</h3>
-      <p>Product name, MSRP, SKU, case pack, MOQ, material and dispatch window.</p>
-    </div>
-    <div>
-      <h3>With trade access</h3>
-      <p>Wholesale price, retail margin, live inventory, quantity controls and quick add.</p>
-    </div>
-  </div>
-</section>
+<script>
+(function () {
+  var track = document.getElementById('cb-coll-track');
+  var prev = document.getElementById('cb-coll-prev');
+  var next = document.getElementById('cb-coll-next');
+  if (!track || !prev || !next) return;
+  var current = track.querySelector('.is-on');
+  if (current) track.scrollLeft = current.offsetLeft - track.offsetLeft;
+  function step() { return Math.max(track.clientWidth * 0.6, 220); }
+  function sync() {
+    var max = track.scrollWidth - track.clientWidth - 1;
+    prev.disabled = track.scrollLeft <= 1;
+    next.disabled = track.scrollLeft >= max;
+  }
+  prev.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+  next.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+  track.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  sync();
+})();
+</script>
 
 <section class="cb-coll-products" id="assortment">
   <div class="cb-head">
@@ -76,7 +83,12 @@
       <label>
         <select name="sort" aria-label="Sort" onchange="this.form.submit()">
           <option value="featured"{% if sort == 'featured' %} selected{% endif %}>Featured</option>
-          <option value="name"{% if sort == 'name' %} selected{% endif %}>Name</option>
+          <option value="name_asc"{% if sort == 'name_asc' %} selected{% endif %}>A to Z</option>
+          <option value="name_desc"{% if sort == 'name_desc' %} selected{% endif %}>Z to A</option>
+          <option value="price_asc"{% if sort == 'price_asc' %} selected{% endif %}>Price: low to high</option>
+          <option value="price_desc"{% if sort == 'price_desc' %} selected{% endif %}>Price: high to low</option>
+          <option value="newest"{% if sort == 'newest' %} selected{% endif %}>Newest</option>
+          <option value="sku"{% if sort == 'sku' %} selected{% endif %}>SKU</option>
         </select>
         <img src="catalog/view/image/craftboat/chevron.svg" alt="">
       </label>
@@ -102,6 +114,29 @@
     {% else %}
     <p class="cb-muted">No products in this view yet.</p>
     {% endfor %}
+  </div>
+  {% if pagination %}
+  <div class="cb-find__pages">
+    {{ pagination }}
+    {% if results %}<p>{{ results }}</p>{% endif %}
+  </div>
+  {% endif %}
+</section>
+
+<section class="cb-coll-note">
+  <div>
+    <p class="cb-kicker">Browse before you apply</p>
+    <h2 class="cb-display">Everything needed to understand the product. Trade figures unlock after approval.</h2>
+  </div>
+  <div class="cb-coll-note__list">
+    <div>
+      <h3>Visible now</h3>
+      <p>Product name, MSRP, SKU, case pack, MOQ, material and dispatch window.</p>
+    </div>
+    <div>
+      <h3>With trade access</h3>
+      <p>Wholesale price, retail margin, live inventory, quantity controls and quick add.</p>
+    </div>
   </div>
 </section>
 
