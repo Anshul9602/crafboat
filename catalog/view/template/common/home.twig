@@ -56,6 +56,42 @@
   </div>
 </section>
 
+<section class="cb-section cb-bestsellers">
+  <div class="cb-head">
+    <div>
+      <p class="cb-kicker">Buyer favourites</p>
+      <h2>Best sellers</h2>
+    </div>
+    <p>Product names and suggested retail remain visible. Sign in to unlock wholesale pricing and quick ordering.</p>
+  </div>
+  <div class="cb-grid">
+    {% for product in bestsellers %}
+    <a class="cb-card" href="{{ product.href }}">
+      <span class="cb-badge">{{ product.badge }}</span>
+      <span class="cb-heart" role="button" tabindex="0" data-wishlist="{{ product.product_id }}" aria-label="Save"><img src="catalog/view/image/craftboat/heart.svg" alt=""></span>
+      <span class="cb-card__media"><img class="cb-card__img" src="{{ product.image }}" alt="{{ product.name }}"></span>
+      <div>
+        <div class="cb-meta"><span>{{ product.category }}</span><span>{{ product.sku }}</span></div>
+        <h3>{{ product.name }}</h3>
+        <p class="cb-collection">{{ product.collection }}</p>
+      </div>
+      <div>
+        <p class="cb-ship{% if product.wait %} cb-ship--wait{% endif %}">{{ product.ship }}</p>
+        <hr>
+        <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view wholesale pricing{% endif %}</span> <span class="cb-arrow" aria-hidden="true"></span></span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  <div class="cb-catalog">
+    <div class="cb-catalog__copy">
+      <p class="cb-kicker">Explore full catalog</p>
+      <h2 class="cb-display">Discover the full collection with wholesale pricing.</h2>
+    </div>
+    <a class="cb-btn cb-btn--black" href="{{ shop }}">View all products</a>
+  </div>
+</section>
+
 <section class="cb-section cb-section--tight">
   <div class="cb-head">
     <div>
@@ -121,42 +157,6 @@
   </div>
 </section>
 
-<section class="cb-section cb-bestsellers">
-  <div class="cb-head">
-    <div>
-      <p class="cb-kicker">Buyer favourites</p>
-      <h2>Best sellers</h2>
-    </div>
-    <p>Product names and suggested retail remain visible. Sign in to unlock wholesale pricing and quick ordering.</p>
-  </div>
-  <div class="cb-grid">
-    {% for product in bestsellers %}
-    <a class="cb-card" href="{{ product.href }}">
-      <span class="cb-badge">{{ product.badge }}</span>
-      <span class="cb-heart" role="button" tabindex="0" data-wishlist="{{ product.product_id }}" aria-label="Save"><img src="catalog/view/image/craftboat/heart.svg" alt=""></span>
-      <span class="cb-card__media"><img class="cb-card__img" src="{{ product.image }}" alt="{{ product.name }}"></span>
-      <div>
-        <div class="cb-meta"><span>{{ product.category }}</span><span>{{ product.sku }}</span></div>
-        <h3>{{ product.name }}</h3>
-        <p class="cb-collection">{{ product.collection }}</p>
-      </div>
-      <div>
-        <p class="cb-ship{% if product.wait %} cb-ship--wait{% endif %}">{{ product.ship }}</p>
-        <hr>
-        <span class="cb-card__foot"><span>{% if product.role_price %}{% if product.role_base %}<s class="cb-card__was">{{ product.role_base }}</s>{% endif %}{{ product.role_price }}{% elseif logged %}Pricing locked for this account{% else %}Sign in to view wholesale pricing{% endif %}</span> <span class="cb-arrow" aria-hidden="true"></span></span>
-      </div>
-    </a>
-    {% endfor %}
-  </div>
-  <div class="cb-catalog">
-    <div class="cb-catalog__copy">
-      <p class="cb-kicker">Explore full catalog</p>
-      <h2 class="cb-display">Discover the full collection with wholesale pricing.</h2>
-    </div>
-    <a class="cb-btn cb-btn--black" href="{{ shop }}">View all products</a>
-  </div>
-</section>
-
 <section class="cb-peach">
   <div class="cb-head">
     <div>
@@ -208,18 +208,42 @@
   </div>
 </section>
 
-<section class="cb-section">
-  <div>
-    <p class="cb-kicker">Buy by assortment</p>
-    <h2 class="cb-display" style="max-width:658px">Choose the story your customer will take home.</h2>
-    <div class="cb-tabs">
-      <a class="is-on" href="index.php?route=product/special&amp;language=en-gb">Handmade paper</a>
-      <a href="index.php?route=product/special&amp;language=en-gb">Hand marbled</a>
-      <a href="index.php?route=product/special&amp;language=en-gb">Block printed</a>
-      <a href="index.php?route=product/special&amp;language=en-gb">Natural dyed</a>
-      <a href="index.php?route=product/special&amp;language=en-gb">Made in Jaipur</a>
-    </div>
+<section class="cb-collections">
+  <div class="cb-collections__grid">
+    <a class="cb-tile" href="index.php?route=product/collection&amp;language=en-gb&amp;collection=saffron" style="background-image:url('catalog/view/image/craftboat/collection-saffron.png')">
+      <span class="cb-tile__num">01</span>
+      <h3>Saffron valley</h3>
+      <div class="cb-tile__more">
+        <div class="cb-tile__more-inner">
+          <p>Floral and sun-warmed block print.</p>
+          <span class="cb-btn cb-btn--glass">Explore Collection <span class="cb-arrow" aria-hidden="true"></span></span>
+        </div>
+      </div>
+    </a>
+    <a class="cb-tile" href="index.php?route=product/collection&amp;language=en-gb&amp;collection=marbled" style="background-image:url('catalog/view/image/craftboat/collection-marbled.png')">
+      <span class="cb-tile__num">02</span>
+      <h3>Marbled Stories</h3>
+      <div class="cb-tile__more">
+        <div class="cb-tile__more-inner">
+          <p>One-of-one colour pulled by hand.</p>
+          <span class="cb-btn cb-btn--glass">Explore Collection <span class="cb-arrow" aria-hidden="true"></span></span>
+        </div>
+      </div>
+    </a>
+    <a class="cb-tile" href="index.php?route=product/collection&amp;language=en-gb&amp;collection=holiday" style="background-image:url('catalog/view/image/craftboat/collection-holiday.png')">
+      <span class="cb-tile__num">03</span>
+      <h3>Holiday 2026</h3>
+      <div class="cb-tile__more">
+        <div class="cb-tile__more-inner">
+          <p>Keepsake gifting for the season.</p>
+          <span class="cb-btn cb-btn--glass">Explore Collection <span class="cb-arrow" aria-hidden="true"></span></span>
+        </div>
+      </div>
+    </a>
   </div>
+</section>
+
+<section class="cb-section">
   <div class="cb-story">
     <div class="cb-story__photo" style="background-image:url('catalog/view/image/craftboat/paper-mill.png')"></div>
     <div class="cb-story__copy">
@@ -275,87 +299,6 @@
     <article><p class="cb-num">03</p><h3>Direct Studio Support</h3><p class="cb-muted">Work directly with our Jaipur design and production team.</p></article>
     <article><p class="cb-num">04</p><h3>Stockist Resources</h3><p class="cb-muted">Access approved product imagery, craft stories and merchandising material.</p></article>
   </div>
-</section>
-
-<section class="cb-confidence">
-  <div class="cb-confidence__copy">
-    <div class="cb-confidence__intro">
-      <p class="cb-kicker">Buy Craft Boat with confidence</p>
-      <h2 class="cb-display">Know the numbers before the cartons leave Jaipur.</h2>
-    </div>
-    <ul>
-      <li><h3>Pack-safe ordering</h3><p class="cb-muted">Every quantity respects the product’s MOQ and case pack.</p></li>
-      <li><h3>Clear availability</h3><p class="cb-muted">Ready stock and made-to-order lines carry distinct dispatch windows.</p></li>
-      <li><h3>One place to return</h3><p class="cb-muted">Orders, invoices, saved products, tracking and reorder stay in your account.</p></li>
-    </ul>
-    <a class="cb-btn cb-btn--black" href="index.php?route=account/register&amp;language=en-gb&amp;account=trade">Apply to buy</a>
-  </div>
-  <div class="cb-photos">
-    <div class="tall" style="background-image:url('catalog/view/image/craftboat/trays.png')"></div>
-    <div class="cb-photos__stack">
-      <div class="sq" style="background-image:url('catalog/view/image/craftboat/pouch.png')"></div>
-      <div class="sq" style="background-image:url('catalog/view/image/craftboat/shade.png')"></div>
-    </div>
-  </div>
-</section>
-
-<section class="cb-collections">
-  <div class="cb-head">
-    <div>
-      <p class="cb-kicker">Shop by collection</p>
-      <h2>Stories for cohesive shelves.</h2>
-    </div>
-    <p>Editorial worlds remain distinct from practical product categories.</p>
-  </div>
-  <div class="cb-collections__grid">
-    <a class="cb-tile" href="index.php?route=product/collection&amp;language=en-gb&amp;collection=saffron" style="background-image:url('catalog/view/image/craftboat/collection-saffron.png')">
-      <span class="cb-tile__num">01</span>
-      <h3>Saffron valley</h3>
-      <div class="cb-tile__more">
-        <div class="cb-tile__more-inner">
-          <p>Floral and sun-warmed block print.</p>
-          <span class="cb-btn cb-btn--glass">Explore Collection <span class="cb-arrow" aria-hidden="true"></span></span>
-        </div>
-      </div>
-    </a>
-    <a class="cb-tile" href="index.php?route=product/collection&amp;language=en-gb&amp;collection=marbled" style="background-image:url('catalog/view/image/craftboat/collection-marbled.png')">
-      <span class="cb-tile__num">02</span>
-      <h3>Marbled Stories</h3>
-      <div class="cb-tile__more">
-        <div class="cb-tile__more-inner">
-          <p>One-of-one colour pulled by hand.</p>
-          <span class="cb-btn cb-btn--glass">Explore Collection <span class="cb-arrow" aria-hidden="true"></span></span>
-        </div>
-      </div>
-    </a>
-    <a class="cb-tile" href="index.php?route=product/collection&amp;language=en-gb&amp;collection=holiday" style="background-image:url('catalog/view/image/craftboat/collection-holiday.png')">
-      <span class="cb-tile__num">03</span>
-      <h3>Holiday 2026</h3>
-      <div class="cb-tile__more">
-        <div class="cb-tile__more-inner">
-          <p>Keepsake gifting for the season.</p>
-          <span class="cb-btn cb-btn--glass">Explore Collection <span class="cb-arrow" aria-hidden="true"></span></span>
-        </div>
-      </div>
-    </a>
-  </div>
-</section>
-
-<section class="cb-section" style="text-align:center">
-  <p class="cb-kicker">Precious material stories</p>
-  <h2 class="cb-display">Waste becomes paper. Paper becomes story.</h2>
-  <p class="cb-muted" style="margin:16px auto 0;max-width:551px">In our Jaipur studio, discarded cotton textile is transformed into paper, then marbled, block printed, bound and shaped by hand.</p>
-</section>
-<div class="cb-story__photo" style="height:420px;background-image:url('catalog/view/image/craftboat/paper-mill.png')"></div>
-
-<section class="cb-desk">
-  <div class="cb-desk__photo" style="background-image:url('catalog/view/image/craftboat/desk-left.png')"></div>
-  <div class="cb-desk__copy">
-    <p class="cb-kicker">A curated paper world</p>
-    <h2>The perfect <em>desk story</em> for your store, right this way.</h2>
-    <a class="cb-btn cb-btn--black" href="index.php?route=product/special&amp;language=en-gb">Shop paper and desk →</a>
-  </div>
-  <div class="cb-desk__photo" style="background-image:url('catalog/view/image/craftboat/desk-right.png')"></div>
 </section>
 
 <section class="cb-custom">

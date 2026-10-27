@@ -2725,7 +2725,12 @@ body.cb-acct #content>#wishlist {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 24px;
     padding: 48px;
+}
+
+.cb-story__copy>* {
+    margin: 0;
 }
 
 .cb-story__copy h2 {
