@@ -1,12 +1,14 @@
 <form id="form-collection" method="post" data-oc-toggle="ajax" data-oc-load="{{ action }}" data-oc-target="#collection">
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover">
+  <div class="faire-table-wrap">
+    <table class="faire-table">
       <thead>
         <tr>
-          <th class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></th>
+          <th style="width:36px"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input faire-check"/></th>
+          <th style="width:64px">{{ column_image }}</th>
           <th>{{ column_name }}</th>
-          <th class="text-end">{{ column_sort_order }}</th>
-          <th class="text-end">{{ column_status }}</th>
+          <th>{{ column_quantity }}</th>
+          <th>{{ column_status }}</th>
+          <th>{{ column_promotion }}</th>
           <th class="text-end">{{ column_action }}</th>
         </tr>
       </thead>
@@ -14,19 +16,29 @@
         {% if collections %}
           {% for collection in collections %}
             <tr>
-              <td class="text-center"><input type="checkbox" name="selected[]" value="{{ collection.collection_id }}" class="form-check-input"/></td>
-              <td>{{ collection.name }}</td>
-              <td class="text-end">{{ collection.sort_order }}</td>
-              <td class="text-end">{{ collection.status ? text_enabled : text_disabled }}</td>
-              <td class="text-end"><a href="{{ collection.edit }}" data-bs-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a></td>
+              <td><input type="checkbox" name="selected[]" value="{{ collection.collection_id }}" class="form-check-input faire-check"/></td>
+              <td><img class="faire-thumb" src="{{ collection.image }}" alt="{{ collection.name }}"></td>
+              <td>
+                <div class="faire-name">
+                  <strong>{{ collection.name }}</strong>
+                  <span>{{ collection.updated }}</span>
+                </div>
+              </td>
+              <td>{{ collection.quantity }}</td>
+              <td><span class="faire-badge faire-badge--{{ collection.status_class }}">{{ collection.status_label }}</span></td>
+              <td><a class="faire-link" href="{{ collection.edit }}">{{ text_promotion }}</a></td>
+              <td class="text-end"><a href="{{ collection.edit }}" class="faire-btn faire-btn--ghost" style="padding:8px 12px"><i class="fa-solid fa-pencil"></i></a></td>
             </tr>
           {% endfor %}
         {% else %}
           <tr>
-            <td class="text-center" colspan="5">{{ text_no_results }}</td>
+            <td colspan="7" class="faire-empty">{{ text_no_results }}</td>
           </tr>
         {% endif %}
       </tbody>
     </table>
   </div>
+  {% if pagination %}
+  <div class="faire-pager">{{ pagination }}</div>
+  {% endif %}
 </form>

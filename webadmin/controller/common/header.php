@@ -26,6 +26,7 @@ class Header extends \Opencart\System\Engine\Controller {
 		$data['bootstrap'] = 'view/stylesheet/bootstrap.css';
 		$data['icons'] = 'view/stylesheet/fonts/fontawesome/css/all.min.css';
 		$data['stylesheet'] = 'view/stylesheet/stylesheet.css';
+		$data['faire'] = 'view/stylesheet/faire-admin.css?v=20';
 
 		// Hard coding scripts so they can be replaced via the event's system.
 		$data['jquery'] = 'view/javascript/jquery/jquery-3.7.1.min.js';
@@ -35,13 +36,28 @@ class Header extends \Opencart\System\Engine\Controller {
 		$data['scripts'] = $this->document->getScripts();
 
 		// Fav icon
-		if (is_file(DIR_IMAGE . $this->config->get('config_icon'))) {
-			$data['icon'] = HTTP_CATALOG . 'image/' . $this->config->get('config_icon');
+		$store_icon = html_entity_decode((string)$this->config->get('config_icon'), ENT_QUOTES, 'UTF-8');
+
+		if ($store_icon && is_file(DIR_IMAGE . $store_icon)) {
+			$data['icon'] = HTTP_CATALOG . 'image/' . $store_icon;
 		} else {
 			$data['icon'] = '';
 		}
 
+		// Store logo (Settings → Store Logo)
+		$this->load->model('tool/image');
+
+		$store_logo = html_entity_decode((string)$this->config->get('config_logo'), ENT_QUOTES, 'UTF-8');
+
+		if ($store_logo && is_file(DIR_IMAGE . $store_logo)) {
+			$data['logo'] = $this->model_tool_image->resize($store_logo, 200, 60);
+		} else {
+			$data['logo'] = 'view/image/logo.png';
+		}
+
 		$this->load->language('common/header');
+
+		$data['heading_title'] = (string)$this->config->get('config_name') ?: $this->language->get('heading_title');
 
 		if (!isset($this->request->get['user_token']) || !isset($this->session->data['user_token']) || ($this->request->get['user_token'] != $this->session->data['user_token'])) {
 			$data['logged'] = false;
@@ -92,8 +108,6 @@ class Header extends \Opencart\System\Engine\Controller {
 			}
 
 			// Image
-			$this->load->model('tool/image');
-
 			if ($user_info && $user_info['image'] && is_file(DIR_IMAGE . html_entity_decode($user_info['image'], ENT_QUOTES, 'UTF-8'))) {
 				$data['image'] = $this->model_tool_image->resize($user_info['image'], 45, 45);
 			} else {

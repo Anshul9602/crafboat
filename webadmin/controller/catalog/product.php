@@ -172,6 +172,18 @@ class Product extends \Opencart\System\Engine\Controller {
 
 		$data['user_token'] = $this->session->data['user_token'];
 
+		$this->load->model('catalog/product');
+		$token = 'user_token=' . $this->session->data['user_token'];
+		$data['total_all'] = $this->model_catalog_product->getTotalProducts([]);
+		$data['total_published'] = $this->model_catalog_product->getTotalProducts(['filter_status' => '1']);
+		$data['total_unpublished'] = $this->model_catalog_product->getTotalProducts(['filter_status' => '0']);
+		$data['total_draft'] = 0;
+		$data['filter_all'] = $this->url->link('catalog/product', $token);
+		$data['filter_published'] = $this->url->link('catalog/product', $token . '&filter_status=1');
+		$data['filter_unpublished'] = $this->url->link('catalog/product', $token . '&filter_status=0');
+		$data['filter_draft'] = $this->url->link('catalog/product', $token . '&filter_status=2');
+		$data['status_tab'] = ($filter_status === '1') ? 'published' : (($filter_status === '0') ? 'unpublished' : (($filter_status === '2') ? 'draft' : 'all'));
+
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
@@ -367,12 +379,28 @@ class Product extends \Opencart\System\Engine\Controller {
 				}
 			}
 
+			$option_total = (int)$this->db->query("SELECT COUNT(*) AS `total` FROM `" . DB_PREFIX . "product_option` WHERE `product_id` = '" . (int)$result['product_id'] . "'")->row['total'];
+
+			if ($option_total < 1) {
+				$option_total = 1;
+			}
+
+			$qty = (int)$result['quantity'];
+
+			if ($qty > 0) {
+				$availability = 'In stock (' . $qty . ')';
+			} else {
+				$availability = 'Out of stock';
+			}
+
 			$data['products'][] = [
-				'image'   => $this->model_tool_image->resize($image, 40, 40),
-				'price'   => $this->currency->format($result['price'], $this->config->get('config_currency')),
-				'special' => $special,
-				'edit'    => $this->url->link('catalog/product.form', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $result['product_id'] . ($result['master_id'] ? '&master_id=' . $result['master_id'] : '') . $url),
-				'variant' => (!$result['master_id'] ? $this->url->link('catalog/product.form', 'user_token=' . $this->session->data['user_token'] . '&master_id=' . $result['product_id'] . $url) : '')
+				'image'          => $this->model_tool_image->resize($image, 80, 80),
+				'price'          => $this->currency->format($result['price'], $this->config->get('config_currency')),
+				'special'        => $special,
+				'options_label'  => $option_total === 1 ? '1 option' : $option_total . ' options',
+				'availability'   => $availability,
+				'edit'           => $this->url->link('catalog/product.form', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $result['product_id'] . ($result['master_id'] ? '&master_id=' . $result['master_id'] : '') . $url),
+				'variant'        => (!$result['master_id'] ? $this->url->link('catalog/product.form', 'user_token=' . $this->session->data['user_token'] . '&master_id=' . $result['product_id'] . $url) : '')
 			] + $result;
 		}
 

@@ -1,62 +1,55 @@
 <form id="form-product" method="post" data-oc-toggle="ajax" data-oc-load="{{ action }}" data-oc-target="#product">
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover">
+  <div class="faire-table-wrap">
+    <table class="faire-table">
       <thead>
         <tr>
-          <th class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></th>
-          <th class="text-center col-1">{{ column_image }}</th>
-          <th><a href="{{ sort_name }}"{% if sort == 'pd.name' %} class="{{ order|lower }}"{% endif %}>{{ column_name }}</a></th>
-          <th class="d-none d-lg-table-cell"><a href="{{ sort_model }}"{% if sort == 'p.model' %} class="{{ order|lower }}"{% endif %}>{{ column_model }}</a></th>
-          <th class="text-end"><a href="{{ sort_price }}"{% if sort == 'p.price' %} class="{{ order|lower }}"{% endif %}>{{ column_price }}</a></th>
-          <th class="text-end"><a href="{{ sort_quantity }}"{% if sort == 'p.quantity' %} class="{{ order|lower }}"{% endif %}>{{ column_quantity }}</a></th>
-          <th class="text-end">{{ column_action }}</th>
+          <th style="width:36px"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input faire-check"/></th>
+          <th style="width:56px"></th>
+          <th><a href="{{ sort_name }}"{% if sort == 'pd.name' %} class="{{ order|lower }}"{% endif %}>Product name</a></th>
+          <th>Options</th>
+          <th><a href="{{ sort_price }}"{% if sort == 'p.price' %} class="{{ order|lower }}"{% endif %}>WS price</a></th>
+          <th>Status</th>
+          <th><a href="{{ sort_quantity }}"{% if sort == 'p.quantity' %} class="{{ order|lower }}"{% endif %}>Availability</a></th>
+          <th>Recent sales</th>
+          <th>Improvement areas</th>
+          <th style="width:40px"></th>
         </tr>
       </thead>
       <tbody>
         {% if products %}
           {% for product in products %}
-            <tr class="{% if not product.variant %}table-warning{% endif %} {% if not product.status %}table-active opacity-50{% endif %}">
-              <td class="text-center"><input type="checkbox" name="selected[]" value="{{ product.product_id }}" class="form-check-input"/></td>
-              <td class="text-center"><img src="{{ product.image }}" alt="{{ product.name }}" class="img-thumbnail"/></td>
-              <td>{{ product.name }}</td>
-              <td class="d-none d-lg-table-cell">{{ product.model }}</td>
+            <tr>
+              <td><input type="checkbox" name="selected[]" value="{{ product.product_id }}" class="form-check-input faire-check"/></td>
+              <td><img class="faire-thumb" src="{{ product.image }}" alt="{{ product.name }}"></td>
+              <td><a class="faire-product-name" href="{{ product.edit }}">{{ product.name }}</a></td>
+              <td class="faire-muted-cell">{{ product.options_label }}</td>
+              <td>{{ product.special ? product.special : product.price }}</td>
+              <td>{{ product.status ? 'Published' : 'Unpublished' }}</td>
+              <td><span class="faire-pill">{{ product.availability }}</span></td>
+              <td class="faire-muted-cell"></td>
+              <td class="faire-muted-cell"></td>
               <td class="text-end">
-                {% if product.special %}<span style="text-decoration: line-through;">{{ product.price }}</span>
-                  <br/>
-                  <div class="text-danger">{{ product.special }}</div>
-                {% else %}
-                  {{ product.price }}
-                {% endif %}</td>
-              <td class="text-end">
-                {% if product.quantity <= 0 %}
-                  <span class="badge bg-warning">{{ product.quantity }}</span>
-                {% elseif product.quantity <= 5 %}
-                  <span class="badge bg-danger">{{ product.quantity }}</span>
-                {% else %}
-                  <span class="badge bg-success">{{ product.quantity }}</span>
-                {% endif %}</td>
-              <td class="text-end">
-                {% if product.variant %}
-                  <div class="btn-group">
-                    <a href="{{ product.edit }}" data-bs-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa-solid fa-pencil"></i></a>
-                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"><i class="fa-solid fa-caret-down"></i></button>
-                    <div class="dropdown-menu dropdown-menu-end"><a href="{{ product.variant }}" class="dropdown-item"><i class="fa-solid fa-plus"></i> {{ text_variant_add }}</a></div>
-                  </div>
-                {% else %}
-                  <a href="{{ product.edit }}" data-bs-toggle="tooltip" title="{{ button_edit }}" class="btn btn-warning"><i class="fa-solid fa-pencil"></i></a>
-                {% endif %}</td>
+                <div class="dropdown">
+                  <button type="button" class="faire-kebab" data-bs-toggle="dropdown" aria-label="Actions"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{{ product.edit }}"><i class="fa-solid fa-pencil"></i> Edit</a></li>
+                    {% if product.variant %}
+                    <li><a class="dropdown-item" href="{{ product.variant }}"><i class="fa-solid fa-plus"></i> {{ text_variant_add }}</a></li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </td>
             </tr>
           {% endfor %}
         {% else %}
           <tr>
-            <td class="text-center" colspan="7">{{ text_no_results }}</td>
+            <td colspan="10" class="faire-empty">{{ text_no_results }}</td>
           </tr>
         {% endif %}
       </tbody>
     </table>
   </div>
-  <div class="row">
-    <div class="col-sm-6 text-start">{{ pagination }}</div>
-    <div class="col-sm-6 text-end">{{ results }}</div>
+  <div class="faire-pager">
+    {{ pagination }}
   </div>
 </form>

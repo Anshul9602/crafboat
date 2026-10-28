@@ -1,24 +1,24 @@
 {{ header }}{{ column_left }}
 <div id="content">
-  <div class="page-header">
-    <div class="container-fluid">
-      <div class="float-end">
-        <a href="{{ add }}" data-bs-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
-        <button type="submit" form="form-collection" formaction="{{ delete }}" data-bs-toggle="tooltip" title="{{ button_delete }}" onclick="return confirm('{{ text_confirm }}');" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+  <div class="faire-page">
+    <div class="faire-page__head">
+      <div>
+        <h1 class="faire-page__title">{{ heading_title }}</h1>
+        <p class="faire-page__intro">{{ text_intro }} <a href="https://www.faire.com/support" target="_blank" rel="noopener">{{ text_learn }}</a></p>
       </div>
-      <h1>{{ heading_title }}</h1>
-      <ol class="breadcrumb">
-        {% for breadcrumb in breadcrumbs %}
-          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-        {% endfor %}
-      </ol>
+      <div class="faire-actions">
+        <button type="submit" form="form-collection" formaction="{{ delete }}" onclick="return confirm('{{ text_confirm }}');" class="faire-btn faire-btn--ghost"><i class="fa-regular fa-trash-can"></i></button>
+        <a href="{{ add }}" class="faire-btn">{{ text_create }}</a>
+      </div>
     </div>
-  </div>
-  <div class="container-fluid">
-    <div class="card">
-      <div class="card-header"><i class="fa-solid fa-list"></i> {{ text_list }}</div>
-      <div id="collection" class="card-body">{{ list }}</div>
-    </div>
+
+    <nav class="faire-tabs" aria-label="Collection status">
+      <a href="{{ filter_published }}"{% if filter == 'published' %} class="is-on"{% endif %}>{{ text_published }} ({{ total_published }})</a>
+      <a href="{{ filter_draft }}"{% if filter == 'draft' %} class="is-on"{% endif %}>{{ text_drafts }} ({{ total_draft }})</a>
+      <a href="{{ filter_unpublished }}"{% if filter == 'unpublished' %} class="is-on"{% endif %}>{{ text_unpublished }} ({{ total_unpublished }})</a>
+    </nav>
+
+    <div id="collection">{{ list }}</div>
   </div>
 </div>
 {{ footer }}

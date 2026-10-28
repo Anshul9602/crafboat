@@ -59,55 +59,58 @@ class Pagination extends \Opencart\System\Engine\Controller {
 		}
 
 		$data['page'] = $page;
+		$data['num_pages'] = (int)$num_pages;
+
+		$data['first'] = str_replace(['&amp;page={page}', '?page={page}', '&page={page}'], '', $url);
 
 		if ($page > 1) {
-			$data['first'] = str_replace(['&amp;page={page}', '?page={page}', '&page={page}'], '', $url);
-
 			if ($page - 1 === 1) {
-				$data['prev'] = str_replace(['&amp;page={page}', '?page={page}', '&page={page}'], '', $url);
+				$data['prev'] = $data['first'];
 			} else {
 				$data['prev'] = str_replace('{page}', $page - 1, $url);
 			}
 		} else {
-			$data['first'] = '';
 			$data['prev'] = '';
 		}
 
 		$data['links'] = [];
 
+		// Faire-style window: show current neighborhood, always keep first/last available
+		$num_links = 5;
+
 		if ($num_pages > 1) {
-			if ($num_pages <= $num_links) {
+			if ($num_pages <= $num_links + 2) {
 				$start = 1;
 				$end = $num_pages;
 			} else {
-				$start = $page - floor($num_links / 2);
-				$end = $page + floor($num_links / 2);
+				$start = max(1, $page - 2);
+				$end = min($num_pages, $page + 2);
 
-				if ($start < 1) {
-					$end += abs($start) + 1;
+				if ($start <= 2) {
 					$start = 1;
+					$end = min($num_pages, $num_links);
 				}
 
-				if ($end > $num_pages) {
-					$start -= ($end - $num_pages);
+				if ($end >= $num_pages - 1) {
 					$end = $num_pages;
+					$start = max(1, $num_pages - $num_links + 1);
 				}
 			}
 
 			for ($i = $start; $i <= $end; $i++) {
 				$data['links'][] = [
 					'page' => $i,
-					'href' => str_replace('{page}', $i, $url)
+					'href' => ($i === 1) ? str_replace(['&amp;page={page}', '?page={page}', '&page={page}'], '', $url) : str_replace('{page}', $i, $url)
 				];
 			}
 		}
 
+		$data['last'] = ($num_pages > 1) ? str_replace('{page}', $num_pages, $url) : '';
+
 		if ($num_pages > $page) {
 			$data['next'] = str_replace('{page}', $page + 1, $url);
-			$data['last'] = str_replace('{page}', $num_pages, $url);
 		} else {
 			$data['next'] = '';
-			$data['last'] = '';
 		}
 
 		if ($num_pages > 1 || $back) {

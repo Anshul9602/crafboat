@@ -1,54 +1,49 @@
 {{ header }}{{ column_left }}
-<div id="content">
-  <div class="page-header">
-    <div class="container-fluid">
-      <div class="float-end">
-        <button type="submit" form="form-product" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
-        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
-      <h1>{{ heading_title }}</h1>
-      <ol class="breadcrumb">
-        {% for breadcrumb in breadcrumbs %}
-          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-        {% endfor %}
-      </ol>
+<div id="content" class="faire-product-form">
+  <div class="faire-form-bar">
+    <a href="{{ back }}" class="faire-form-bar__back"><i class="fa-solid fa-chevron-left"></i> Products</a>
+    <h1 class="faire-form-bar__title">{% if product_id %}Edit product{% else %}New product{% endif %}</h1>
+    <div class="faire-form-bar__actions">
+      <button type="button" id="button-save-draft" class="faire-tool">Save as draft</button>
+      <button type="button" id="button-publish" class="faire-btn">Publish product</button>
     </div>
   </div>
-  <div class="container-fluid">
+
+  <div class="faire-page faire-page--wide">
     {% if master_id %}
       <div class="alert alert-warning"><i class="fa-solid fa-circle-exclamation"></i> {{ text_variant }}</div>
     {% endif %}
-    <div class="card">
-      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
-      <div class="card-body">
-        <form id="form-product" action="{{ save }}" method="post" data-oc-toggle="ajax">
-          <ul class="nav nav-tabs">
-            <li class="nav-item"><a href="#tab-general" data-bs-toggle="tab" class="nav-link active">{{ tab_general }}</a></li>
-            <li class="nav-item"><a href="#tab-data" data-bs-toggle="tab" class="nav-link">{{ tab_data }}</a></li>
-            <li class="nav-item"><a href="#tab-links" data-bs-toggle="tab" class="nav-link">{{ tab_links }}</a></li>
-            <li class="nav-item"><a href="#tab-attribute" data-bs-toggle="tab" class="nav-link">{{ tab_attribute }}</a></li>
-            <li class="nav-item"><a href="#tab-option" data-bs-toggle="tab" class="nav-link">{{ tab_option }}</a></li>
-            <li class="nav-item"><a href="#tab-subscription" data-bs-toggle="tab" class="nav-link">{{ tab_subscription }}</a></li>
-            <li class="nav-item"><a href="#tab-discount" data-bs-toggle="tab" class="nav-link">{{ tab_discount }}</a></li>
-            <li class="nav-item"><a href="#tab-image" data-bs-toggle="tab" class="nav-link">{{ tab_image }}</a></li>
-            <li class="nav-item"><a href="#tab-reward" data-bs-toggle="tab" class="nav-link">{{ tab_reward }}</a></li>
-            <li class="nav-item"><a href="#tab-seo" data-bs-toggle="tab" class="nav-link">{{ tab_seo }}</a></li>
-            <li class="nav-item"><a href="#tab-design" data-bs-toggle="tab" class="nav-link">{{ tab_design }}</a></li>
-            <li class="nav-item"><a href="#tab-report" data-bs-toggle="tab" class="nav-link">{{ tab_report }}</a></li>
-          </ul>
-          <div class="tab-content">
+
+    <form id="form-product" action="{{ save }}" method="post" data-oc-toggle="ajax" class="faire-form">
+      <ul class="nav nav-tabs faire-form-nav d-none" id="faire-form-nav">
+        <li class="nav-item"><a href="#tab-general" data-bs-toggle="tab" class="nav-link active" data-faire-title="Product information">{{ tab_general }}</a></li>
+        <li class="nav-item"><a href="#tab-image" data-bs-toggle="tab" class="nav-link" data-faire-title="Media">{{ tab_image }}</a></li>
+        <li class="nav-item"><a href="#tab-data" data-bs-toggle="tab" class="nav-link" data-faire-title="Pricing, shipping &amp; inventory">{{ tab_data }}</a></li>
+        <li class="nav-item"><a href="#tab-option" data-bs-toggle="tab" class="nav-link" data-faire-title="Variants">{{ tab_option }}</a></li>
+        <li class="nav-item"><a href="#tab-links" data-bs-toggle="tab" class="nav-link" data-faire-title="Product organization">{{ tab_links }}</a></li>
+        <li class="nav-item"><a href="#tab-attribute" data-bs-toggle="tab" class="nav-link" data-faire-title="Product details">{{ tab_attribute }}</a></li>
+        <li class="nav-item"><a href="#tab-subscription" data-bs-toggle="tab" class="nav-link" data-faire-title="{{ tab_subscription }}">{{ tab_subscription }}</a></li>
+        <li class="nav-item"><a href="#tab-discount" data-bs-toggle="tab" class="nav-link" data-faire-title="{{ tab_discount }}">{{ tab_discount }}</a></li>
+        <li class="nav-item"><a href="#tab-reward" data-bs-toggle="tab" class="nav-link" data-faire-title="{{ tab_reward }}">{{ tab_reward }}</a></li>
+        <li class="nav-item"><a href="#tab-seo" data-bs-toggle="tab" class="nav-link" data-faire-title="{{ tab_seo }}">{{ tab_seo }}</a></li>
+        <li class="nav-item"><a href="#tab-design" data-bs-toggle="tab" class="nav-link" data-faire-title="{{ tab_design }}">{{ tab_design }}</a></li>
+        <li class="nav-item"><a href="#tab-report" data-bs-toggle="tab" class="nav-link" data-faire-title="{{ tab_report }}">{{ tab_report }}</a></li>
+      </ul>
+
+      <div class="tab-content faire-form-stack">
             <div class="tab-pane active" id="tab-general">
-              <ul class="nav nav-tabs">
+              <ul class="nav nav-tabs faire-lang-tabs">
                 {% for language in languages %}
-                  <li class="nav-item"><a href="#language-{{ language.language_id }}" data-bs-toggle="tab" class="nav-link{% if loop.first %} active{% endif %}"><img src="{{ language.image }}" title="{{ language.name }}"/> {{ language.name }}</a></li>
+                  <li class="nav-item"><a href="#language-{{ language.language_id }}" data-bs-toggle="tab" class="nav-link{% if loop.first %} active{% endif %}">{{ language.name }}{% if loop.first %} (Default){% endif %}</a></li>
                 {% endfor %}
               </ul>
               <div class="tab-content">
                 {% for language in languages %}
                   <div id="language-{{ language.language_id }}" class="tab-pane{% if loop.first %} active{% endif %}">
-                    <fieldset>
-                      <legend>{{ text_general }}</legend>
+                    <fieldset class="faire-fieldset">
+                      <legend class="d-none">{{ text_general }}</legend>
                       <div class="row mb-3 required">
-                        <label for="input-name-{{ language.language_id }}" class="col-sm-2 col-form-label">{{ entry_name }}</label>
+                        <label for="input-name-{{ language.language_id }}" class="col-sm-2 col-form-label">Title<span class="text-danger">*</span></label>
                         <div class="col-sm-10">
                           <div class="input-group">
                             <input type="text" name="product_description[{{ language.language_id }}][name]" value="{{ product_description[language.language_id] ? product_description[language.language_id].name }}" placeholder="{{ entry_name }}" id="input-name-{{ language.language_id }}" class="form-control"/>
@@ -64,7 +59,7 @@
                         </div>
                       </div>
                       <div class="row mb-3">
-                        <label for="input-description-{{ language.language_id }}" class="col-sm-2 col-form-label">{{ entry_description }}</label>
+                        <label for="input-description-{{ language.language_id }}" class="col-sm-2 col-form-label">Description</label>
                         <div class="col-sm-10">
                           <div class="input-group">
                             <div class="form-control h-100 p-0 border-0 rounded-0">
@@ -654,8 +649,8 @@
               </div>
             </div>
             <div id="tab-attribute" class="tab-pane">
-              <div class="table-responsive">
-                <table id="product-attribute" class="table table-bordered table-hover">
+              <div class="faire-table-wrap">
+                <table id="product-attribute" class="faire-table">
                   <thead>
                     <tr>
                       <th>{{ entry_attribute }}</th>
@@ -757,8 +752,8 @@
                           {% endif %}
 
                           {% if product_option.type == 'select' or product_option.type == 'radio' or product_option.type == 'checkbox' or product_option.type == 'image' %}
-                            <div class="table-responsive">
-                              <table class="table table-bordered table-hover">
+                            <div class="faire-table-wrap">
+                              <table class="faire-table">
                                 <thead>
                                   <tr>
                                     <th>{{ entry_option_value }}</th>
@@ -1029,8 +1024,8 @@
               </div>
             {% endif %}
             <div id="tab-subscription" class="tab-pane">
-              <div class="table-responsive">
-                <table id="product-subscription" class="table table-bordered table-hover">
+              <div class="faire-table-wrap">
+                <table id="product-subscription" class="faire-table">
                   <thead>
                     <tr>
                       <th>{{ entry_subscription }}</th>
@@ -1076,8 +1071,8 @@
               </div>
             </div>
             <div id="tab-discount" class="tab-pane">
-              <div class="table-responsive">
-                <table id="product-discount" class="table table-bordered table-hover">
+              <div class="faire-table-wrap">
+                <table id="product-discount" class="faire-table">
                   <thead>
                     <tr>
                       <th>{{ entry_customer_group }}</th>
@@ -1134,67 +1129,44 @@
               </div>
             </div>
             <div id="tab-image" class="tab-pane">
-              <fieldset>
-                <legend>{{ text_image }}</legend>
-                <div id="image" class="border rounded d-block" style="max-width: 300px;">
-                  <img src="{{ thumb }}" alt="" title="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="img-fluid"/> <input type="hidden" name="image" value="{{ image }}" id="input-image"/>
-                  <div class="d-grid">
-                    <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-primary rounded-0"><i class="fa-solid fa-pencil"></i> {{ button_edit }}</button>
-                    <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="btn btn-warning rounded-0"><i class="fa-regular fa-trash-can"></i> {{ button_clear }}</button>
-                    {% if master_id %}
-                      <div class="mx-auto w-25">
-                        <div class="form-switch">
-                          <input type="checkbox" name="override[image]" value="1" id="input-variant-image" data-oc-toggle="switch" data-oc-target="#image" class="form-check-input"{% if override.image %} checked{% endif %}/> <label for="input-variant-image" class="form-check-label"></label>
-                        </div>
-                      </div>
-                    {% endif %}
+              {% if master_id %}
+                <div class="mb-3 d-flex gap-3">
+                  <div class="form-switch">
+                    <input type="checkbox" name="override[image]" value="1" id="input-variant-image" data-oc-toggle="switch" data-oc-target="#image" class="form-check-input"{% if override.image %} checked{% endif %}/> <label for="input-variant-image" class="form-check-label">Main image</label>
+                  </div>
+                  <div class="form-switch">
+                    <input type="checkbox" name="override[product_image]" value="1" id="input-variant-product-image" data-oc-toggle="switch" data-oc-target="#product-image" class="form-check-input"{% if override.product_image %} checked{% endif %}/> <label for="input-variant-product-image" class="form-check-label">Additional images</label>
                   </div>
                 </div>
-              </fieldset>
-              <fieldset>
-                <legend>{{ text_image_additional }}</legend>
-                <div class="table-responsive">
-                  <table id="product-image" class="table table-bordered table-hover">
-                    <thead>
-                      <tr>
-                        <th>{{ entry_image }}</th>
-                        <th>{{ entry_sort_order }}</th>
-                        <th class="text-end">
-                          {% if master_id %}
-                            <div class="form-switch">
-                              <input type="checkbox" name="override[product_image]" value="1" id="input-variant-product-image" data-oc-toggle="switch" data-oc-target="#product-image" class="form-check-input"{% if override.product_image %} checked{% endif %}/> <label for="input-variant-product-image" class="form-check-label"></label>
-                            </div>
-                          {% endif %}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% set image_row = 0 %}
-                      {% for product_image in product_images %}
-                        <tr id="product-image-row-{{ image_row }}">
-                          <td>
-                            <div class="border rounded d-block" style="max-width: 300px;">
-                              <img src="{{ product_image.thumb }}" alt="" title="" id="product-image-{{ image_row }}" data-oc-placeholder="{{ placeholder }}" class="img-fluid"/> <input type="hidden" name="product_image[{{ image_row }}][image]" value="{{ product_image.image }}" id="input-product-image-{{ image_row }}"/>
-                              <div class="d-grid">
-                                <button type="button" data-oc-toggle="image" data-oc-target="#input-product-image-{{ image_row }}" data-oc-thumb="#product-image-{{ image_row }}" class="btn btn-primary rounded-0"><i class="fa-solid fa-pencil"></i> {{ button_edit }}</button>
-                                <button type="button" data-oc-toggle="clear" data-oc-target="#input-product-image-{{ image_row }}" data-oc-thumb="#product-image-{{ image_row }}" class="btn btn-warning rounded-0"><i class="fa-regular fa-trash-can"></i> {{ button_clear }}</button>
-                              </div>
-                            </div>
-                          </td>
-                          <td><input type="text" name="product_image[{{ image_row }}][sort_order]" value="{{ product_image.sort_order }}" placeholder="{{ entry_sort_order }}" class="form-control"/></td>
-                          <td class="text-end"><button type="button" onclick="$('#product-image-row-{{ image_row }}').remove();" data-bs-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa-solid fa-minus-circle"></i></button></td>
-                        </tr>
-                        {% set image_row = image_row + 1 %}
-                      {% endfor %}
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td colspan="2"></td>
-                        <td class="text-end"><button type="button" id="button-image" data-bs-toggle="tooltip" title="{{ button_image_add }}" class="btn btn-primary"><i class="fa-solid fa-plus-circle"></i></button></td>
-                      </tr>
-                    </tfoot>
-                  </table>
+              {% endif %}
+              <div class="faire-media-row" id="product-image">
+                <div class="faire-media-tile faire-media-tile--main" id="image">
+                  <span class="faire-media-tile__badge">Main</span>
+                  <img src="{{ thumb }}" alt="" title="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="faire-media-tile__img"/>
+                  <input type="hidden" name="image" value="{{ image }}" id="input-image"/>
+                  <div class="faire-media-tile__actions">
+                    <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="faire-media-btn" title="{{ button_edit }}"><i class="fa-solid fa-pencil"></i></button>
+                    <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="faire-media-btn faire-media-btn--danger" title="{{ button_clear }}"><i class="fa-regular fa-trash-can"></i></button>
+                  </div>
                 </div>
-              </fieldset>
+                {% set image_row = 0 %}
+                {% for product_image in product_images %}
+                  <div class="faire-media-tile" id="product-image-row-{{ image_row }}">
+                    <img src="{{ product_image.thumb }}" alt="" title="" id="product-image-{{ image_row }}" data-oc-placeholder="{{ placeholder }}" class="faire-media-tile__img"/>
+                    <input type="hidden" name="product_image[{{ image_row }}][image]" value="{{ product_image.image }}" id="input-product-image-{{ image_row }}"/>
+                    <input type="hidden" name="product_image[{{ image_row }}][sort_order]" value="{{ product_image.sort_order }}" class="faire-media-sort"/>
+                    <div class="faire-media-tile__actions">
+                      <button type="button" data-oc-toggle="image" data-oc-target="#input-product-image-{{ image_row }}" data-oc-thumb="#product-image-{{ image_row }}" class="faire-media-btn" title="{{ button_edit }}"><i class="fa-solid fa-pencil"></i></button>
+                      <button type="button" onclick="$('#product-image-row-{{ image_row }}').remove();" class="faire-media-btn faire-media-btn--danger" title="{{ button_remove }}"><i class="fa-solid fa-minus"></i></button>
+                    </div>
+                  </div>
+                  {% set image_row = image_row + 1 %}
+                {% endfor %}
+                <button type="button" id="button-image" class="faire-media-tile faire-media-tile--add" title="{{ button_image_add }}">
+                  <i class="fa-solid fa-plus"></i>
+                  <span>Add image</span>
+                </button>
+              </div>
             </div>
 
             <div id="tab-reward" class="tab-pane">
@@ -1219,8 +1191,8 @@
               </fieldset>
               <fieldset>
                 <legend>{{ text_points }}</legend>
-                <div class="table-responsive">
-                  <table id="product-reward" class="table table-bordered table-hover">
+                <div class="faire-table-wrap">
+                  <table id="product-reward" class="faire-table">
                     <thead>
                       <tr>
                         <th>{{ entry_customer_group }}</th>
@@ -1247,7 +1219,7 @@
             <div id="tab-seo" class="tab-pane">
               <div class="alert alert-info"><i class="fa-solid fa-info-circle"></i> {{ text_keyword }}</div>
               <div id="product-seo" class="table-responsive">
-                <table class="table table-bordered table-hover">
+                <table class="faire-table">
                   <thead>
                     <tr>
                       <th>{{ entry_store }}</th>
@@ -1274,8 +1246,8 @@
             </div>
 
             <div id="tab-design" class="tab-pane">
-              <div class="table-responsive">
-                <table id="product-layout" class="table table-bordered table-hover">
+              <div class="faire-table-wrap">
+                <table id="product-layout" class="faire-table">
                   <thead>
                     <tr>
                       <th>{{ entry_store }}</th>
@@ -1313,6 +1285,19 @@
           </div>
           <input type="hidden" name="product_id" value="{{ product_id }}" id="input-product-id"/>
         </form>
+  </div>
+
+  <div class="modal fade" id="modal-faire-variants" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content faire-modal">
+        <div class="modal-header">
+          <h5 class="modal-title">Variants</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="faire-variants-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="faire-btn" data-bs-dismiss="modal">Save</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1321,6 +1306,186 @@
 $('textarea[data-oc-toggle=\'ckeditor\']').ckeditor({
     language: '{{ ckeditor }}'
 });
+
+// Auto-fill SEO keyword from product name when keyword is empty
+(function() {
+    function slugify(text) {
+        return String(text || '')
+            .toLowerCase()
+            .normalize('NFKD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .substring(0, 120);
+    }
+
+    function fillSeoFromName(name, force) {
+        var slug = slugify(name);
+        if (!slug) {
+            return;
+        }
+
+        $('[id^="input-keyword-"]').each(function() {
+            var $input = $(this);
+            var current = $.trim($input.val());
+            var locked = $input.data('seo-locked');
+
+            if (force || (!locked && current === '')) {
+                $input.val(slug);
+            }
+        });
+
+        // Also fill empty meta titles to keep SEO complete
+        $('[id^="input-meta-title-"]').each(function() {
+            var $input = $(this);
+            if ($.trim($input.val()) === '') {
+                $input.val($.trim(name));
+            }
+        });
+    }
+
+    // If user types in SEO keyword manually, don't overwrite it later
+    $(document).on('input', '[id^="input-keyword-"]', function() {
+        $(this).data('seo-locked', $.trim($(this).val()) !== '');
+    });
+
+    $(document).on('input blur', '[id^="input-name-"]', function() {
+        fillSeoFromName($(this).val(), false);
+    });
+
+    // Initial fill for new/empty keywords
+    var $firstName = $('[id^="input-name-"]').first();
+    if ($firstName.length) {
+        fillSeoFromName($firstName.val(), false);
+    }
+})();
+
+(function() {
+    var titles = {
+        'tab-general': 'Product information',
+        'tab-image': 'Media',
+        'tab-data': 'Pricing, shipping & inventory',
+        'tab-option': 'Variants',
+        'tab-links': 'Product organization',
+        'tab-attribute': 'Attributes',
+        'tab-subscription': 'Subscription',
+        'tab-discount': 'Discounts',
+        'tab-reward': 'Reward points',
+        'tab-seo': 'SEO',
+        'tab-design': 'Design',
+        'tab-report': 'Reports'
+    };
+
+    var order = ['tab-general', 'tab-image', 'tab-data', 'tab-option', 'tab-links', 'tab-attribute', 'tab-subscription', 'tab-discount', 'tab-reward', 'tab-seo', 'tab-design', 'tab-report'];
+    var $stack = $('#form-product > .faire-form-stack');
+
+    order.forEach(function(id) {
+        var $pane = $('#' + id);
+        if (!$pane.length) return;
+        $pane.addClass('show active faire-form-card');
+        if (!$pane.children('.faire-form-card__title').length) {
+            $pane.prepend('<h2 class="faire-form-card__title">' + (titles[id] || id) + '</h2>');
+        }
+        $stack.append($pane);
+    });
+
+    $('#tab-option').addClass('faire-form-card--modal-only');
+
+    // Faire variants shortcut inside product information
+    if (!$('#button-faire-variants').length) {
+        $('#tab-general').append(
+            '<div class="faire-field faire-variants-trigger">' +
+            '<label class="faire-label">Variants</label>' +
+            '<button type="button" id="button-faire-variants" class="faire-add-link">+ Add options (size, color, etc)</button>' +
+            '</div>'
+        );
+    }
+
+    // Relabel model as SKU in the data card
+    $('label[for="input-model"]').text('SKU (Stock keeping unit)');
+    $('label[for="input-location"]').text('Made in / Location');
+    $('label[for="input-quantity"]').text('On hand');
+    $('label[for="input-minimum"]').text('Minimum order quantity');
+    $('#tab-image > .faire-form-card__title').text('Media');
+    $('#tab-links > .faire-form-card__title').text('Product organization');
+
+    // Keep SEO meta fields out of the main card; leave tags visible
+    $('#tab-general fieldset').each(function() {
+        if ($(this).find('[id^="input-meta-title-"]').length) {
+            $(this).find('legend').text('Tags');
+            $(this).find('.row.mb-3').has('[id^="input-meta-"]').addClass('d-none');
+            $(this).find('label[for^="input-tag-"]').text('Add tags');
+        }
+    });
+
+    $('[id="tab-option"]').addClass('faire-form-card--modal-only');
+
+    // Pricing table chrome around wholesale price
+    if (!$('#faire-price-table').length && $('#input-price').length) {
+        var $priceRow = $('#input-price').closest('.row.mb-3');
+        var priceVal = $('#input-price').val() || '';
+        var msrp = priceVal ? (parseFloat(priceVal) * 2).toFixed(2) : '';
+        var margin = (priceVal && msrp) ? Math.round(((msrp - priceVal) / msrp) * 100) : 50;
+        $priceRow.before(
+            '<div id="faire-price-table" class="faire-price-table">' +
+            '<div class="faire-price-table__head"><span>Location</span><span>Wholesale price (per item)</span><span>MSRP (per item)</span><span>Margin</span></div>' +
+            '<div class="faire-price-table__row">' +
+            '<div class="faire-price-loc"><span class="faire-flag">US</span> United States</div>' +
+            '<div class="faire-price-input"><span>$</span><span class="faire-price-slot"></span></div>' +
+            '<div class="faire-price-input"><span>$</span><input type="text" id="input-msrp" class="form-control" value="' + msrp + '" placeholder="0.00"/></div>' +
+            '<div class="faire-margin" id="faire-margin">' + margin + '%</div>' +
+            '</div></div>'
+        );
+        $('.faire-price-slot').append($('#input-price'));
+        $priceRow.find('label').first().parent().hide();
+        $('#input-price').attr('placeholder', '0.00');
+    }
+
+    function updateMargin() {
+        var p = parseFloat($('#input-price').val()) || 0;
+        var m = parseFloat($('#input-msrp').val()) || 0;
+        if (m > 0) {
+            $('#faire-margin').text(Math.round(((m - p) / m) * 100) + '%');
+        } else {
+            $('#faire-margin').text('—');
+        }
+    }
+    $(document).on('input', '#input-price, #input-msrp', updateMargin);
+
+    $('#button-faire-variants').on('click', function() {
+        var $body = $('#faire-variants-body');
+        if (!$body.children().length) {
+            $body.append($('#tab-option').children().not('.faire-form-card__title'));
+        }
+        var modal = new bootstrap.Modal(document.getElementById('modal-faire-variants'));
+        modal.show();
+    });
+
+    $('#modal-faire-variants').on('hidden.bs.modal', function() {
+        var $body = $('#faire-variants-body');
+        if ($body.children().length) {
+            $('#tab-option').append($body.children());
+        }
+    });
+
+    function submitWithStatus(enabled) {
+        $('#input-status').prop('checked', !!enabled);
+        if (!$('#input-status').length) {
+            $('<input type="hidden" name="status" value="' + (enabled ? '1' : '0') + '"/>').appendTo('#form-product');
+        } else {
+            // ensure hidden companion exists for unchecked
+            if (!enabled) {
+                if (!$('#form-product input[type=hidden][name=status]').length) {
+                    $('<input type="hidden" name="status" value="0"/>').appendTo('#form-product');
+                }
+            }
+        }
+        $('#form-product').trigger('submit');
+    }
+
+    $('#button-save-draft').on('click', function() { submitWithStatus(false); });
+    $('#button-publish').on('click', function() { submitWithStatus(true); });
+})();
 
 var code_row = {{ code_row }};
 
@@ -1647,8 +1812,8 @@ $('#input-option').autocomplete({
         }
 
         if (item['type'] == 'select' || item['type'] == 'radio' || item['type'] == 'checkbox' || item['type'] == 'image') {
-            html += '<div class="table-responsive">';
-            html += '  <table class="table table-bordered table-hover">';
+            html += '<div class="faire-table-wrap">';
+            html += '  <table class="faire-table">';
             html += '  	 <thead>';
             html += '      <tr>';
             html += '        <td>{{ entry_option_value|escape('js') }}</td>';
@@ -1879,19 +2044,21 @@ $('#button-discount').on('click', function() {
 var image_row = {{ image_row }};
 
 $('#button-image').on('click', function() {
-    html = '<tr id="product-image-row-' + image_row + '">';
-    html += '  <td><div class="border rounded d-block" style="max-width: 300px;">';
-    html += '    <img src="{{ placeholder|escape('js') }}" alt="" title="" id="thumb-image-' + image_row + '" data-oc-placeholder="{{ placeholder|escape('js') }}" class="img-fluid"/> <input type="hidden" name="product_image[' + image_row + '][image]" value="" id="input-product-image-' + image_row + '"/>';
-    html += '    <div class="d-grid">';
-    html += '      <button type="button" data-oc-toggle="image" data-oc-target="#input-product-image-' + image_row + '" data-oc-thumb="#thumb-image-' + image_row + '" class="btn btn-primary rounded-0"><i class="fa-solid fa-pencil"></i> {{ button_edit|escape('js') }}</button>';
-    html += '      <button type="button" data-oc-toggle="clear" data-oc-target="#input-product-image-' + image_row + '" data-oc-thumb="#thumb-image-' + image_row + '" class="btn btn-warning rounded-0"><i class="fa-regular fa-trash-can"></i> {{ button_clear|escape('js') }}</button>';
-    html += '    </div>';
-    html += '  </div></td>';
-    html += '  <td><input type="text" name="product_image[' + image_row + '][sort_order]" value="0" placeholder="{{ entry_sort_order|escape('js') }}" class="form-control"/></td>';
-    html += '  <td class="text-end"><button type="button" onclick="$(\'#product-image-row-' + image_row + '\').remove();" data-bs-toggle="tooltip" title="{{ button_remove|escape('js') }}" class="btn btn-danger"><i class="fa-solid fa-minus-circle"></i></button></td>';
-    html += '</tr>';
+    var html = '';
+    html += '<div class="faire-media-tile" id="product-image-row-' + image_row + '">';
+    html += '  <img src="{{ placeholder|escape('js') }}" alt="" title="" id="product-image-' + image_row + '" data-oc-placeholder="{{ placeholder|escape('js') }}" class="faire-media-tile__img"/>';
+    html += '  <input type="hidden" name="product_image[' + image_row + '][image]" value="" id="input-product-image-' + image_row + '"/>';
+    html += '  <input type="hidden" name="product_image[' + image_row + '][sort_order]" value="' + image_row + '" class="faire-media-sort"/>';
+    html += '  <div class="faire-media-tile__actions">';
+    html += '    <button type="button" data-oc-toggle="image" data-oc-target="#input-product-image-' + image_row + '" data-oc-thumb="#product-image-' + image_row + '" class="faire-media-btn" title="{{ button_edit|escape('js') }}"><i class="fa-solid fa-pencil"></i></button>';
+    html += '    <button type="button" onclick="$(\'#product-image-row-' + image_row + '\').remove();" class="faire-media-btn faire-media-btn--danger" title="{{ button_remove|escape('js') }}"><i class="fa-solid fa-minus"></i></button>';
+    html += '  </div>';
+    html += '</div>';
 
-    $('#product-image tbody').append(html);
+    $(html).insertBefore('#button-image');
+
+    // Open file manager immediately for the new tile
+    $('#product-image-row-' + image_row + ' [data-oc-toggle="image"]').trigger('click');
 
     image_row++;
 });

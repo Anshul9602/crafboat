@@ -1,0 +1,46 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="faire-page">
+    <div class="faire-page__head">
+      <div>
+        <h1 class="faire-page__title">{{ heading_title }}</h1>
+        <p class="faire-page__intro">{{ text_intro }}</p>
+      </div>
+      <a href="{{ inventory }}" class="faire-btn">{{ text_open }}</a>
+    </div>
+
+    <div class="faire-table-wrap">
+      <table class="faire-table">
+        <thead>
+          <tr>
+            <th>{{ column_name }}</th>
+            <th>{{ column_ws }}</th>
+            <th>{{ column_msrp }}</th>
+            <th>{{ column_margin }}</th>
+            <th class="text-end">{{ column_action }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td>
+              <div class="faire-name">
+                <strong>{{ row.name }}</strong>
+                <span>{{ row.model }}</span>
+              </div>
+            </td>
+            <td>{{ row.price }}</td>
+            <td>{{ row.msrp }}</td>
+            <td>{{ row.margin }}</td>
+            <td class="text-end"><a href="{{ row.edit }}" class="faire-link">Edit</a></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="faire-empty">{{ text_no_results }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if pagination %}<div class="faire-pager">{{ pagination }}</div>{% endif %}
+  </div>
+</div>
+{{ footer }}

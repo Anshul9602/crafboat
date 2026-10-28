@@ -1,6 +1,6 @@
 <form id="form-weight-class" method="post" data-oc-toggle="ajax" data-oc-load="{{ action }}" data-oc-target="#weight-class">
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover">
+  <div class="faire-table-wrap">
+    <table class="faire-table">
       <thead>
         <tr>
           <th class="text-center" style="width: 1px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', $(this).prop('checked'));" class="form-check-input"/></th>
@@ -29,8 +29,7 @@
       </tbody>
     </table>
   </div>
-  <div class="row">
-    <div class="col-sm-6 text-start">{{ pagination }}</div>
-    <div class="col-sm-6 text-end">{{ results }}</div>
+  <div class="faire-pager">
+    {{ pagination }}
   </div>
 </form>

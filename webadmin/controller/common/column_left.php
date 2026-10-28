@@ -29,29 +29,57 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				'children' => []
 			];
 
-			// Catalog
+			// Catalog (shown as Products, Faire-style)
 			$catalog = [];
+			$more = [];
+			$token = 'user_token=' . $this->session->data['user_token'];
 
-			if ($this->user->hasPermission('access', 'catalog/category')) {
+			if ($this->user->hasPermission('access', 'catalog/product')) {
 				$catalog[] = [
-					'name'     => $this->language->get('text_category'),
-					'href'     => $this->url->link('catalog/category', 'user_token=' . $this->session->data['user_token']),
+					'name'     => 'Bulk upload & export',
+					'href'     => $this->url->link('catalog/bulk', $token),
+					'children' => []
+				];
+				$catalog[] = [
+					'name'     => 'Inventory',
+					'href'     => $this->url->link('catalog/product', $token),
+					'children' => []
+				];
+			}
+
+			if ($this->user->hasPermission('access', 'catalog/collection')) {
+				$catalog[] = [
+					'name'     => 'Collections',
+					'href'     => $this->url->link('catalog/collection', $token),
 					'children' => []
 				];
 			}
 
 			if ($this->user->hasPermission('access', 'catalog/product')) {
 				$catalog[] = [
-					'name'     => $this->language->get('text_product'),
-					'href'     => $this->url->link('catalog/product', 'user_token=' . $this->session->data['user_token']),
+					'name'     => 'Price verification',
+					'href'     => $this->url->link('catalog/price', $token),
+					'children' => []
+				];
+				$catalog[] = [
+					'name'     => 'Performance',
+					'href'     => $this->url->link('catalog/performance', $token),
+					'children' => []
+				];
+			}
+
+			if ($this->user->hasPermission('access', 'catalog/category')) {
+				$more[] = [
+					'name'     => $this->language->get('text_category'),
+					'href'     => $this->url->link('catalog/category', $token),
 					'children' => []
 				];
 			}
 
 			if ($this->user->hasPermission('access', 'catalog/subscription_plan')) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_subscription_plan'),
-					'href'     => $this->url->link('catalog/subscription_plan', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/subscription_plan', $token),
 					'children' => []
 				];
 			}
@@ -61,7 +89,7 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 			if ($this->user->hasPermission('access', 'catalog/filter')) {
 				$filter[] = [
 					'name'     => $this->language->get('text_filter'),
-					'href'     => $this->url->link('catalog/filter', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/filter', $token),
 					'children' => []
 				];
 			}
@@ -69,13 +97,13 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 			if ($this->user->hasPermission('access', 'catalog/filter_group')) {
 				$filter[] = [
 					'name'     => $this->language->get('text_filter_group'),
-					'href'     => $this->url->link('catalog/filter_group', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/filter_group', $token),
 					'children' => []
 				];
 			}
 
 			if ($filter) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_filter'),
 					'href'     => '',
 					'children' => $filter
@@ -88,7 +116,7 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 			if ($this->user->hasPermission('access', 'catalog/attribute')) {
 				$attribute[] = [
 					'name'     => $this->language->get('text_attribute'),
-					'href'     => $this->url->link('catalog/attribute', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/attribute', $token),
 					'children' => []
 				];
 			}
@@ -96,13 +124,13 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 			if ($this->user->hasPermission('access', 'catalog/attribute_group')) {
 				$attribute[] = [
 					'name'     => $this->language->get('text_attribute_group'),
-					'href'     => $this->url->link('catalog/attribute_group', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/attribute_group', $token),
 					'children' => []
 				];
 			}
 
 			if ($attribute) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_attribute'),
 					'href'     => '',
 					'children' => $attribute
@@ -110,58 +138,58 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 			}
 
 			if ($this->user->hasPermission('access', 'catalog/option')) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_option'),
-					'href'     => $this->url->link('catalog/option', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/option', $token),
 					'children' => []
 				];
 			}
 
 			if ($this->user->hasPermission('access', 'catalog/manufacturer')) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_manufacturer'),
-					'href'     => $this->url->link('catalog/manufacturer', 'user_token=' . $this->session->data['user_token']),
-					'children' => []
-				];
-			}
-
-			if ($this->user->hasPermission('access', 'catalog/collection')) {
-				$catalog[] = [
-					'name'     => $this->language->get('text_collection'),
-					'href'     => $this->url->link('catalog/collection', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/manufacturer', $token),
 					'children' => []
 				];
 			}
 
 			if ($this->user->hasPermission('access', 'catalog/identifier')) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_identifier'),
-					'href'     => $this->url->link('catalog/identifier', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/identifier', $token),
 					'children' => []
 				];
 			}
 
 			if ($this->user->hasPermission('access', 'catalog/download')) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_download'),
-					'href'     => $this->url->link('catalog/download', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/download', $token),
 					'children' => []
 				];
 			}
 
 			if ($this->user->hasPermission('access', 'catalog/review')) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_review'),
-					'href'     => $this->url->link('catalog/review', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/review', $token),
 					'children' => []
 				];
 			}
 
 			if ($this->user->hasPermission('access', 'catalog/information')) {
-				$catalog[] = [
+				$more[] = [
 					'name'     => $this->language->get('text_information'),
-					'href'     => $this->url->link('catalog/information', 'user_token=' . $this->session->data['user_token']),
+					'href'     => $this->url->link('catalog/information', $token),
 					'children' => []
+				];
+			}
+
+			if ($more) {
+				$catalog[] = [
+					'name'     => 'More',
+					'href'     => '',
+					'children' => $more
 				];
 			}
 
@@ -450,20 +478,28 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
-			// Marketing
+			// Marketing (Faire-style)
 			$marketing = [];
 
-			if ($this->user->hasPermission('access', 'marketing/affiliate')) {
+			if ($this->user->hasPermission('access', 'marketing/hub') || $this->user->hasPermission('access', 'marketing/contact')) {
 				$marketing[] = [
-					'name'     => $this->language->get('text_affiliate'),
-					'href'     => $this->url->link('marketing/affiliate', 'user_token=' . $this->session->data['user_token']),
+					'name'     => 'Overview',
+					'href'     => $this->url->link('marketing/hub', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
+			if ($this->user->hasPermission('access', 'marketing/contact')) {
+				$marketing[] = [
+					'name'     => 'Campaigns',
+					'href'     => $this->url->link('marketing/contact', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
 			}
 
 			if ($this->user->hasPermission('access', 'marketing/marketing')) {
 				$marketing[] = [
-					'name'     => $this->language->get('text_marketing'),
+					'name'     => 'Automations',
 					'href'     => $this->url->link('marketing/marketing', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
@@ -471,16 +507,32 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 
 			if ($this->user->hasPermission('access', 'marketing/coupon')) {
 				$marketing[] = [
-					'name'     => $this->language->get('text_coupon'),
+					'name'     => 'Promotions',
 					'href'     => $this->url->link('marketing/coupon', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
 			}
 
-			if ($this->user->hasPermission('access', 'marketing/contact')) {
+			if ($this->user->hasPermission('access', 'catalog/product')) {
 				$marketing[] = [
-					'name'     => $this->language->get('text_contact'),
-					'href'     => $this->url->link('marketing/contact', 'user_token=' . $this->session->data['user_token']),
+					'name'     => 'Promoted Listings',
+					'href'     => $this->url->link('catalog/product', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
+			if ($this->user->hasPermission('access', 'marketing/affiliate')) {
+				$marketing[] = [
+					'name'     => 'Affiliate Partnership',
+					'href'     => $this->url->link('marketing/affiliate', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
+			if ($this->user->hasPermission('access', 'cms/article')) {
+				$marketing[] = [
+					'name'     => 'Events',
+					'href'     => $this->url->link('cms/article', 'user_token=' . $this->session->data['user_token']),
 					'children' => []
 				];
 			}
@@ -490,7 +542,7 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 					'id'       => 'menu-marketing',
 					'icon'     => 'fas fa-share-alt',
 					'name'     => $this->language->get('text_marketing'),
-					'href'     => '',
+					'href'     => $this->url->link('marketing/hub', 'user_token=' . $this->session->data['user_token']),
 					'children' => $marketing
 				];
 			}

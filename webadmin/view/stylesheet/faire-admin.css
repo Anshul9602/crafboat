@@ -1,0 +1,2100 @@
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600&display=swap");
+
+body {
+    font-family: Inter, "Open Sans", Arial, sans-serif;
+    color: #1a1a1a;
+    background: #f7f6f3;
+}
+
+#container {
+    background: #f7f6f3;
+}
+
+#header {
+    background: #fff !important;
+    border-bottom: 1px solid #e8e6e1 !important;
+    box-shadow: none !important;
+}
+
+#header .navbar-brand img {
+    max-height: 34px;
+    width: auto;
+    object-fit: contain;
+}
+
+#header .navbar-nav > li > .nav-link {
+    color: #3d3d3d;
+}
+
+#header .navbar-nav li > .nav-link:hover,
+#header .navbar-nav li.show > .nav-link {
+    background: #f2f0eb;
+}
+
+#column-left {
+    background: #faf9f7;
+    border-right: 1px solid #ebe8e2;
+    padding-top: 70px;
+}
+
+#navigation {
+    color: #8a867e;
+    border-bottom: 1px solid #ebe8e2;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+#menu > li > a {
+    color: #2c2c2c;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    margin: 2px 10px;
+    padding: 10px 12px;
+}
+
+#menu > li > a > i {
+    color: #6b6760;
+    width: 20px;
+}
+
+#menu > li > a:hover {
+    background: #efece6;
+    color: #111;
+}
+
+#menu > li.active > a,
+#menu > li > a:not(.collapsed) {
+    background: #efece6;
+    color: #111;
+}
+
+#menu > li > ul {
+    background: transparent;
+    padding: 0 10px 8px 34px;
+}
+
+#menu li li a {
+    color: #4a4741;
+    font-size: 13px;
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin: 1px 0;
+}
+
+#menu li li a:before {
+    display: none;
+}
+
+#menu li li a:hover,
+#menu li li.active > a {
+    background: #ebe7df;
+    color: #111;
+}
+
+#stats {
+    display: none;
+}
+
+#content {
+    background: #fff;
+    min-height: calc(100vh - 60px);
+}
+
+#content .page-header {
+    border: 0;
+    margin: 0;
+    padding: 28px 8px 8px;
+    background: transparent;
+}
+
+#content .page-header h1,
+.faire-page__title {
+    font-family: "Libre Baskerville", "Times New Roman", Times, serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #111;
+    margin: 0 0 8px;
+}
+
+#content .breadcrumb {
+    display: none;
+}
+
+.faire-page .card {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+.faire-page .card-header {
+    display: none;
+}
+
+#content .card {
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    box-shadow: none;
+}
+
+#content .card-header {
+    background: #faf9f7;
+    border-bottom: 1px solid #ebe8e2;
+    font-weight: 500;
+}
+
+.faire-page,
+.faire-page--wide {
+    width: 95%;
+    max-width: 95%;
+    margin: 0 auto;
+    padding: 8px 24px 48px;
+}
+
+#content > .page-header,
+#content > .container-fluid {
+    width: 95%;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.faire-page__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.faire-page__intro {
+    margin: 0;
+    max-width: 540px;
+    color: #6b6760;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.faire-page__intro a {
+    color: #1a1a1a;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.faire-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 999px;
+    background: #2f2f2f;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 12px 18px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.faire-btn:hover {
+    background: #111;
+    color: #fff;
+}
+
+.faire-btn--ghost {
+    background: #fff;
+    color: #1a1a1a;
+    border: 1px solid #d9d5cd;
+}
+
+.faire-btn--ghost:hover {
+    background: #f7f6f3;
+    color: #1a1a1a;
+}
+
+.faire-tabs {
+    display: flex;
+    gap: 28px;
+    border-bottom: 1px solid #ebe8e2;
+    margin-bottom: 0;
+}
+
+.faire-tabs a {
+    position: relative;
+    padding: 14px 0;
+    color: #6b6760;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.faire-tabs a.is-on {
+    color: #111;
+}
+
+.faire-tabs a.is-on::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: #111;
+}
+
+.faire-table-wrap {
+    overflow-x: auto;
+}
+
+.faire-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.faire-table thead th {
+    padding: 18px 12px;
+    border-bottom: 1px solid #ebe8e2;
+    color: #6b6760;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.faire-table tbody td {
+    padding: 18px 12px;
+    border-bottom: 1px solid #f0eee9;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+.faire-table tbody tr:hover {
+    background: #fbfaf8;
+}
+
+.faire-table .btn-primary {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.faire-table .btn-primary:hover {
+    background: #333;
+    border-color: #333;
+}
+
+.faire-table .img-thumbnail {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    padding: 0;
+    border: 0;
+    background: #efece6;
+}
+
+.faire-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #efece6;
+    display: block;
+}
+
+.faire-name {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.faire-name strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+}
+
+.faire-name span {
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.faire-badge--published {
+    background: #e7f4ea;
+    color: #1f6b3a;
+}
+
+.faire-badge--unpublished,
+.faire-badge--draft {
+    background: #f2f0eb;
+    color: #6b6760;
+}
+
+.faire-link {
+    color: #2f5ea8;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-size: 13px;
+}
+
+.faire-empty {
+    padding: 48px 12px;
+    text-align: center;
+    color: #8a867e;
+}
+
+.faire-panel {
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    padding: 28px;
+    background: #faf9f7;
+}
+
+.faire-panel h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.faire-panel p {
+    margin: 0 0 12px;
+    color: #4a4741;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.faire-muted {
+    color: #8a867e !important;
+}
+
+.faire-stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.faire-stats article {
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    padding: 18px 16px;
+    background: #faf9f7;
+}
+
+.faire-stats strong {
+    display: block;
+    font-family: "Libre Baskerville", "Times New Roman", Times, serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 6px;
+}
+
+.faire-stats span {
+    color: #6b6760;
+    font-size: 13px;
+}
+
+@media (max-width: 991.98px) {
+    .faire-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.faire-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.faire-check {
+    width: 16px;
+    height: 16px;
+}
+
+.faire-tab-count {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: #f0eee9;
+    color: #6b6760;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.faire-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 18px 0 8px;
+}
+
+.faire-toolbar__left,
+.faire-toolbar__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.faire-toolbar__hint {
+    color: #8a867e;
+    font-size: 12px;
+    margin-right: 4px;
+}
+
+.faire-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 240px;
+    border: 1px solid #d9d5cd;
+    border-radius: 999px;
+    padding: 8px 14px;
+    background: #fff;
+}
+
+.faire-search i {
+    color: #8a867e;
+    font-size: 13px;
+}
+
+.faire-search input {
+    border: 0;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    background: transparent;
+}
+
+.faire-chip,
+.faire-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #d9d5cd;
+    border-radius: 999px;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 12px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.faire-chip:hover,
+.faire-tool:hover {
+    background: #f7f6f3;
+    color: #111;
+}
+
+.faire-tool--danger {
+    color: #b42318;
+    border-color: #f0c7c3;
+}
+
+.faire-filter-drawer {
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #faf9f7;
+}
+
+.faire-product-name {
+    color: #111;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+}
+
+.faire-product-name:hover {
+    color: #111;
+    text-decoration: underline;
+}
+
+.faire-muted-cell {
+    color: #6b6760;
+}
+
+.faire-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: #f0eee9;
+    color: #3d3d3d;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 10px;
+    white-space: nowrap;
+}
+
+.faire-kebab {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #6b6760;
+}
+
+.faire-kebab:hover {
+    background: #f0eee9;
+    color: #111;
+}
+
+.faire-pager {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+}
+
+#content .pagination,
+.faire-pagination {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#content .pagination .page-item .page-link,
+.faire-pagination .page-item .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: none;
+}
+
+#content .pagination .page-item .page-link:hover,
+.faire-pagination .page-item .page-link:hover {
+    background: #f0eee9;
+    color: #111;
+}
+
+#content .pagination .page-item.active .page-link,
+.faire-pagination .page-item.active .page-link {
+    border-color: #1a1a1a;
+    background: #fff;
+    color: #1a1a1a;
+}
+
+#content .pagination .page-item.disabled .page-link,
+.faire-pagination .page-item.disabled .page-link {
+    border-color: transparent;
+    color: #b0aba3;
+    background: transparent;
+}
+
+#content .pagination .page-item:first-child .page-link,
+#content .pagination .page-item:last-child .page-link,
+.faire-pagination .page-item:first-child .page-link,
+.faire-pagination .page-item:last-child .page-link {
+    border-color: #d9d5cd;
+}
+
+#content .pagination .page-item.disabled:first-child .page-link,
+#content .pagination .page-item.disabled:last-child .page-link,
+.faire-pagination .page-item.disabled:first-child .page-link,
+.faire-pagination .page-item.disabled:last-child .page-link {
+    border-color: #ebe8e2;
+    color: #c5c1b8;
+}
+
+/* Apply Faire table look to remaining OpenCart admin tables */
+#content .table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#content .table > :not(caption) > * > * {
+    border-bottom-width: 1px;
+}
+
+#content .table thead th {
+    padding: 16px 12px;
+    border-bottom: 1px solid #ebe8e2;
+    border-top: 0;
+    background: transparent;
+    color: #6b6760;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+#content .table tbody td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #f0eee9;
+    border-top: 0;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: transparent;
+}
+
+#content .table-bordered,
+#content .table-bordered > :not(caption) > * > * {
+    border: 0;
+}
+
+#content .table-hover > tbody > tr:hover > * {
+    background: #fbfaf8;
+    --bs-table-bg-state: #fbfaf8;
+}
+
+#content .table .img-thumbnail {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    padding: 0;
+    border: 0;
+    background: #efece6;
+}
+
+#content .card-body .row:has(.pagination) {
+    justify-content: center;
+    margin-top: 24px;
+}
+
+#content .card-body .row:has(.pagination) > .col-sm-6.text-end {
+    display: none;
+}
+
+#content .card-body .row:has(.pagination) > .col-sm-6.text-start {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 991.98px) {
+    .faire-page {
+        padding: 8px 16px 40px;
+    }
+
+    .faire-page__head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #content .page-header h1,
+    .faire-page__title {
+        font-size: 28px;
+    }
+
+    .faire-toolbar {
+        align-items: stretch;
+    }
+
+    .faire-toolbar__left,
+    .faire-toolbar__right {
+        width: 100%;
+    }
+
+    .faire-search {
+        min-width: 0;
+        flex: 1;
+    }
+}
+
+/* —— Faire product form —— */
+.faire-product-form {
+    background: #f7f6f3;
+    min-height: calc(100vh - 60px);
+}
+
+.faire-product-form .faire-page {
+    padding-top: 24px;
+    padding-bottom: 80px;
+}
+
+.faire-form-bar {
+    position: sticky;
+    top: 60px;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 24px;
+    background: #fff;
+    border-bottom: 1px solid #ebe8e2;
+}
+
+.faire-form-bar__back {
+    justify-self: start;
+    color: #4a4741;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.faire-form-bar__back:hover {
+    color: #111;
+}
+
+.faire-form-bar__title {
+    margin: 0;
+    text-align: center;
+    font-family: Inter, "Open Sans", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+}
+
+.faire-form-bar__actions {
+    justify-self: end;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.faire-form-stack {
+    display: flex !important;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.faire-form-stack > .tab-pane.faire-form-card {
+    display: block !important;
+    opacity: 1 !important;
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    padding: 28px 28px 20px;
+}
+
+.faire-form-card--modal-only {
+    display: none !important;
+}
+
+.faire-form-card__title {
+    margin: 0 0 20px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111;
+}
+
+.faire-product-form .faire-lang-tabs {
+    border-bottom: 1px solid #ebe8e2;
+    margin-bottom: 20px;
+    gap: 8px;
+}
+
+.faire-product-form .faire-lang-tabs .nav-link {
+    border: 0;
+    color: #6b6760;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 4px;
+    background: transparent;
+}
+
+.faire-product-form .faire-lang-tabs .nav-link.active {
+    color: #111;
+    box-shadow: inset 0 -2px 0 #111;
+}
+
+.faire-product-form fieldset {
+    border: 0;
+    margin: 0 0 8px;
+    padding: 0;
+}
+
+.faire-product-form legend {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b6760;
+    margin-bottom: 12px;
+    float: none;
+    width: auto;
+}
+
+.faire-product-form .row.mb-3 {
+    margin-bottom: 16px !important;
+}
+
+.faire-product-form .col-form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #3d3d3d;
+    padding-bottom: 6px;
+}
+
+@media (min-width: 576px) {
+    .faire-product-form .row.mb-3 > .col-sm-2 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .faire-product-form .row.mb-3 > .col-sm-10 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+.faire-product-form .form-control,
+.faire-product-form .form-select {
+    border: 1px solid #d9d5cd;
+    border-radius: 8px;
+    min-height: 42px;
+    font-size: 14px;
+    box-shadow: none;
+}
+
+.faire-product-form .form-control:focus,
+.faire-product-form .form-select:focus {
+    border-color: #1a1a1a;
+    box-shadow: 0 0 0 1px #1a1a1a;
+}
+
+.faire-media-row {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.faire-media-tile {
+    position: relative;
+    flex: 0 0 auto;
+    width: 112px;
+    height: 112px;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #faf9f7;
+    overflow: hidden;
+}
+
+.faire-media-tile--main {
+    width: 200px;
+    height: 200px;
+    border-style: dashed;
+    border-color: #cfcac0;
+}
+
+.faire-media-tile--add {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-style: dashed;
+    border-color: #cfcac0;
+    color: #6b6760;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    background: #fff;
+}
+
+.faire-media-tile--add i {
+    font-size: 20px;
+}
+
+.faire-media-tile--add:hover {
+    background: #f7f6f3;
+    color: #111;
+}
+
+.faire-media-tile__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.faire-media-tile__badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+}
+
+.faire-media-tile__actions {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.faire-media-tile:hover .faire-media-tile__actions {
+    opacity: 1;
+}
+
+.faire-media-btn {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #1a1a1a;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.faire-media-btn--danger {
+    color: #b42318;
+}
+
+.faire-variants-trigger {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid #f0eee9;
+}
+
+.faire-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3d3d3d;
+    margin-bottom: 8px;
+}
+
+.faire-add-link {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #d9d5cd;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+
+.faire-add-link:hover {
+    background: #f7f6f3;
+}
+
+.faire-price-table {
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.faire-price-table__head,
+.faire-price-table__row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.2fr 1.2fr 0.6fr;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+}
+
+.faire-price-table__head {
+    background: #faf9f7;
+    color: #6b6760;
+    font-size: 12px;
+    font-weight: 500;
+    border-bottom: 1px solid #ebe8e2;
+}
+
+.faire-price-loc {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.faire-flag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 16px;
+    border-radius: 2px;
+    background: #1b3a6b;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.faire-price-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #d9d5cd;
+    border-radius: 8px;
+    padding: 0 10px;
+    background: #fff;
+}
+
+.faire-price-input > span:first-child {
+    color: #8a867e;
+    font-size: 13px;
+}
+
+.faire-price-input .form-control {
+    border: 0 !important;
+    box-shadow: none !important;
+    min-height: 40px;
+    padding-left: 0;
+}
+
+.faire-price-slot {
+    flex: 1;
+}
+
+.faire-margin {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.faire-modal {
+    border: 0;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.faire-modal .modal-header {
+    border-bottom: 1px solid #ebe8e2;
+    padding: 18px 20px;
+}
+
+.faire-modal .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.faire-modal .modal-footer {
+    border-top: 1px solid #ebe8e2;
+    padding: 14px 20px;
+}
+
+@media (max-width: 991.98px) {
+    .faire-form-bar {
+        grid-template-columns: 1fr;
+        top: 0;
+    }
+
+    .faire-form-bar__title,
+    .faire-form-bar__actions,
+    .faire-form-bar__back {
+        justify-self: stretch;
+        text-align: left;
+    }
+
+    .faire-price-table__head,
+    .faire-price-table__row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* —— Collection form —— */
+.faire-collection-form .faire-form-card + .faire-form-card {
+    margin-top: 16px;
+}
+
+.faire-form-card {
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 0;
+}
+
+.faire-form-card__help {
+    margin: -8px 0 20px;
+    color: #6b6760;
+    font-size: 13px;
+}
+
+.faire-form-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.faire-field {
+    margin-bottom: 16px;
+}
+
+.faire-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.faire-check-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #1a1a1a;
+    cursor: pointer;
+}
+
+.faire-picker-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.faire-picker-toolbar .faire-search {
+    flex: 1;
+    min-width: 220px;
+}
+
+#modal-collection-products .modal-body {
+    max-height: 70vh;
+}
+
+#modal-collection-products .faire-thumb {
+    width: 40px;
+    height: 40px;
+}
+
+.faire-bulkbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #f0eee9;
+}
+
+.faire-bulkbar__count {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b6760;
+}
+
+.faire-bulkbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.faire-customer-store {
+    max-width: 240px;
+}
+
+.faire-insight {
+    margin: 24px 0 36px;
+}
+
+.faire-insight__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.faire-insight__title {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #111;
+}
+
+.faire-insight__filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.faire-insight__foot {
+    margin-top: 12px;
+    color: #8a867e;
+    font-size: 13px;
+}
+
+.faire-reco-list {
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.faire-reco {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0eee9;
+}
+
+.faire-reco:last-child {
+    border-bottom: 0;
+}
+
+.faire-reco__main {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.faire-reco__badge {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f0eee9;
+    color: #4a4741;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.faire-reco__badge--top {
+    background: #e8f1ff;
+    color: #1f4f9c;
+}
+
+.faire-reco__badge--new {
+    background: #e7f4ea;
+    color: #1f6b3a;
+}
+
+.faire-reco__store {
+    display: block;
+    color: #111;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.faire-reco__store:hover {
+    text-decoration: underline;
+}
+
+.faire-reco__insight {
+    margin: 4px 0 2px;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.faire-reco__tip {
+    margin: 0;
+    color: #8a867e;
+    font-size: 13px;
+}
+
+.faire-reco__actions {
+    flex: 0 0 auto;
+}
+
+.faire-segments {
+    margin-bottom: 48px;
+}
+
+.faire-segment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.faire-segment-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #fff;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.faire-segment-card:hover {
+    border-color: #d9d5cd;
+    background: #fbfaf8;
+    color: inherit;
+}
+
+.faire-segment-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #f0eee9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #3d3d3d;
+    flex: 0 0 auto;
+}
+
+.faire-segment-card__body {
+    flex: 1;
+    min-width: 0;
+}
+
+.faire-segment-card__body h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.faire-segment-card__body p {
+    margin: 0 0 14px;
+    color: #6b6760;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.faire-segment-card__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.faire-segment-card__stats span {
+    display: block;
+    color: #8a867e;
+    font-size: 11px;
+    margin-bottom: 2px;
+}
+
+.faire-segment-card__stats strong {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+}
+
+.faire-segment-card__arrow {
+    color: #b0aba3;
+    margin-top: 10px;
+}
+
+@media (max-width: 991.98px) {
+    .faire-segment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .faire-reco {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* —— Marketing hub —— */
+.faire-marketing .faire-page__intro {
+    max-width: 640px;
+}
+
+.faire-marketing-tips,
+.faire-marketing-tools {
+    margin-bottom: 36px;
+}
+
+.faire-tip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.faire-tip-card {
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #faf9f7;
+    padding: 20px;
+}
+
+.faire-tip-card h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.faire-tip-card p {
+    margin: 0 0 14px;
+    color: #4a4741;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.faire-tool-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.faire-tool-card {
+    display: block;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #fff;
+    padding: 22px 20px;
+    text-decoration: none;
+    color: inherit;
+    min-height: 160px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.faire-tool-card:hover {
+    border-color: #d9d5cd;
+    background: #fbfaf8;
+    color: inherit;
+}
+
+.faire-tool-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #f0eee9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    color: #3d3d3d;
+}
+
+.faire-tool-card h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.faire-tool-card p {
+    margin: 0;
+    color: #6b6760;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+@media (max-width: 991.98px) {
+    .faire-tip-grid,
+    .faire-tool-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.faire-video-preview {
+    margin-top: 8px;
+}
+
+.faire-collection-form .faire-link {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+@media (max-width: 767.98px) {
+    .faire-field-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* —— Campaigns —— */
+.faire-campaigns .faire-page__intro {
+    max-width: 560px;
+}
+
+.faire-campaign-table thead th:first-child,
+.faire-campaign-table tbody td:first-child {
+    min-width: 280px;
+}
+
+.faire-campaign-name {
+    display: inline-block;
+    color: #111;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 4px;
+}
+
+.faire-campaign-name:hover {
+    color: #111;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.faire-campaign-meta {
+    color: #8a867e;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.faire-status {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b6760;
+}
+
+.faire-status--complete {
+    background: #e7f4ea;
+    color: #1f6b3a;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.faire-status--draft {
+    color: #6b6760;
+}
+
+.faire-campaign-form-card {
+    border: 1px solid #ebe8e2 !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+}
+
+.faire-campaign-form-card .card-body {
+    padding: 28px 24px;
+}
+
+/* —— Campaign builder —— */
+.faire-campaign-builder {
+    padding-bottom: 110px;
+}
+
+.faire-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a4741;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 8px 0 18px;
+}
+
+.faire-back:hover {
+    color: #111;
+}
+
+.faire-builder-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.faire-builder-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.faire-builder-title__input {
+    border: 0;
+    background: transparent;
+    font-family: "Libre Baskerville", "Times New Roman", Times, serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #111;
+    padding: 0;
+    width: min(100%, 640px);
+    outline: none;
+}
+
+.faire-builder-title__edit {
+    border: 0;
+    background: transparent;
+    color: #8a867e;
+    padding: 6px;
+}
+
+.faire-builder-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.faire-text-btn {
+    border: 0;
+    background: none;
+    padding: 0;
+    color: #2f5ea8;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.faire-text-btn--danger {
+    color: #a33b3b;
+}
+
+.faire-builder-head__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.faire-builder-created {
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-builder-card {
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.faire-builder-card h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.faire-builder-field {
+    margin-bottom: 16px;
+}
+
+.faire-builder-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4a4741;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.faire-builder-select,
+.faire-builder-card .form-control {
+    max-width: 520px;
+    border-radius: 10px;
+    border-color: #d9d5cd;
+    padding: 10px 12px;
+}
+
+.faire-builder-links {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.faire-char-count {
+    margin-top: 6px;
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-template-rail {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+}
+
+.faire-template-card {
+    flex: 0 0 128px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #fff;
+    padding: 14px 10px;
+    color: #4a4741;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.faire-template-card.is-on {
+    border-color: #1a1a1a;
+    box-shadow: 0 0 0 1px #1a1a1a;
+}
+
+.faire-template-card__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #f0eee9;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #3d3d3d;
+}
+
+.faire-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 16px;
+    align-items: start;
+}
+
+.faire-editor__canvas {
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #f7f6f3;
+    padding: 16px;
+    min-height: 560px;
+}
+
+.faire-device-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.faire-device-toggle button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ebe8e2;
+    border-radius: 8px;
+    background: #fff;
+    color: #6b6760;
+}
+
+.faire-device-toggle button.is-on {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #fff;
+}
+
+.faire-email-frame {
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: width 0.2s ease;
+}
+
+.faire-email-frame[data-device="desktop"] {
+    width: min(100%, 680px);
+}
+
+.faire-email-frame[data-device="mobile"] {
+    width: 375px;
+}
+
+.faire-email-canvas {
+    min-height: 480px;
+    outline: none;
+    background: #fff;
+}
+
+.cb-email-hero {
+    position: relative;
+    min-height: 220px;
+    background: #f0eee9;
+    overflow: hidden;
+}
+
+.cb-hero-logo {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: auto;
+}
+
+.cb-hero-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a867e;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.cb-hero-img {
+    display: block;
+    width: 100%;
+    min-height: 220px;
+    max-height: 360px;
+    object-fit: cover;
+}
+
+.cb-media {
+    position: relative;
+}
+
+.cb-media-toolbar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+    display: none;
+    gap: 6px;
+}
+
+.cb-media:hover .cb-media-toolbar,
+.cb-media:focus-within .cb-media-toolbar {
+    display: flex;
+}
+
+.cb-media-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(26, 26, 26, 0.88);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.cb-media-btn:hover {
+    background: #111;
+}
+
+.cb-media-btn--danger {
+    background: rgba(163, 59, 59, 0.92);
+}
+
+.cb-media-btn--danger:hover {
+    background: #8f2f2f;
+}
+
+.cb-email-hero.has-image .cb-hero-placeholder {
+    display: none;
+}
+
+.faire-editor__sidebar {
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #fff;
+    padding: 14px;
+    position: sticky;
+    top: 80px;
+}
+
+.faire-editor-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #ebe8e2;
+}
+
+.faire-editor-tabs button {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    padding: 10px 8px;
+    color: #6b6760;
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+}
+
+.faire-editor-tabs button.is-on {
+    color: #111;
+    border-bottom-color: #111;
+}
+
+.faire-block-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.faire-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    background: #faf9f7;
+    padding: 14px 8px;
+    color: #3d3d3d;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.faire-block:hover {
+    background: #f2f0eb;
+}
+
+.faire-block i {
+    font-size: 16px;
+    color: #6b6760;
+}
+
+.faire-builder-foot {
+    position: fixed;
+    right: 28px;
+    bottom: 24px;
+    display: flex;
+    gap: 10px;
+    z-index: 40;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid #ebe8e2;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.faire-picker-modal {
+    border: 0;
+    border-radius: 14px;
+}
+
+.faire-picker-list {
+    max-height: 360px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.faire-picker-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    background: #faf9f7;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.faire-picker-item:hover {
+    background: #f2f0eb;
+}
+
+.faire-picker-item img,
+.faire-picker-ph {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #efece6;
+    flex: 0 0 48px;
+}
+
+.faire-picker-item span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.faire-picker-item strong {
+    font-size: 14px;
+    color: #111;
+}
+
+.faire-picker-item small {
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-picker-code {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 72px;
+    height: 48px;
+    padding: 0 10px;
+    border-radius: 8px;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+@media (max-width: 991.98px) {
+    .faire-builder-head {
+        flex-direction: column;
+    }
+
+    .faire-builder-head__meta {
+        align-items: flex-start;
+    }
+
+    .faire-editor {
+        grid-template-columns: 1fr;
+    }
+
+    .faire-editor__sidebar {
+        position: static;
+    }
+
+    .faire-email-frame[data-device="mobile"] {
+        width: 100%;
+    }
+
+    .faire-builder-foot {
+        left: 16px;
+        right: 16px;
+        justify-content: center;
+    }
+}

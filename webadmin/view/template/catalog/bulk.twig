@@ -1,0 +1,22 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="faire-page">
+    <div class="faire-page__head">
+      <div>
+        <h1 class="faire-page__title">{{ heading_title }}</h1>
+        <p class="faire-page__intro">{{ text_intro }}</p>
+      </div>
+      <div class="faire-actions">
+        <a href="{{ inventory }}" class="faire-btn faire-btn--ghost">{{ text_open }}</a>
+        <a href="{{ export }}" class="faire-btn">{{ text_export }}</a>
+      </div>
+    </div>
+
+    <div class="faire-panel">
+      <h2>{{ text_upload }}</h2>
+      <p>{{ text_hint }}</p>
+      <p class="faire-muted">Spreadsheet upload can be connected next. Use Export to download the current product list as CSV.</p>
+    </div>
+  </div>
+</div>
+{{ footer }}

@@ -1,0 +1,38 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="faire-page faire-page--wide faire-marketing">
+    <div class="faire-page__head">
+      <div>
+        <h1 class="faire-page__title">{{ heading_title }}</h1>
+        <p class="faire-page__intro">{{ text_intro }}</p>
+      </div>
+    </div>
+
+    <section class="faire-marketing-tips">
+      <h2 class="faire-insight__title">{{ text_tips }}</h2>
+      <div class="faire-tip-grid">
+        {% for tip in tips %}
+          <article class="faire-tip-card">
+            <h3>{{ tip.title }}</h3>
+            <p>{{ tip.text }}</p>
+            <a href="{{ tip.href }}" class="faire-link">{{ tip.link }} <i class="fa-solid fa-arrow-right"></i></a>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="faire-marketing-tools">
+      <h2 class="faire-insight__title">{{ text_tools }}</h2>
+      <div class="faire-tool-grid">
+        {% for tool in tools %}
+          <a href="{{ tool.href }}" class="faire-tool-card"{% if tool.target %} target="{{ tool.target }}"{% endif %}>
+            <div class="faire-tool-card__icon"><i class="fa-solid {{ tool.icon }}"></i></div>
+            <h3>{{ tool.title }}</h3>
+            <p>{{ tool.text }}</p>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+</div>
+{{ footer }}

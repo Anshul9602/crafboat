@@ -1,50 +1,454 @@
 {{ header }}{{ column_left }}
-<div id="content">
-  <div class="page-header">
-    <div class="container-fluid">
-      <div class="float-end">
-        <button type="submit" form="form-collection" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
-        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a>
-      </div>
-      <h1>{{ heading_title }}</h1>
-      <ol class="breadcrumb">
-        {% for breadcrumb in breadcrumbs %}
-          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-        {% endfor %}
-      </ol>
+<div id="content" class="faire-product-form faire-collection-form">
+  <div class="faire-form-bar">
+    <a href="{{ back }}" class="faire-form-bar__back"><i class="fa-solid fa-chevron-left"></i> Collections</a>
+    <h1 class="faire-form-bar__title">{{ page_title }}</h1>
+    <div class="faire-form-bar__actions">
+      {% if preview %}
+      <a href="{{ preview }}" target="_blank" class="faire-tool">{{ text_view_shop }}</a>
+      {% endif %}
+      {% if collection_id %}
+      <button type="submit" form="form-collection-delete" formaction="{{ delete }}" onclick="return confirm('{{ text_confirm|default('Are you sure?') }}');" class="faire-tool faire-tool--danger">Delete</button>
+      {% endif %}
+      <button type="submit" form="form-collection" class="faire-btn">Save</button>
     </div>
   </div>
-  <div class="container-fluid">
-    <div class="card">
-      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_form }}</div>
-      <div class="card-body">
-        <form id="form-collection" action="{{ save }}" method="post" data-oc-toggle="ajax">
-          <input type="hidden" name="collection_id" value="{{ collection_id }}"/>
-          <div class="row mb-3 required">
-            <label for="input-name" class="col-sm-2 col-form-label">{{ entry_name }}</label>
-            <div class="col-sm-10">
-              <input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control"/>
-              <div id="error-name" class="invalid-feedback"></div>
+
+  <div class="faire-page faire-page--wide">
+    <form id="form-collection" action="{{ save }}" method="post" data-oc-toggle="ajax" class="faire-form">
+      <input type="hidden" name="collection_id" value="{{ collection_id }}"/>
+
+      <div class="faire-form-card">
+        <h2 class="faire-form-card__title">{{ text_details }}</h2>
+        <p class="faire-form-card__help">{{ text_details_help }}</p>
+
+        <div class="faire-field required">
+          <label class="faire-label" for="input-name">{{ entry_name }}</label>
+          <input type="text" name="name" value="{{ name }}" id="input-name" class="form-control" placeholder="{{ entry_name }}"/>
+          <div id="error-name" class="invalid-feedback"></div>
+        </div>
+
+        <div class="faire-field">
+          <label class="faire-label" for="input-code">{{ entry_code }}</label>
+          <input type="text" name="code" value="{{ code }}" id="input-code" class="form-control" placeholder="holiday-collection"/>
+          <div id="error-code" class="invalid-feedback"></div>
+        </div>
+
+        <div class="faire-field">
+          <label class="faire-label" for="input-summary">{{ entry_summary }}</label>
+          <textarea name="summary" id="input-summary" rows="5" class="form-control" placeholder="{{ entry_summary }}">{{ summary }}</textarea>
+        </div>
+
+        <div class="faire-field-row">
+          <div class="faire-field">
+            <label class="faire-label" for="input-status">{{ entry_status }}</label>
+            <select name="status" id="input-status" class="form-select">
+              <option value="1"{% if status == 1 %} selected{% endif %}>{{ text_published }}</option>
+              <option value="2"{% if status == 2 %} selected{% endif %}>{{ text_drafts }}</option>
+              <option value="0"{% if status == 0 %} selected{% endif %}>{{ text_unpublished }}</option>
+            </select>
+          </div>
+          <div class="faire-field">
+            <label class="faire-label" for="input-sort-order">{{ entry_sort_order }}</label>
+            <input type="number" name="sort_order" value="{{ sort_order }}" id="input-sort-order" class="form-control"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="faire-form-card">
+        <div class="faire-form-card__head">
+          <h2 class="faire-form-card__title mb-0">{{ text_products_card }}</h2>
+          <button type="button" class="faire-btn" id="button-add-product">{{ text_add_products }}</button>
+        </div>
+
+        <div class="faire-table-wrap">
+          <table class="faire-table" id="collection-products">
+            <thead>
+              <tr>
+                <th style="width:56px"></th>
+                <th>Product</th>
+                <th>{{ column_availability }}</th>
+                <th>Status</th>
+                <th>{{ column_sku }}</th>
+                <th>{{ column_ws }}</th>
+                <th style="width:80px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if products %}
+                {% for product in products %}
+                  <tr data-product-id="{{ product.product_id }}">
+                    <td><img class="faire-thumb" src="{{ product.image }}" alt="{{ product.name }}"></td>
+                    <td><a class="faire-product-name" href="{{ product.edit }}">{{ product.name }}</a></td>
+                    <td><span class="faire-pill">{{ product.availability }}</span></td>
+                    <td class="faire-muted-cell">{{ product.status_label }}</td>
+                    <td class="faire-muted-cell">{{ product.model }}</td>
+                    <td>{{ product.price }}</td>
+                    <td class="text-end"><button type="button" class="faire-link button-remove-product" data-product-id="{{ product.product_id }}">Remove</button></td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="faire-empty-row">
+                  <td colspan="7" class="faire-empty">{{ text_no_products }}</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="faire-form-card">
+        <h2 class="faire-form-card__title">{{ text_featured_image }}</h2>
+        <p class="faire-form-card__help">{{ text_featured_help }}</p>
+
+        <div class="faire-media-row">
+          <div class="faire-media-tile faire-media-tile--main" id="collection-image">
+            <span class="faire-media-tile__badge">Main</span>
+            <img src="{{ thumb }}" alt="" id="thumb-image" data-oc-placeholder="{{ placeholder }}" class="faire-media-tile__img"/>
+            <input type="hidden" name="image" value="{{ image }}" id="input-image"/>
+            <div class="faire-media-tile__actions">
+              <button type="button" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="faire-media-btn" title="Edit"><i class="fa-solid fa-pencil"></i></button>
+              <button type="button" data-oc-toggle="clear" data-oc-target="#input-image" data-oc-thumb="#thumb-image" class="faire-media-btn faire-media-btn--danger" title="Clear"><i class="fa-regular fa-trash-can"></i></button>
             </div>
           </div>
-          <div class="row mb-3">
-            <label for="input-sort-order" class="col-sm-2 col-form-label">{{ entry_sort_order }}</label>
-            <div class="col-sm-10">
-              <input type="number" name="sort_order" value="{{ sort_order }}" placeholder="{{ entry_sort_order }}" id="input-sort-order" class="form-control"/>
-            </div>
+        </div>
+        <button type="button" class="faire-link mt-2" data-oc-toggle="image" data-oc-target="#input-image" data-oc-thumb="#thumb-image">{{ text_change_image }}</button>
+      </div>
+
+      <div class="faire-form-card">
+        <h2 class="faire-form-card__title">{{ text_merch }}</h2>
+        <label class="faire-check-row">
+          <input type="hidden" name="menu" value="1"/>
+          <input type="checkbox" name="menu" value="0" class="form-check-input"{% if not menu %} checked{% endif %}/>
+          <span>{{ entry_menu }}</span>
+        </label>
+      </div>
+
+      <div class="faire-form-card">
+        <h2 class="faire-form-card__title">{{ text_featured_video }}</h2>
+        <p class="faire-form-card__help">{{ text_video_help }}</p>
+        <div class="faire-field">
+          <label class="faire-label" for="input-video">{{ entry_video }}</label>
+          <input type="text" name="video" value="{{ video }}" id="input-video" class="form-control" placeholder="https://..."/>
+        </div>
+        {% if video %}
+        <div class="faire-video-preview">
+          <a href="{{ video }}" target="_blank" rel="noopener">Open video</a>
+        </div>
+        {% endif %}
+        <input type="hidden" name="blurb" value="{{ blurb }}"/>
+      </div>
+    </form>
+
+    {% if collection_id %}
+    <form id="form-collection-delete" method="post" data-oc-toggle="ajax">
+      <input type="hidden" name="selected[]" value="{{ collection_id }}"/>
+    </form>
+    {% endif %}
+  </div>
+
+  <div class="modal fade" id="modal-collection-products" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+      <div class="modal-content faire-modal">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ text_picker_title }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="faire-picker-toolbar">
+            <label class="faire-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="picker-search" placeholder="{{ text_picker_search }}" autocomplete="off"/>
+            </label>
+            <span class="faire-toolbar__hint" id="picker-count">0 selected</span>
           </div>
-          <div class="row mb-3">
-            <label for="input-status" class="col-sm-2 col-form-label">{{ entry_status }}</label>
-            <div class="col-sm-10">
-              <select name="status" id="input-status" class="form-select">
-                <option value="1"{% if status %} selected{% endif %}>{{ text_enabled }}</option>
-                <option value="0"{% if not status %} selected{% endif %}>{{ text_disabled }}</option>
-              </select>
-            </div>
+          <div class="faire-table-wrap">
+            <table class="faire-table" id="picker-table">
+              <thead>
+                <tr>
+                  <th style="width:36px"><input type="checkbox" class="form-check-input faire-check" id="picker-check-all"/></th>
+                  <th style="width:56px"></th>
+                  <th>Product</th>
+                  <th>{{ column_sku }}</th>
+                  <th>{{ column_ws }}</th>
+                </tr>
+              </thead>
+              <tbody id="picker-body">
+                <tr><td colspan="5" class="faire-empty">Loading...</td></tr>
+              </tbody>
+            </table>
           </div>
-        </form>
+          <div class="faire-pager" id="picker-pager"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="faire-tool" data-bs-dismiss="modal">{{ text_picker_cancel }}</button>
+          <button type="button" class="faire-btn" id="picker-save">{{ text_picker_save }}</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
+<script type="text/javascript"><!--
+var pickerSelected = {};
+var pickerSeeded = false;
+var pickerPage = 1;
+var pickerSearchTimer = null;
+var pickerModal = null;
+
+function pickerCount() {
+    var n = Object.keys(pickerSelected).length;
+    $('#picker-count').text(n + ' selected');
+}
+
+function loadPicker(page) {
+    pickerPage = page || 1;
+    var locationName = $('#input-name').val();
+    var filter = $('#picker-search').val();
+
+    $('#picker-body').html('<tr><td colspan="5" class="faire-empty">Loading...</td></tr>');
+
+    $.ajax({
+        url: '{{ picker }}',
+        type: 'get',
+        dataType: 'json',
+        data: {
+            location: locationName,
+            filter_name: filter,
+            page: pickerPage
+        },
+        success: function(json) {
+            if (json['error']) {
+                $('#picker-body').html('<tr><td colspan="5" class="faire-empty">' + $('<div>').text(json['error']).html() + '</td></tr>');
+                return;
+            }
+
+            if (!pickerSeeded && json['selected']) {
+                json['selected'].forEach(function(id) {
+                    pickerSelected[String(id)] = true;
+                });
+                pickerSeeded = true;
+            }
+
+            var html = '';
+            var list = json['products'] || [];
+            if (!list.length) {
+                html = '<tr><td colspan="5" class="faire-empty">{{ text_no_products|escape('js') }}</td></tr>';
+            } else {
+                list.forEach(function(p) {
+                    var id = String(p.product_id);
+                    var checked = pickerSelected[id] ? ' checked' : '';
+                    var note = p.in_other && !pickerSelected[id] ? ' <span class="faire-muted-cell">({{ text_in_other|escape('js') }})</span>' : '';
+                    html += '<tr>';
+                    html += '<td><input type="checkbox" class="form-check-input faire-check picker-check" value="' + id + '"' + checked + '/></td>';
+                    html += '<td><img class="faire-thumb" src="' + p.image + '" alt=""/></td>';
+                    html += '<td><strong>' + $('<div>').text(p.name).html() + '</strong>' + note + '</td>';
+                    html += '<td class="faire-muted-cell">' + $('<div>').text(p.model).html() + '</td>';
+                    html += '<td>' + p.price + '</td>';
+                    html += '</tr>';
+                });
+            }
+            $('#picker-body').html(html);
+
+            var pager = '';
+            if (json['pages'] > 1) {
+                pager += '<ul class="pagination faire-pagination">';
+                var start = Math.max(1, json['page'] - 3);
+                var end = Math.min(json['pages'], json['page'] + 3);
+                if (json['page'] > 1) {
+                    pager += '<li class="page-item"><a href="#" class="page-link picker-page" data-page="' + (json['page'] - 1) + '">&lt;</a></li>';
+                }
+                for (var i = start; i <= end; i++) {
+                    if (i === json['page']) {
+                        pager += '<li class="page-item active"><span class="page-link">' + i + '</span></li>';
+                    } else {
+                        pager += '<li class="page-item"><a href="#" class="page-link picker-page" data-page="' + i + '">' + i + '</a></li>';
+                    }
+                }
+                if (json['page'] < json['pages']) {
+                    pager += '<li class="page-item"><a href="#" class="page-link picker-page" data-page="' + (json['page'] + 1) + '">&gt;</a></li>';
+                }
+                pager += '</ul>';
+            }
+            $('#picker-pager').html(pager);
+            pickerCount();
+            syncCheckAll();
+        },
+        error: function(xhr) {
+            var msg = 'Could not load products.';
+            if (xhr && xhr.status) {
+                msg += ' (' + xhr.status + ')';
+            }
+            $('#picker-body').html('<tr><td colspan="5" class="faire-empty">' + msg + '</td></tr>');
+        }
+    });
+}
+
+function syncCheckAll() {
+    var $boxes = $('#picker-body .picker-check');
+    var total = $boxes.length;
+    var checked = $boxes.filter(':checked').length;
+    $('#picker-check-all').prop('checked', total > 0 && total === checked);
+}
+
+function openProductPicker() {
+    pickerSelected = {};
+    pickerSeeded = false;
+    pickerPage = 1;
+    $('#picker-search').val('');
+
+    var $modal = $('#modal-collection-products');
+    if ($modal.parent()[0] !== document.body) {
+        $modal.appendTo('body');
+    }
+
+    try {
+        pickerModal = bootstrap.Modal.getOrCreateInstance($modal[0]);
+        pickerModal.show();
+    } catch (err) {
+        $modal.addClass('show d-block');
+        if (!$('.modal-backdrop').length) {
+            $('body').append('<div class="modal-backdrop fade show"></div>');
+        }
+        $('body').addClass('modal-open');
+    }
+
+    loadPicker(1);
+}
+
+$('#button-add-product').on('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var name = $.trim($('#input-name').val());
+    if (!name) {
+        alert('Enter a collection name first.');
+        $('#input-name').trigger('focus');
+        return;
+    }
+
+    var collectionId = parseInt($('#form-collection input[name="collection_id"]').val(), 10) || 0;
+
+    if (!collectionId) {
+        var $btn = $(this).prop('disabled', true).text('Saving...');
+        $.ajax({
+            url: $('#form-collection').attr('action'),
+            type: 'post',
+            data: $('#form-collection').serialize() + '&stay=1',
+            dataType: 'json',
+            complete: function() {
+                $btn.prop('disabled', false).text('{{ text_add_products|escape('js') }}');
+            },
+            success: function(json) {
+                if (json['error']) {
+                    if (json['error']['name']) {
+                        alert(json['error']['name']);
+                    } else if (json['error']['warning']) {
+                        alert(json['error']['warning']);
+                    } else {
+                        alert('Could not save collection.');
+                    }
+                    return;
+                }
+                if (json['collection_id']) {
+                    $('#form-collection input[name="collection_id"]').val(json['collection_id']);
+                    openProductPicker();
+                }
+            },
+            error: function() {
+                alert('Could not save collection.');
+            }
+        });
+        return;
+    }
+
+    openProductPicker();
+});
+
+$('#picker-search').on('input', function() {
+    clearTimeout(pickerSearchTimer);
+    pickerSearchTimer = setTimeout(function() {
+        loadPicker(1);
+    }, 300);
+});
+
+$('#picker-pager').on('click', '.picker-page', function(e) {
+    e.preventDefault();
+    loadPicker(parseInt($(this).data('page'), 10));
+});
+
+$('#picker-body').on('change', '.picker-check', function() {
+    var id = $(this).val();
+    if ($(this).prop('checked')) {
+        pickerSelected[id] = true;
+    } else {
+        delete pickerSelected[id];
+    }
+    pickerCount();
+    syncCheckAll();
+});
+
+$('#picker-check-all').on('change', function() {
+    var on = $(this).prop('checked');
+    $('#picker-body .picker-check').each(function() {
+        $(this).prop('checked', on);
+        var id = $(this).val();
+        if (on) {
+            pickerSelected[id] = true;
+        } else {
+            delete pickerSelected[id];
+        }
+    });
+    pickerCount();
+});
+
+$('#picker-save').on('click', function() {
+    var locationName = $('#input-name').val();
+
+    $.ajax({
+        url: '{{ sync_products }}',
+        type: 'post',
+        data: {
+            location: locationName,
+            product_id: Object.keys(pickerSelected)
+        },
+        dataType: 'json',
+        success: function(json) {
+            if (json['success']) {
+                window.location.reload();
+            } else if (json['error']) {
+                alert(json['error']);
+            }
+        }
+    });
+});
+
+$('#collection-products').on('click', '.button-remove-product', function() {
+    var id = $(this).data('product-id');
+    var $row = $(this).closest('tr');
+    $.ajax({
+        url: '{{ remove_product }}',
+        type: 'post',
+        data: { product_id: id },
+        dataType: 'json',
+        success: function(json) {
+            if (json['success']) {
+                $row.remove();
+                if (!$('#collection-products tbody tr').length) {
+                    $('#collection-products tbody').append('<tr class="faire-empty-row"><td colspan="7" class="faire-empty">{{ text_no_products|escape('js') }}</td></tr>');
+                }
+            } else if (json['error']) {
+                alert(json['error']);
+            }
+        }
+    });
+});
+
+$('#input-name').on('blur', function() {
+    if (!$('#input-code').val()) {
+        var slug = $(this).val().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        $('#input-code').val(slug);
+    }
+    $('.faire-form-bar__title').text($(this).val() || '{{ text_form|escape('js') }}');
+});
+//--></script>
 {{ footer }}

@@ -1,0 +1,733 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="faire-page faire-page--wide faire-campaign-builder">
+    <a href="{{ back }}" class="faire-back"><i class="fa-solid fa-chevron-left"></i> {{ text_back }}</a>
+
+    <form id="form-campaign">
+      <input type="hidden" name="campaign_id" value="{{ campaign_id }}" id="input-campaign-id"/>
+      <input type="hidden" name="store_id" value="{{ store_id }}"/>
+      <input type="hidden" name="template" value="{{ template }}" id="input-template"/>
+      <input type="hidden" name="status" value="{{ status }}" id="input-status"/>
+      <textarea name="message" id="input-message" class="d-none">{{ message|e }}</textarea>
+
+      <div class="faire-builder-head">
+        <div class="faire-builder-head__main">
+          <div class="faire-builder-title">
+            <input type="text" name="name" value="{{ name }}" id="input-name" class="faire-builder-title__input" placeholder="Untitled campaign"/>
+            <button type="button" class="faire-builder-title__edit" title="Rename"><i class="fa-solid fa-pen"></i></button>
+          </div>
+          <div class="faire-builder-actions">
+            <button type="button" class="faire-text-btn" id="button-as-template">{{ text_save_template }}</button>
+            <button type="button" class="faire-text-btn" id="button-duplicate">{{ text_duplicate }}</button>
+            <button type="button" class="faire-text-btn" id="button-preview">{{ text_preview }}</button>
+            <button type="button" class="faire-text-btn" id="button-send-test">{{ text_send_test }}</button>
+            <button type="button" class="faire-text-btn faire-text-btn--danger" id="button-delete">{{ text_delete }}</button>
+          </div>
+        </div>
+        <div class="faire-builder-head__meta">
+          <span class="faire-status faire-status--{{ status == 'complete' ? 'complete' : 'draft' }}">{{ status_label }}</span>
+          <span class="faire-builder-created">{{ created_meta }}</span>
+        </div>
+      </div>
+
+      <section class="faire-builder-card">
+        <h2>{{ text_recipients }}</h2>
+        <div class="faire-builder-field">
+          <label class="faire-builder-label">{{ text_select_segment }}</label>
+          <select name="to" id="input-to" class="form-select faire-builder-select">
+            {% for segment in segments %}
+              <option value="{{ segment.value }}"{% if segment.value == to %} selected{% endif %}>{{ segment.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="faire-builder-field to-group{% if to != 'customer_group' %} d-none{% endif %}" id="to-customer-group">
+          <label class="faire-builder-label">{{ entry_customer_group }}</label>
+          <select name="customer_group_id" id="input-customer-group" class="form-select faire-builder-select">
+            {% for customer_group in customer_groups %}
+              <option value="{{ customer_group.customer_group_id }}"{% if customer_group.customer_group_id == customer_group_id %} selected{% endif %}>{{ customer_group.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="faire-builder-links">
+          <a href="javascript:void(0)" class="faire-link">{{ text_upload_csv }}</a>
+          <a href="javascript:void(0)" class="faire-link">{{ text_mailchimp }}</a>
+        </div>
+      </section>
+
+      <section class="faire-builder-card">
+        <h2>{{ text_subject_section }}</h2>
+        <div class="faire-builder-field">
+          <label class="faire-builder-label" for="input-subject">{{ entry_subject }}</label>
+          <input type="text" name="subject" value="{{ subject }}" id="input-subject" class="form-control" placeholder="{{ entry_subject_ph }}" maxlength="75"/>
+          <div class="faire-char-count"><span id="subject-count">0</span>/75</div>
+          <div id="error-subject" class="invalid-feedback"></div>
+        </div>
+        <div class="faire-builder-field">
+          <label class="faire-builder-label" for="input-preview-text">{{ entry_preview_text }}</label>
+          <input type="text" name="preview_text" value="{{ preview_text }}" id="input-preview-text" class="form-control" placeholder="{{ entry_preview_ph }}" maxlength="130"/>
+          <div class="faire-char-count"><span id="preview-count">0</span>/130</div>
+        </div>
+      </section>
+
+      <section class="faire-builder-card faire-builder-card--design">
+        <h2>{{ text_design }}</h2>
+        <div class="faire-template-rail" id="template-rail">
+          {% for tpl in templates %}
+            <button type="button" class="faire-template-card{% if tpl.id == template %} is-on{% endif %}" data-template="{{ tpl.id }}">
+              <span class="faire-template-card__icon"><i class="fa-solid {{ tpl.icon }}"></i></span>
+              <span>{{ tpl.label }}</span>
+            </button>
+          {% endfor %}
+        </div>
+
+        <div class="faire-editor">
+          <div class="faire-editor__canvas">
+            <div class="faire-device-toggle">
+              <button type="button" class="is-on" data-device="desktop" title="{{ text_desktop }}"><i class="fa-solid fa-desktop"></i></button>
+              <button type="button" data-device="mobile" title="{{ text_mobile }}"><i class="fa-solid fa-mobile-screen"></i></button>
+            </div>
+            <div class="faire-email-frame" id="email-frame" data-device="desktop">
+              <div class="faire-email-canvas" id="email-canvas" contenteditable="true">{{ message|raw }}</div>
+            </div>
+          </div>
+          <aside class="faire-editor__sidebar">
+            <div class="faire-editor-tabs">
+              <button type="button" class="is-on" data-panel="content">{{ text_content }}</button>
+              <button type="button" data-panel="design">{{ text_design_tab }}</button>
+            </div>
+            <div class="faire-block-grid" id="panel-content">
+              {% for block in blocks %}
+                <button type="button" class="faire-block" data-block="{{ block.id }}">
+                  <i class="fa-solid {{ block.icon }}"></i>
+                  <span>{{ block.label }}</span>
+                </button>
+              {% endfor %}
+            </div>
+            <div class="faire-design-panel d-none" id="panel-design">
+              <label class="faire-builder-label">Background</label>
+              <input type="color" id="design-bg" value="#ffffff" class="form-control form-control-color"/>
+              <label class="faire-builder-label mt-3">Accent</label>
+              <input type="color" id="design-accent" value="#2f2f2f" class="form-control form-control-color"/>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </form>
+
+    <div class="faire-builder-foot">
+      <button type="button" class="faire-btn faire-btn--ghost" id="button-draft">{{ button_draft }}</button>
+      <button type="button" class="faire-btn faire-btn--ghost" id="button-schedule">{{ button_schedule }}</button>
+      <button type="button" class="faire-btn" id="button-send">{{ button_send }}</button>
+    </div>
+  </div>
+</div>
+
+<input type="hidden" id="campaign-image-target" value=""/>
+<img id="campaign-image-thumb" src="" alt="" class="d-none"/>
+<button type="button" id="campaign-image-trigger" class="d-none" data-oc-toggle="image" data-oc-target="#campaign-image-target" data-oc-thumb="#campaign-image-thumb"></button>
+
+<div class="modal fade" id="modal-block-picker" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content faire-picker-modal">
+      <div class="modal-header">
+        <h5 class="modal-title" id="block-picker-title">Select</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="picker-product-wrap" class="d-none">
+          <input type="text" id="picker-product-search" class="form-control mb-3" placeholder="Search products…"/>
+          <div id="picker-product-list" class="faire-picker-list"></div>
+        </div>
+        <div id="picker-collection-wrap" class="d-none">
+          <div id="picker-collection-list" class="faire-picker-list"></div>
+        </div>
+        <div id="picker-promo-wrap" class="d-none">
+          <div id="picker-promo-list" class="faire-picker-list"></div>
+        </div>
+        <div id="picker-button-wrap" class="d-none">
+          <label class="faire-builder-label">Button label</label>
+          <input type="text" id="picker-button-label" class="form-control mb-3" value="Shop Now"/>
+          <label class="faire-builder-label">Link URL</label>
+          <input type="text" id="picker-button-url" class="form-control mb-3" value="{{ catalog }}"/>
+          <button type="button" class="faire-btn" id="picker-button-insert">Insert button</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript"><!--
+var storeName = '{{ store_name|e('js') }}';
+var catalogUrl = '{{ catalog|e('js') }}';
+var imageBase = '{{ image_base|e('js') }}';
+var storeLogo = '{{ store_logo|e('js') }}';
+var userToken = '{{ user_token|e('js') }}';
+var blockLookup = '{{ block_lookup|e('js') }}';
+var collections = {{ collections_json|raw }};
+var coupons = {{ coupons_json|raw }};
+var pendingImageRole = 'image';
+var pendingMediaTarget = null;
+var blockPicker;
+
+function cleanHtmlForSave(html) {
+    var $wrap = $('<div>').html(html);
+    $wrap.find('.cb-media-toolbar').remove();
+    $wrap.find('.cb-media').removeAttr('contenteditable');
+    return $wrap.html();
+}
+
+function syncMessage() {
+    $('#input-message').val(cleanHtmlForSave($('#email-canvas').html()));
+}
+
+function mediaToolbarHtml() {
+    return '<div class="cb-media-toolbar" contenteditable="false">'
+        + '<button type="button" class="cb-media-btn" data-media-action="adjust"><i class="fa-solid fa-crop"></i> Adjust</button>'
+        + '<button type="button" class="cb-media-btn cb-media-btn--danger" data-media-action="delete"><i class="fa-solid fa-trash"></i> Delete</button>'
+        + '</div>';
+}
+
+function heroShell(placeholderText) {
+    var logo = storeLogo
+        ? '<div class="cb-hero-logo"><a href="' + esc(catalogUrl) + '"><img src="' + esc(storeLogo) + '" alt="' + esc(storeName) + '" style="max-height:72px;width:auto;"/></a></div>'
+        : '<div class="cb-hero-logo" style="font-weight:700;font-size:18px;">' + esc(storeName) + '</div>';
+
+    return '<div class="cb-email-hero cb-media" data-block="hero" contenteditable="false" style="position:relative;background:#f0eee9;min-height:220px;overflow:hidden;">'
+        + logo
+        + '<div class="cb-hero-placeholder">' + esc(placeholderText || 'Add a hero image') + '</div>'
+        + '</div>';
+}
+
+function decorateMedia() {
+    var $canvas = $('#email-canvas');
+
+    $canvas.find('.cb-email-hero').each(function() {
+        var $hero = $(this);
+        $hero.addClass('cb-media').attr({'data-block': 'hero', 'contenteditable': 'false'});
+        $hero.css({position: 'relative', overflow: 'hidden', minHeight: '220px'});
+
+        // Upgrade plain-text hero shells
+        if (!$hero.find('.cb-hero-img, .cb-hero-placeholder').length) {
+            var plain = $.trim($hero.clone().children().remove().end().text()) || 'Add a hero image';
+            $hero.contents().filter(function() { return this.nodeType === 3; }).remove();
+            $hero.append('<div class="cb-hero-placeholder">' + esc(plain) + '</div>');
+        }
+
+        if (!$hero.find('.cb-media-toolbar').length) {
+            $hero.prepend(mediaToolbarHtml());
+        }
+        if (!$hero.find('.cb-hero-logo').length && storeLogo) {
+            $hero.prepend('<div class="cb-hero-logo"><a href="' + esc(catalogUrl) + '"><img src="' + esc(storeLogo) + '" alt="' + esc(storeName) + '" style="max-height:72px;width:auto;"/></a></div>');
+        }
+        $hero.toggleClass('has-image', $hero.find('.cb-hero-img').length > 0);
+    });
+
+    $canvas.find('.cb-block-image, .cb-block-banner, .cb-block-logo').each(function() {
+        var $el = $(this);
+        $el.addClass('cb-media').attr('contenteditable', 'false');
+        if (!$el.find('.cb-media-toolbar').length) {
+            $el.prepend(mediaToolbarHtml());
+        }
+        $el.addClass('has-image');
+    });
+}
+
+function updateCounts() {
+    $('#subject-count').text(($('#input-subject').val() || '').length);
+    $('#preview-count').text(($('#input-preview-text').val() || '').length);
+}
+
+function insertHtml(html) {
+    var canvas = document.getElementById('email-canvas');
+    canvas.focus();
+    try {
+        document.execCommand('insertHTML', false, html);
+    } catch (e) {
+        $(canvas).append(html);
+    }
+    decorateMedia();
+    syncMessage();
+}
+
+function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, function(c) {
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);
+    });
+}
+
+function defaultHtml(template) {
+    var hero = 'Add a hero image';
+    var body = 'Tell your retailers about the new products they can order. Leave a note about shipping times or wholesale pricing.';
+    var cta = 'Shop Now';
+
+    if (template === 'collection') {
+        hero = 'Feature your collection';
+        body = 'Highlight a collection and invite buyers to explore the full assortment.';
+        cta = 'Shop collection';
+    } else if (template === 'product') {
+        hero = 'Feature a product';
+        body = 'Showcase a hero product with wholesale pricing and MOQ details.';
+        cta = 'View product';
+    } else if (template === 'cart') {
+        hero = 'Items waiting in cart';
+        body = 'Remind buyers about products left in their cart before they sell out.';
+        cta = 'Complete order';
+    } else if (template === 'promo') {
+        hero = 'Share a promotion';
+        body = 'Announce a limited-time wholesale promotion or coupon code.';
+        cta = 'Shop the offer';
+    } else if (template === 'plain') {
+        return '<div class="cb-email" style="font-family:Arial,sans-serif;color:#1a1a1a;max-width:640px;margin:0 auto;padding:28px 24px;"><p class="cb-email-text" style="margin:0;font-size:16px;line-height:1.5;">Write your email…</p></div>';
+    } else if (template === 'invitation') {
+        hero = 'You\'re invited';
+        body = 'Invite retailers to open an account and place their first wholesale order.';
+        cta = 'Accept invitation';
+    }
+
+    return ''
+        + '<div class="cb-email" style="font-family:Arial,sans-serif;color:#1a1a1a;max-width:640px;margin:0 auto;">'
+        + heroShell(hero)
+        + '<div class="cb-email-body" style="padding:28px 24px;">'
+        + '<p class="cb-email-text" style="margin:0 0 20px;font-size:16px;line-height:1.5;">' + body + '</p>'
+        + '<p style="text-align:center;margin:0 0 28px;"><a class="cb-email-cta" href="' + catalogUrl + '" style="display:inline-block;background:#2f2f2f;color:#fff;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:600;">' + cta + '</a></p>'
+        + '</div>'
+        + '<div class="cb-email-promo" style="background:#f7f6f3;padding:24px;border-top:1px solid #ebe8e2;">'
+        + '<div style="font-weight:700;margin-bottom:8px;">Craft Boat x ' + storeName + '</div>'
+        + '<ul style="margin:0 0 16px;padding-left:18px;color:#4a4741;font-size:14px;line-height:1.5;">'
+        + '<li>Net 60 payment terms</li><li>Free returns on your first order</li><li>Dedicated wholesale support</li>'
+        + '</ul>'
+        + '<a href="' + catalogUrl + '" style="color:#2f5ea8;font-size:14px;">Sign up to shop</a>'
+        + '</div></div>';
+}
+
+function openImagePicker(role, $target) {
+    pendingImageRole = role || 'image';
+    pendingMediaTarget = $target || null;
+    $('#campaign-image-target').val('');
+    $('#campaign-image-trigger').trigger('click');
+}
+
+function applyImageToTarget(thumb) {
+    if (pendingImageRole === 'hero' && pendingMediaTarget && pendingMediaTarget.length) {
+        var $hero = pendingMediaTarget.closest('.cb-email-hero');
+        $hero.find('.cb-hero-placeholder, .cb-hero-img').remove();
+        $hero.append('<img class="cb-hero-img" src="' + esc(thumb) + '" alt="Hero image"/>');
+        $hero.addClass('has-image');
+        decorateMedia();
+        syncMessage();
+        return;
+    }
+
+    if (pendingMediaTarget && pendingMediaTarget.length && (pendingImageRole === 'image' || pendingImageRole === 'banner' || pendingImageRole === 'logo')) {
+        var $block = pendingMediaTarget.closest('.cb-media');
+        var $img = $block.find('img').first();
+        if ($img.length) {
+            $img.attr('src', thumb);
+        } else {
+            $block.append('<img src="' + esc(thumb) + '" alt="" style="max-width:100%;height:auto;border-radius:8px;"/>');
+        }
+        decorateMedia();
+        syncMessage();
+        return;
+    }
+
+    if (pendingImageRole === 'banner') {
+        insertHtml('<div class="cb-block-banner cb-media has-image" data-block="banner" contenteditable="false" style="position:relative;margin:12px 0;"><a href="' + esc(catalogUrl) + '"><img src="' + esc(thumb) + '" alt="Banner" style="width:100%;display:block;border-radius:8px;"/></a></div>');
+    } else if (pendingImageRole === 'logo') {
+        insertHtml('<div class="cb-block-logo cb-media has-image" data-block="logo" contenteditable="false" style="position:relative;text-align:center;margin:20px 0;"><a href="' + esc(catalogUrl) + '"><img src="' + esc(thumb) + '" alt="' + esc(storeName) + '" style="max-height:56px;width:auto;"/></a></div>');
+    } else {
+        insertHtml('<div class="cb-block-image cb-media has-image" data-block="image" contenteditable="false" style="position:relative;margin:12px 0;text-align:center;"><img src="' + esc(thumb) + '" alt="" style="max-width:100%;height:auto;border-radius:8px;"/></div>');
+    }
+}
+
+function productCard(p) {
+    return '<table class="cb-block-product" data-block="product" style="width:100%;border:1px solid #ebe8e2;border-radius:12px;margin:12px 0;border-collapse:separate;overflow:hidden;"><tr>'
+        + '<td style="width:120px;padding:12px;"><img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" style="width:96px;height:96px;object-fit:cover;border-radius:8px;display:block;"/></td>'
+        + '<td style="padding:12px 16px 12px 0;vertical-align:middle;">'
+        + '<div style="font-weight:700;font-size:16px;margin-bottom:4px;">' + esc(p.name) + '</div>'
+        + '<div style="color:#6b6760;font-size:13px;margin-bottom:10px;">Wholesale from ' + esc(p.price) + '</div>'
+        + '<a href="' + esc(p.href) + '" style="display:inline-block;background:#2f2f2f;color:#fff;text-decoration:none;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;">View product</a>'
+        + '</td></tr></table>';
+}
+
+function collectionCard(c) {
+    var img = c.image
+        ? '<img src="' + esc(c.image) + '" alt="' + esc(c.name) + '" style="width:96px;height:96px;object-fit:cover;border-radius:8px;display:block;"/>'
+        : '<div style="width:96px;height:96px;border-radius:8px;background:#f0eee9;"></div>';
+    return '<table class="cb-block-collection" data-block="collection" style="width:100%;border:1px solid #ebe8e2;border-radius:12px;margin:12px 0;border-collapse:separate;"><tr>'
+        + '<td style="width:120px;padding:12px;">' + img + '</td>'
+        + '<td style="padding:12px 16px 12px 0;vertical-align:middle;">'
+        + '<div style="font-weight:700;font-size:16px;margin-bottom:4px;">' + esc(c.name) + '</div>'
+        + '<div style="color:#6b6760;font-size:13px;margin-bottom:10px;">Shop the assortment</div>'
+        + '<a href="' + esc(c.href) + '" style="display:inline-block;background:#2f2f2f;color:#fff;text-decoration:none;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;">Shop collection</a>'
+        + '</td></tr></table>';
+}
+
+function promoCard(c) {
+    return '<div class="cb-block-promo" data-block="promo" style="background:#f7f6f3;border:1px solid #ebe8e2;border-radius:12px;padding:18px;margin:12px 0;text-align:center;">'
+        + '<div style="font-size:13px;color:#6b6760;margin-bottom:6px;">' + esc(c.name) + '</div>'
+        + '<div style="font-size:22px;font-weight:700;letter-spacing:0.04em;margin-bottom:8px;">' + esc(c.code) + '</div>'
+        + '<div style="font-size:13px;color:#4a4741;">Use code at checkout' + (c.discount ? ' · ' + esc(c.discount) + '% off' : '') + '</div>'
+        + '</div>';
+}
+
+function showPicker(mode) {
+    blockPicker = blockPicker || new bootstrap.Modal(document.getElementById('modal-block-picker'));
+    $('#picker-product-wrap, #picker-collection-wrap, #picker-promo-wrap, #picker-button-wrap').addClass('d-none');
+
+    if (mode === 'product') {
+        $('#block-picker-title').text('Select product');
+        $('#picker-product-wrap').removeClass('d-none');
+        $('#picker-product-search').val('');
+        searchProducts('');
+    } else if (mode === 'collection') {
+        $('#block-picker-title').text('Select collection');
+        $('#picker-collection-wrap').removeClass('d-none');
+        renderCollections();
+    } else if (mode === 'promo') {
+        $('#block-picker-title').text('Select promotion');
+        $('#picker-promo-wrap').removeClass('d-none');
+        renderCoupons();
+    } else if (mode === 'button') {
+        $('#block-picker-title').text('Insert button');
+        $('#picker-button-wrap').removeClass('d-none');
+        $('#picker-button-label').val('Shop Now');
+        $('#picker-button-url').val(catalogUrl);
+    }
+
+    blockPicker.show();
+}
+
+var productResults = [];
+
+function searchProducts(q) {
+    $('#picker-product-list').html('<div class="text-muted p-3">Loading…</div>');
+    $.getJSON(blockLookup, { filter_name: q }, function(rows) {
+        productResults = rows || [];
+        if (!productResults.length) {
+            $('#picker-product-list').html('<div class="text-muted p-3">No products found</div>');
+            return;
+        }
+        var html = '';
+        productResults.forEach(function(p, i) {
+            html += '<button type="button" class="faire-picker-item" data-product-index="' + i + '">'
+                + '<img src="' + esc(p.image) + '" alt=""/>'
+                + '<span><strong>' + esc(p.name) + '</strong><small>' + esc(p.price) + '</small></span>'
+                + '</button>';
+        });
+        $('#picker-product-list').html(html);
+    });
+}
+
+function renderCollections() {
+    if (!collections.length) {
+        $('#picker-collection-list').html('<div class="text-muted p-3">No published collections</div>');
+        return;
+    }
+    var html = '';
+    collections.forEach(function(c, i) {
+        html += '<button type="button" class="faire-picker-item" data-collection-index="' + i + '">'
+            + (c.image ? '<img src="' + esc(c.image) + '" alt=""/>' : '<span class="faire-picker-ph"></span>')
+            + '<span><strong>' + esc(c.name) + '</strong><small>Collection</small></span>'
+            + '</button>';
+    });
+    $('#picker-collection-list').html(html);
+}
+
+function renderCoupons() {
+    if (!coupons.length) {
+        $('#picker-promo-list').html('<div class="text-muted p-3">No active coupons. Create one under Promotions.</div>');
+        return;
+    }
+    var html = '';
+    coupons.forEach(function(c, i) {
+        html += '<button type="button" class="faire-picker-item" data-coupon-index="' + i + '">'
+            + '<span class="faire-picker-code">' + esc(c.code) + '</span>'
+            + '<span><strong>' + esc(c.name) + '</strong><small>' + esc(c.discount) + '% off</small></span>'
+            + '</button>';
+    });
+    $('#picker-promo-list').html(html);
+}
+
+function handleBlock(type) {
+    switch (type) {
+        case 'header':
+            insertHtml('<h2 class="cb-block-header" data-block="header" style="margin:16px 0;font-size:22px;font-weight:700;">New arrivals</h2>');
+            break;
+        case 'text':
+            insertHtml('<p class="cb-block-text" data-block="text" style="margin:12px 0;font-size:15px;line-height:1.5;">Tell your retailers about this offer…</p>');
+            break;
+        case 'image':
+            openImagePicker('image', null);
+            break;
+        case 'banner':
+            openImagePicker('banner', null);
+            break;
+        case 'logo':
+            if (storeLogo) {
+                insertHtml('<div class="cb-block-logo cb-media has-image" data-block="logo" contenteditable="false" style="position:relative;text-align:center;margin:20px 0;"><a href="' + esc(catalogUrl) + '"><img src="' + esc(storeLogo) + '" alt="' + esc(storeName) + '" style="max-height:56px;width:auto;"/></a></div>');
+            } else {
+                openImagePicker('logo', null);
+            }
+            break;
+        case 'product':
+            showPicker('product');
+            break;
+        case 'collection':
+            showPicker('collection');
+            break;
+        case 'promo':
+            showPicker('promo');
+            break;
+        case 'button':
+            showPicker('button');
+            break;
+        case 'benefits':
+            insertHtml('<div class="cb-block-benefits" data-block="benefits" style="background:#f7f6f3;border-radius:12px;padding:18px;margin:12px 0;"><div style="font-weight:700;margin-bottom:8px;">Wholesale benefits</div><ul style="margin:0;padding-left:18px;color:#4a4741;font-size:14px;line-height:1.6;"><li>Net 60 payment terms</li><li>Free returns on your first order</li><li>Dedicated wholesale support</li></ul></div>');
+            break;
+        case 'divider':
+            insertHtml('<hr class="cb-block-divider" data-block="divider" style="border:0;border-top:1px solid #ebe8e2;margin:24px 0;"/>');
+            break;
+        case 'spacing':
+            insertHtml('<div class="cb-block-spacing" data-block="spacing" style="height:32px;line-height:32px;">&nbsp;</div>');
+            break;
+    }
+}
+
+function saveCampaign(status, redirectOnSuccess) {
+    syncMessage();
+    $('#input-status').val(status || 'draft');
+
+    return $.ajax({
+        url: 'index.php?route=marketing/contact.saveDraft&user_token=' + userToken,
+        type: 'post',
+        data: $('#form-campaign').serialize(),
+        dataType: 'json'
+    }).done(function(json) {
+        if (json.error && json.error.warning) {
+            $('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + json.error.warning + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+            return;
+        }
+        if (json.success) {
+            $('#alert').prepend('<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-check-circle"></i> ' + json.success + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+            if (json.name) $('#input-name').val(json.name);
+            if (redirectOnSuccess) location = '{{ back }}';
+        }
+    });
+}
+
+$('#input-to').on('change', function() {
+    $('#to-customer-group').toggleClass('d-none', this.value !== 'customer_group');
+});
+
+$('#input-subject, #input-preview-text').on('input', updateCounts);
+updateCounts();
+
+$('.faire-builder-title__edit').on('click', function() {
+    $('#input-name').focus().select();
+});
+
+$('#template-rail').on('click', '.faire-template-card', function() {
+    var id = $(this).data('template');
+    $('.faire-template-card').removeClass('is-on');
+    $(this).addClass('is-on');
+    $('#input-template').val(id);
+    $('#email-canvas').html(defaultHtml(id));
+    decorateMedia();
+    syncMessage();
+});
+
+decorateMedia();
+
+$('#email-canvas').on('click', '.cb-hero-placeholder, .cb-email-hero:not(.has-image)', function(e) {
+    if ($(e.target).closest('.cb-media-toolbar, .cb-hero-logo a').length) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openImagePicker('hero', $(this).closest('.cb-email-hero'));
+});
+
+$('#email-canvas').on('click', '[data-media-action]', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var action = $(this).data('media-action');
+    var $media = $(this).closest('.cb-media');
+    var block = $media.data('block');
+
+    if (action === 'adjust') {
+        if (block === 'hero') {
+            openImagePicker('hero', $media);
+        } else if (block === 'banner') {
+            openImagePicker('banner', $media);
+        } else if (block === 'logo') {
+            openImagePicker('logo', $media);
+        } else {
+            openImagePicker('image', $media);
+        }
+        return;
+    }
+
+    if (action === 'delete') {
+        if (block === 'hero') {
+            $media.find('.cb-hero-img').remove();
+            if (!$media.find('.cb-hero-placeholder').length) {
+                $media.append('<div class="cb-hero-placeholder">Add a hero image</div>');
+            }
+            $media.removeClass('has-image');
+            decorateMedia();
+            syncMessage();
+            return;
+        }
+
+        $media.remove();
+        syncMessage();
+    }
+});
+
+$('.faire-device-toggle').on('click', 'button', function() {
+    $('.faire-device-toggle button').removeClass('is-on');
+    $(this).addClass('is-on');
+    $('#email-frame').attr('data-device', $(this).data('device'));
+});
+
+$('.faire-editor-tabs').on('click', 'button', function() {
+    $('.faire-editor-tabs button').removeClass('is-on');
+    $(this).addClass('is-on');
+    var panel = $(this).data('panel');
+    $('#panel-content').toggleClass('d-none', panel !== 'content');
+    $('#panel-design').toggleClass('d-none', panel !== 'design');
+});
+
+$('#panel-content').on('click', '.faire-block', function() {
+    handleBlock($(this).data('block'));
+});
+
+$(document).on('hidden.bs.modal', '#modal-image', function() {
+    var path = $('#campaign-image-target').val();
+    if (!path) return;
+
+    var thumb = $('#campaign-image-thumb').attr('src') || (imageBase + path);
+    applyImageToTarget(thumb);
+    pendingMediaTarget = null;
+    $('#campaign-image-target').val('');
+});
+
+var productSearchTimer = null;
+$('#picker-product-search').on('input', function() {
+    var q = this.value;
+    clearTimeout(productSearchTimer);
+    productSearchTimer = setTimeout(function() { searchProducts(q); }, 250);
+});
+
+$('#picker-product-list').on('click', '.faire-picker-item', function() {
+    var p = productResults[parseInt($(this).attr('data-product-index'), 10)];
+    if (p) {
+        insertHtml(productCard(p));
+        blockPicker.hide();
+    }
+});
+
+$('#picker-collection-list').on('click', '.faire-picker-item', function() {
+    var c = collections[parseInt($(this).attr('data-collection-index'), 10)];
+    if (c) {
+        insertHtml(collectionCard(c));
+        blockPicker.hide();
+    }
+});
+
+$('#picker-promo-list').on('click', '.faire-picker-item', function() {
+    var c = coupons[parseInt($(this).attr('data-coupon-index'), 10)];
+    if (c) {
+        insertHtml(promoCard(c));
+        blockPicker.hide();
+    }
+});
+
+$('#picker-button-insert').on('click', function() {
+    var label = $('#picker-button-label').val() || 'Shop Now';
+    var url = $('#picker-button-url').val() || catalogUrl;
+    insertHtml('<p class="cb-block-button" data-block="button" style="text-align:center;margin:16px 0;"><a href="' + esc(url) + '" style="display:inline-block;background:#2f2f2f;color:#fff;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:600;">' + esc(label) + '</a></p>');
+    blockPicker.hide();
+});
+
+$('#email-canvas').on('input blur', syncMessage);
+
+$('#design-bg').on('input', function() {
+    $('#email-canvas').css('background', this.value);
+});
+$('#design-accent').on('input', function() {
+    $('#email-canvas .cb-email-cta').css('background', this.value);
+});
+
+$('#button-draft').on('click', function() { saveCampaign('draft'); });
+$('#button-schedule').on('click', function() { saveCampaign('scheduled', true); });
+$('#button-as-template').on('click', function() { saveCampaign('template', true); });
+
+$('#button-duplicate').on('click', function() {
+    $.post('index.php?route=marketing/contact.duplicate&user_token=' + userToken, { campaign_id: $('#input-campaign-id').val() }, function(json) {
+        if (json.redirect) location = json.redirect;
+    }, 'json');
+});
+
+$('#button-delete').on('click', function() {
+    if (!confirm('Delete this campaign?')) return;
+    $.post('index.php?route=marketing/contact.deleteCampaign&user_token=' + userToken, { campaign_id: $('#input-campaign-id').val() }, function(json) {
+        if (json.redirect) location = json.redirect;
+    }, 'json');
+});
+
+$('#button-preview').on('click', function() {
+    syncMessage();
+    var w = window.open('', '_blank', 'width=720,height=900');
+    w.document.write('<!doctype html><title>Preview</title>' + cleanHtmlForSave($('#email-canvas').html()));
+    w.document.close();
+});
+
+$('#button-send-test').on('click', function() {
+    alert('Send a test email by using Send now to your own customer account, or configure SMTP and send to a single customer segment.');
+});
+
+$('#button-send').on('click', function() {
+    var element = this;
+    syncMessage();
+    $(element).prop('disabled', true);
+
+    var next = 'index.php?route=marketing/contact.send&user_token=' + userToken;
+    var send = function() {
+        return $.ajax({
+            url: next,
+            type: 'post',
+            data: $('#form-campaign').serialize(),
+            dataType: 'json',
+            success: function(json) {
+                $('.invalid-feedback').removeClass('d-block');
+                if (json.error) {
+                    if (json.error.warning) {
+                        $('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + json.error.warning + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+                    }
+                    for (var key in json.error) {
+                        $('#error-' + key.replaceAll('_', '-')).html(json.error[key]).addClass('d-block');
+                    }
+                    $(element).prop('disabled', false);
+                }
+                if (json.text) {
+                    $('#alert').prepend('<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-check-circle"></i> ' + json.text + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+                }
+                if (json.success) {
+                    $('#alert').prepend('<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-check-circle"></i> ' + json.success + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+                    $(element).prop('disabled', false);
+                    if (json.redirect) location = json.redirect;
+                }
+                if (json.next) {
+                    next = json.next;
+                    chain.attach(send);
+                }
+            },
+            error: function() { $(element).prop('disabled', false); }
+        });
+    };
+
+    chain.attach(send);
+});
+//--></script>
+{{ footer }}

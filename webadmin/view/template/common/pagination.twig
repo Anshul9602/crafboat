@@ -1,9 +1,14 @@
-<ul class="pagination">
-	{% if first %}
-		<li class="page-item"><a href="{{ first }}" class="page-link">|&lt;</a></li>
-	{% endif %}
+<ul class="pagination faire-pagination">
 	{% if prev %}
-		<li class="page-item"><a href="{{ prev }}" class="page-link">&lt;</a></li>
+		<li class="page-item"><a href="{{ prev }}" class="page-link" aria-label="Previous">&lt;</a></li>
+	{% else %}
+		<li class="page-item disabled"><span class="page-link">&lt;</span></li>
+	{% endif %}
+	{% if links and links[0].page > 1 %}
+		<li class="page-item"><a href="{{ first }}" class="page-link">1</a></li>
+		{% if links[0].page > 2 %}
+			<li class="page-item disabled"><span class="page-link">...</span></li>
+		{% endif %}
 	{% endif %}
 	{% for link in links %}
 		{% if link.page == page %}
@@ -12,10 +17,15 @@
 			<li class="page-item"><a href="{{ link.href }}" class="page-link">{{ link.page }}</a></li>
 		{% endif %}
 	{% endfor %}
-	{% if next %}
-		<li class="page-item"><a href="{{ next }}" class="page-link">&gt;</a></li>
+	{% if links and num_pages and (links|last).page < num_pages %}
+		{% if (links|last).page < num_pages - 1 %}
+			<li class="page-item disabled"><span class="page-link">...</span></li>
+		{% endif %}
+		<li class="page-item"><a href="{{ last }}" class="page-link">{{ num_pages }}</a></li>
 	{% endif %}
-	{% if last %}
-		<li class="page-item"><a href="{{ last }}" class="page-link">&gt;|</a></li>
+	{% if next %}
+		<li class="page-item"><a href="{{ next }}" class="page-link" aria-label="Next">&gt;</a></li>
+	{% else %}
+		<li class="page-item disabled"><span class="page-link">&gt;</span></li>
 	{% endif %}
 </ul>

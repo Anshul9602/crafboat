@@ -1,0 +1,74 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="faire-page faire-page--wide faire-campaigns">
+    <div class="faire-page__head">
+      <div>
+        <h1 class="faire-page__title">{{ heading_title }}</h1>
+        <p class="faire-page__intro">{{ text_intro }}</p>
+      </div>
+      <div class="faire-actions">
+        <a href="{{ create }}" class="faire-btn">{{ text_create }}</a>
+      </div>
+    </div>
+
+    <nav class="faire-tabs" aria-label="Campaign filters">
+      <a href="{{ filter_all }}"{% if tab == 'all' %} class="is-on"{% endif %}>{{ text_tab_all }}</a>
+      <a href="{{ filter_draft }}"{% if tab == 'draft' %} class="is-on"{% endif %}>{{ text_tab_draft }}</a>
+      <a href="{{ filter_scheduled }}"{% if tab == 'scheduled' %} class="is-on"{% endif %}>{{ text_tab_scheduled }}</a>
+      <a href="{{ filter_completed }}"{% if tab == 'complete' %} class="is-on"{% endif %}>{{ text_tab_completed }}</a>
+      <a href="{{ filter_templates }}"{% if tab == 'template' %} class="is-on"{% endif %}>{{ text_tab_templates }}{% if counts.template %}<span class="faire-tab-count">{{ counts.template }}</span>{% endif %}</a>
+    </nav>
+
+    <div class="faire-table-wrap">
+      <table class="faire-table faire-campaign-table">
+        <thead>
+          <tr>
+            <th>{{ column_campaign }}</th>
+            <th>{{ column_status }}</th>
+            <th>{{ column_delivered }}</th>
+            <th>{{ column_open_rate }}</th>
+            <th>{{ column_click_rate }}</th>
+            <th>{{ column_orders_opens }}</th>
+            <th>{{ column_orders_clicks }}</th>
+            <th>{{ column_volume_opens }}</th>
+            <th>{{ column_volume_clicks }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if campaigns %}
+            {% for campaign in campaigns %}
+              <tr>
+                <td>
+                  <a href="{{ campaign.href }}" class="faire-campaign-name">{{ campaign.name }}</a>
+                  {% if campaign.recipients %}<div class="faire-campaign-meta">{{ campaign.recipients }}</div>{% endif %}
+                  <div class="faire-campaign-meta">{{ campaign.meta }}</div>
+                </td>
+                <td>
+                  {% if campaign.status == 'complete' %}
+                    <span class="faire-status faire-status--complete">{{ campaign.status_label }}</span>
+                  {% elseif campaign.status == 'draft' %}
+                    <span class="faire-status faire-status--draft">{{ campaign.status_label }}</span>
+                  {% else %}
+                    <span class="faire-status">{{ campaign.status_label }}</span>
+                  {% endif %}
+                </td>
+                <td>{{ campaign.delivered }}</td>
+                <td>{{ campaign.open_rate }}</td>
+                <td>{{ campaign.click_rate }}</td>
+                <td>{{ campaign.orders_opens }}</td>
+                <td>{{ campaign.orders_clicks }}</td>
+                <td>{{ campaign.volume_opens }}</td>
+                <td>{{ campaign.volume_clicks }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="9" class="faire-empty">{{ text_empty }}</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{{ footer }}

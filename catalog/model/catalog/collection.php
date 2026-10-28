@@ -8,7 +8,7 @@ class Collection extends \Opencart\System\Engine\Model {
 	 * @return array<int, array<string, mixed>>
 	 */
 	public function getCollections(): array {
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "collection` WHERE `status` = '1' ORDER BY `sort_order` ASC, `name` ASC");
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "collection` WHERE `status` = '1' AND `menu` = '1' ORDER BY `sort_order` ASC, `name` ASC");
 
 		return $query->rows;
 	}
