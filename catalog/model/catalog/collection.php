@@ -5,10 +5,43 @@ namespace Opencart\Catalog\Model\Catalog;
  */
 class Collection extends \Opencart\System\Engine\Model {
 	/**
+	 * @return array<string, bool>
+	 */
+	private function getColumns(): array {
+		static $columns = null;
+
+		if ($columns !== null) {
+			return $columns;
+		}
+
+		$columns = [];
+
+		foreach ($this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "collection`")->rows as $row) {
+			$columns[$row['Field']] = true;
+		}
+
+		return $columns;
+	}
+
+	private function hasColumn(string $name): bool {
+		$columns = $this->getColumns();
+
+		return isset($columns[$name]);
+	}
+
+	/**
 	 * @return array<int, array<string, mixed>>
 	 */
 	public function getCollections(): array {
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "collection` WHERE `status` = '1' AND `menu` = '1' ORDER BY `sort_order` ASC, `name` ASC");
+		$sql = "SELECT * FROM `" . DB_PREFIX . "collection` WHERE `status` = '1'";
+
+		if ($this->hasColumn('menu')) {
+			$sql .= " AND `menu` = '1'";
+		}
+
+		$sql .= " ORDER BY `sort_order` ASC, `name` ASC";
+
+		$query = $this->db->query($sql);
 
 		return $query->rows;
 	}

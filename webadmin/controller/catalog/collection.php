@@ -117,7 +117,7 @@ class Collection extends \Opencart\System\Engine\Controller {
 			'href' => $this->url->link('catalog/collection', $token)
 		];
 
-		$data['save'] = $this->url->link('catalog/collection.save', $token);
+		$data['save'] = $this->url->link('catalog/collection.save', $token, true);
 		$data['back'] = $this->url->link('catalog/collection', $token);
 		$data['delete'] = $this->url->link('catalog/collection.delete', $token);
 		$data['assign'] = $this->url->link('catalog/collection.assignProduct', $token, true);
@@ -220,6 +220,7 @@ class Collection extends \Opencart\System\Engine\Controller {
 		}
 
 		$this->load->model('catalog/collection');
+		$this->model_catalog_collection->ensureSchema();
 
 		$code = trim((string)$post_info['code']);
 		if ($code === '') {
@@ -234,21 +235,26 @@ class Collection extends \Opencart\System\Engine\Controller {
 			$json['error']['code'] = $this->language->get('error_code');
 		}
 
-		$post_info['menu'] = !empty($post_info['menu']) ? 1 : 0;
+		// Hidden=1 + checkbox=0: last value wins; "0" is empty in PHP
+		$post_info['menu'] = isset($this->request->post['menu']) && (string)$this->request->post['menu'] === '0' ? 0 : 1;
 
 		if (!$json) {
-			if (!(int)$post_info['collection_id']) {
-				$collection_id = $this->model_catalog_collection->addCollection($post_info);
-			} else {
-				$collection_id = (int)$post_info['collection_id'];
-				$this->model_catalog_collection->editCollection($collection_id, $post_info);
-			}
+			try {
+				if (!(int)$post_info['collection_id']) {
+					$collection_id = $this->model_catalog_collection->addCollection($post_info);
+				} else {
+					$collection_id = (int)$post_info['collection_id'];
+					$this->model_catalog_collection->editCollection($collection_id, $post_info);
+				}
 
-			$json['collection_id'] = $collection_id;
-			$json['success'] = $this->language->get('text_success');
+				$json['collection_id'] = $collection_id;
+				$json['success'] = $this->language->get('text_success');
 
-			if (empty($this->request->post['stay'])) {
-				$json['redirect'] = $this->url->link('catalog/collection.form', 'user_token=' . $this->session->data['user_token'] . '&collection_id=' . $collection_id, true);
+				if (empty($this->request->post['stay'])) {
+					$json['redirect'] = $this->url->link('catalog/collection.form', 'user_token=' . $this->session->data['user_token'] . '&collection_id=' . $collection_id, true);
+				}
+			} catch (\Throwable $e) {
+				$json['error']['warning'] = 'Could not save collection. ' . $e->getMessage();
 			}
 		}
 

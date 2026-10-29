@@ -1,59 +1,87 @@
 {{ header }}{{ column_left }}
 <div id="content">
-  <div class="page-header">
-    <div class="container-fluid">
-      {% if developer_status %}
-        <div class="float-end">
-          <button type="button" id="button-setting" data-bs-toggle="tooltip" title="{{ button_developer }}" class="btn btn-info"><i class="fa-solid fa-cog"></i></button>
-        </div>
-      {% endif %}
-      <h1>{{ heading_title }}</h1>
-      <ol class="breadcrumb">
-        {% for breadcrumb in breadcrumbs %}
-          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-        {% endfor %}
-      </ol>
+  <div class="faire-page faire-page--wide faire-home">
+    <div class="faire-home__head">
+      <h1 class="faire-page__title">{{ greeting }}</h1>
+      <a href="{{ updates_href }}" class="faire-link">{{ see_updates }}</a>
     </div>
-  </div>
-  <div class="container-fluid">
-    {% for row in rows %}
-      <div class="row">
-        {% for dashboard_1 in row %}
-          {% set class = 'col-lg-%s %s'|format(dashboard_1.width, 'col-md-3 col-sm-6') %}
-          {% for dashboard_2 in row %}
-            {% if dashboard_2.width > 3 %}
-              {% set class = 'col-lg-%s %s'|format(dashboard_1.width, 'col-md-12 col-sm-12') %}
-            {% endif %}
-          {% endfor %}
-          <div class="{{ class }} mb-3">{{ dashboard_1.output }}</div>
-        {% endfor %}
+
+    <section class="faire-home-card faire-home-tip">
+      <div class="faire-home-tip__icon"><i class="fa-solid fa-store"></i></div>
+      <div class="faire-home-tip__body">
+        <h2>{{ tip.title }}</h2>
+        <p>{{ tip.body }}</p>
+        <a href="{{ tip.href }}" class="faire-link">{{ tip.link }}</a>
       </div>
-    {% endfor %}
+    </section>
+
+    <section class="faire-home-card">
+      <div class="faire-home-card__head">
+        <div>
+          <h2>{{ potential_title }}</h2>
+          <p>{{ potential_sub }}</p>
+        </div>
+        <div class="faire-home-card__meta">
+          <a href="{{ potential_href }}" class="faire-link">{{ text_view_all }}</a>
+          <span class="faire-home-beta">{{ text_beta }}</span>
+        </div>
+      </div>
+
+      {% if potentials %}
+        <div class="faire-home-list">
+          {% for item in potentials %}
+            <article class="faire-home-row">
+              <div class="faire-home-row__main">
+                <span class="faire-home-badge{% if item.badge == 'Top account' %} faire-home-badge--top{% elseif item.badge == 'New account' %} faire-home-badge--new{% endif %}">{{ item.badge }}</span>
+                <span class="faire-home-avatar">{{ item.initial }}</span>
+                <div>
+                  <a href="{{ item.href }}" class="faire-home-name">{{ item.store }}</a>
+                  <div class="faire-home-insight">{{ item.insight }}</div>
+                </div>
+              </div>
+              <div class="faire-home-row__actions">
+                <a href="{{ item.href }}" class="faire-home-msg"><i class="fa-regular fa-comment"></i> {{ item.action }}</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="faire-empty">{{ text_no_potential }}</div>
+      {% endif %}
+    </section>
+
+    <section class="faire-home-card">
+      <div class="faire-home-card__head">
+        <div>
+          <h2>{{ open_orders_title }}</h2>
+          <p>{{ open_orders_summary }}</p>
+        </div>
+        <a href="{{ orders_href }}" class="faire-link">{{ text_view_all }}</a>
+      </div>
+
+      {% if open_orders %}
+        <div class="faire-home-list">
+          {% for order in open_orders %}
+            <a href="{{ order.href }}" class="faire-home-order">
+              <span class="faire-home-status faire-home-status--{{ order.status_class }}">{{ order.status }}</span>
+              <span class="faire-home-order__date">{{ order.date }}</span>
+              <span class="faire-home-order__customer">{{ order.customer }}</span>
+              <span class="faire-home-order__discount">{{ order.discount }}</span>
+              <span class="faire-home-order__total">{{ order.total }}</span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="faire-empty">{{ text_no_orders }}</div>
+      {% endif %}
+    </section>
   </div>
   {{ security }}
 </div>
+{% if developer_status %}
 <script type="text/javascript"><!--
-$('#button-setting').on('click', function() {
-    $.ajax({
-        url: 'index.php?route=common/developer&user_token={{ user_token }}',
-        dataType: 'html',
-        beforeSend: function() {
-            $('#button-setting').button('loading');
-        },
-        complete: function() {
-            $('#button-setting').button('reset');
-        },
-        success: function(html) {
-            $('#modal-developer').remove();
-
-            $('body').prepend(html);
-
-            $('#modal-developer').modal('show');
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-        }
-    });
-});
+// keep developer modal available via keyboard shortcut if needed
 //--></script>
+{% endif %}
 {{ footer }}

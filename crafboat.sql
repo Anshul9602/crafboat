@@ -652,10 +652,12 @@ CREATE TABLE `oc_collection` (
   `name` varchar(255) NOT NULL,
   `code` varchar(128) NOT NULL,
   `image` varchar(255) NOT NULL DEFAULT '',
+  `video` varchar(255) NOT NULL DEFAULT '',
   `blurb` text NOT NULL,
   `summary` text NOT NULL,
   `sort_order` int(11) NOT NULL DEFAULT 0,
   `status` tinyint(1) NOT NULL DEFAULT 1,
+  `menu` tinyint(1) NOT NULL DEFAULT 1,
   `date_added` datetime NOT NULL,
   `date_modified` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

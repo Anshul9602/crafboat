@@ -16,7 +16,7 @@
     font-weight: 400;
     line-height: 1;
     speak: never;
-    font-size: 1em;
+    font-size: 0.9em;
 }
 
 .cb-arrow::before {
@@ -28,7 +28,7 @@ body.cb {
     background: #fff;
     color: #000;
     font-family: Inter, Arial, sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.45;
 }
 
@@ -140,7 +140,7 @@ body.cb .cb-message {
     background: #123942;
     color: #fff;
     padding: 8px 24px;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: -0.24px;
     white-space: nowrap;
 }
@@ -263,7 +263,7 @@ body.cb .cb-btn--teal {
     color: #fff;
     height: 35px;
     padding: 0 20px;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 body.cb .cb-btn--black {
@@ -294,7 +294,7 @@ body.cb .cb-btn--glass {
     background: rgba(255, 255, 255, .16);
     color: #fff;
     border: 0.5px solid #fff;
-    font-size: 12px;
+    font-size: 11px;
     padding: 12px 16px;
 }
 
@@ -375,7 +375,7 @@ body.cb .cb-btn--glass {
 .cb-count {
     color: #000;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
 }
 
@@ -395,7 +395,7 @@ body.cb .cb-btn--glass {
     margin-left: 4px;
     border-radius: 268px;
     background: rgba(0, 0, 0, .1);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
 }
 
@@ -418,7 +418,7 @@ body.cb .cb-btn--glass {
     gap: 8px;
     color: #000;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
 }
 
@@ -566,16 +566,16 @@ body.cb .cb-btn--glass {
     margin: 12px 0 16px;
     max-width: 280px;
     color: #000;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 32px;
+    font-size: 29px;
     line-height: 1.05;
     letter-spacing: -0.64px;
 }
 
 .cb-mega__kicker {
     margin: 0;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     letter-spacing: 1.6px;
     text-transform: uppercase;
@@ -583,7 +583,7 @@ body.cb .cb-btn--glass {
 
 .cb-mega__label {
     margin: 0 0 4px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 1.2px;
     text-transform: uppercase;
@@ -601,7 +601,7 @@ body.cb .cb-btn--glass {
     display: block;
     padding: 14px 0;
     border-bottom: 1px solid #e6e1d8;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-mega__more {
@@ -610,7 +610,7 @@ body.cb .cb-btn--glass {
     margin-top: 4px;
     padding: 0 0 2px;
     border-bottom: 1px solid #000;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-mega__shop,
@@ -639,7 +639,7 @@ body.cb .cb-btn--glass {
     margin: 0;
     max-width: 240px;
     color: #69706f;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-mega__cards {
@@ -681,7 +681,7 @@ a.cb-mega__card>* {
 .cb-mega__promo span,
 .cb-mega__card em {
     font-style: normal;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     letter-spacing: 1.2px;
     text-transform: uppercase;
@@ -694,15 +694,15 @@ a.cb-mega__card>* {
     display: block;
     margin: 6px 0;
     color: #fff;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 26px;
+    font-size: 15px;
     line-height: 1.05;
 }
 
 .cb-mega__promo em {
     font-style: normal;
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: 0;
     text-transform: none;
     color: #fff;
@@ -726,13 +726,13 @@ a.cb-mega__card>* {
 .cb-craft a strong {
     display: block;
     margin-bottom: 6px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
 }
 
 .cb-craft a span {
     color: #69706f;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .cb-craft a.is-wide {
@@ -760,7 +760,7 @@ body.cb-acct .breadcrumb {
     border: 0;
     border-bottom: 1px solid #ded8ce;
     border-radius: 0;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 body.cb-acct .breadcrumb>li.breadcrumb-item {
@@ -783,9 +783,9 @@ body.cb-acct h1,
 body.cb-acct legend {
     margin: 0 0 20px;
     color: #000;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 48px;
+    font-size: 43px;
     letter-spacing: -0.96px;
     border: 0;
 }
@@ -793,9 +793,9 @@ body.cb-acct legend {
 body.cb-acct h2 {
     margin: 28px 0 12px;
     color: #000;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 32px;
+    font-size: 29px;
 }
 
 body.cb-acct .cb-acct-tiles {
@@ -826,7 +826,7 @@ body.cb-acct .cb-acct-tile__icon {
     flex: 0 0 44px;
     background: #f6f4f1;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 body.cb-acct .cb-acct-tile__copy {
@@ -836,14 +836,14 @@ body.cb-acct .cb-acct-tile__copy {
 }
 
 body.cb-acct .cb-acct-tile__copy strong {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
 }
 
 body.cb-acct .cb-acct-tile__copy em {
     font-style: normal;
     color: #69706f;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.35;
 }
 
@@ -855,7 +855,7 @@ body.cb-acct .cb-acct-tile__go {
 body.cb-acct .cb-acct-kicker {
     margin: 36px 0 16px;
     font-family: Inter, Arial, sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 0;
 }
@@ -878,12 +878,12 @@ body.cb-acct .cb-acct-action {
     border-radius: 8px;
     color: #000;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
 }
 
 body.cb-acct .cb-acct-action i {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .cb-auth__img {
@@ -902,7 +902,7 @@ body.cb-acct .cb-acct-action i {
 body.cb-acct .cb-auth__form h1 {
     max-width: none;
     margin: 0 0 12px;
-    font-size: 40px;
+    font-size: 36px;
     line-height: 1.1;
     letter-spacing: -0.8px;
     white-space: normal;
@@ -947,7 +947,7 @@ body.cb-acct .cb-auth #content form fieldset+fieldset {
 
 body.cb-acct .cb-auth #content form legend {
     margin: 20px 0 14px;
-    font-size: 24px;
+    font-size: 22px;
 }
 
 body.cb-acct .cb-auth #content form fieldset:first-of-type legend {
@@ -1063,7 +1063,7 @@ body.cb-acct #account-address.cb-apply .form-label {
     display: block;
     margin: 0 0 8px;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.4px;
     text-align: left;
@@ -1086,7 +1086,7 @@ body.cb-acct #account-address.cb-apply .form-label {
     border-radius: 160px;
     color: #000;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
 }
 
@@ -1098,7 +1098,7 @@ body.cb-acct #account-address.cb-apply .form-label {
 .cb-auth__note {
     margin-top: 28px;
     color: #69706f;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 body.cb .cb-auth__note a {
@@ -1152,7 +1152,7 @@ body.cb-acct .list-unstyled a::after {
 
 body.cb-acct .table thead th {
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -1192,7 +1192,7 @@ body.cb-acct #content .col-form-label {
     margin: 0 0 8px;
     padding: 0;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.8px;
     text-align: left;
@@ -1274,7 +1274,7 @@ body.cb-acct #content>#address {
 
 body.cb-acct .cb-addr__card h2 {
     margin: 0;
-    font-size: 22px;
+    font-size: 20px;
     line-height: 1.2;
 }
 
@@ -1284,7 +1284,7 @@ body.cb-acct .cb-addr__card h2 {
     border-radius: 160px;
     background: #000;
     color: #fff;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.6px;
     text-transform: uppercase;
@@ -1344,7 +1344,7 @@ body.cb-acct #content form legend {
     width: auto;
     margin: 0 0 18px;
     padding: 0;
-    font-size: 28px;
+    font-size: 25px;
     line-height: 1.15;
     letter-spacing: -0.4px;
 }
@@ -1487,7 +1487,7 @@ body.cb-acct #account-address.cb-apply .payment[hidden] {
     border-radius: 8px;
     border: 1px solid #ded8ce;
     background: #f6f3ee;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.3;
     word-break: break-word;
 }
@@ -1516,7 +1516,7 @@ body.cb-acct #content>#wishlist {
     justify-content: space-between;
     margin-bottom: 16px;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -1643,16 +1643,16 @@ body.cb-acct #content>#wishlist {
 
 .cb-kicker {
     margin: 0 0 24px;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 2.88px;
     text-transform: uppercase;
 }
 
 .cb-hero h1 {
     margin: 0 0 24px;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 72px;
+    font-size: 65px;
     line-height: 1.04;
     letter-spacing: -2.16px;
     color: #fff;
@@ -1665,7 +1665,7 @@ body.cb-acct #content>#wishlist {
 .cb-hero p {
     max-width: 440px;
     margin: 0 0 48px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .cb-hero__actions {
@@ -1692,7 +1692,7 @@ body.cb-acct #content>#wishlist {
     border-radius: 160px;
     background: #000;
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     text-decoration: none;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
     animation: cb-message-float 2.4s ease-in-out infinite;
@@ -1739,7 +1739,7 @@ body.cb-acct #content>#wishlist {
     border: 1px solid #ded8ce;
     color: #000;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     background: #fff;
 }
 
@@ -1771,10 +1771,10 @@ body.cb-acct #content>#wishlist {
 .cb-head h2,
 .cb-display {
     margin: 0;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 48px;
-    line-height: 1.04;
+    font-size: 38px;
+   
     letter-spacing: -0.96px;
     color: #000;
 }
@@ -1784,7 +1784,7 @@ body.cb-acct #content>#wishlist {
     margin: 0;
     max-width: 480px;
     color: #69706f;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-cats-wrap {
@@ -1847,7 +1847,7 @@ body.cb-acct #content>#wishlist {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 0.28px;
     text-transform: uppercase;
 }
@@ -1893,7 +1893,7 @@ body.cb-acct #content>#wishlist {
 
 .cb-dept h3 {
     margin: 0;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     letter-spacing: -0.48px;
 }
@@ -1922,7 +1922,7 @@ body.cb-acct #content>#wishlist {
 
 .cb-dept p {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-dept__go {
@@ -1931,7 +1931,7 @@ body.cb-acct #content>#wishlist {
     align-items: center;
     letter-spacing: 0.28px;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-dept__go .cb-arrow {
@@ -1991,7 +1991,7 @@ body.cb-acct #content>#wishlist {
     padding: 12px 16px;
     color: #000;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     white-space: nowrap;
     transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
@@ -2025,7 +2025,7 @@ body.cb-acct #content>#wishlist {
 
 .cb-hscroll__btn .cb-arrow {
     margin: 0;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1;
     color: currentColor;
 }
@@ -2056,7 +2056,7 @@ body.cb-acct #content>#wishlist {
 
 .cb-more {
     margin: 40px 0 16px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 2.88px;
     text-transform: uppercase;
@@ -2090,9 +2090,9 @@ body.cb-acct #content>#wishlist {
 .cb-notice__card h2 {
     margin: 0 0 12px;
     color: #000;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 32px;
+    font-size: 29px;
     line-height: 1.1;
 }
 
@@ -2109,7 +2109,7 @@ body.cb-acct #content>#wishlist {
 }
 
 .cb-find .cb-display {
-    font-size: 56px;
+    font-size: 50px;
 }
 
 .cb-find__form {
@@ -2123,7 +2123,7 @@ body.cb-acct #content>#wishlist {
 .cb-find__form>div>label {
     display: block;
     margin: 0 0 8px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.4px;
     text-transform: uppercase;
@@ -2147,7 +2147,7 @@ body.cb-acct #content>#wishlist {
     align-items: center;
     gap: 8px;
     margin-top: 10px;
-    font-size: 13px;
+    font-size: 12px;
     color: #69706f;
 }
 
@@ -2183,7 +2183,7 @@ body.cb-acct #content>#wishlist {
 .cb-find__pages p {
     margin: 0;
     color: #69706f;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .cb-find__pages .pagination {
@@ -2389,7 +2389,7 @@ body.cb-acct #content>#wishlist {
     z-index: 2;
     background: #123942;
     color: #fff;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -2465,14 +2465,14 @@ body.cb-acct #content>#wishlist {
 .cb-toast p {
     margin: 0;
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.4;
 }
 
 .cb-toast strong {
     display: block;
     margin-bottom: 4px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -2482,7 +2482,7 @@ body.cb-acct #content>#wishlist {
     display: flex;
     gap: 16px;
     color: #69706f;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.22px;
     line-height: 1.3;
@@ -2491,7 +2491,7 @@ body.cb-acct #content>#wishlist {
 
 .cb-card h3 {
     margin: 8px 0 0;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     line-height: 1.35;
     text-transform: capitalize;
@@ -2501,9 +2501,9 @@ body.cb-acct #content>#wishlist {
 .cb-card .cb-collection {
     margin: 8px 0 0;
     color: #69706f;
-    font-family: "Times New Roman", Times, serif;
+
     font-style: italic;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     line-height: 1.3;
 }
@@ -2511,7 +2511,7 @@ body.cb-acct #content>#wishlist {
 .cb-ship {
     margin: 0;
     color: #007f4c;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: -0.24px;
     line-height: 1.35;
@@ -2535,7 +2535,7 @@ body.cb-acct #content>#wishlist {
     justify-content: space-between;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 1.3;
 }
@@ -2587,7 +2587,7 @@ body.cb-acct #content>#wishlist {
     margin: 0;
     width: 100%;
     color: #000;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 2.88px;
     text-transform: uppercase;
 }
@@ -2596,9 +2596,9 @@ body.cb-acct #content>#wishlist {
     max-width: 590px;
     margin: 0;
     color: #000;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 48px;
+    font-size: 43px;
     line-height: 1.039;
     letter-spacing: -1.44px;
 }
@@ -2609,7 +2609,7 @@ body.cb-acct #content>#wishlist {
     border-radius: 160px;
     background: #000;
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     line-height: normal;
     pointer-events: auto;
 }
@@ -2688,7 +2688,7 @@ body.cb-acct #content>#wishlist {
 
 .cb-green {
     color: #007f4c;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 1.44px;
     text-transform: uppercase;
@@ -2696,8 +2696,8 @@ body.cb-acct #content>#wishlist {
 
 .cb-assort h3 {
     margin: 16px 0 12px;
-    font-family: "Times New Roman", Times, serif;
-    font-size: 32px;
+
+    font-size: 29px;
     font-weight: 400;
     letter-spacing: -0.64px;
 }
@@ -2706,7 +2706,7 @@ body.cb-acct #content>#wishlist {
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    font-size: 12px;
+    font-size: 11px;
     padding: 8px 0;
     border-top: 1px solid #ddd;
 }
@@ -2740,7 +2740,7 @@ body.cb-acct #content>#wishlist {
 }
 
 .cb-story__copy h2 {
-    font-size: 48px;
+    font-size: 43px;
 }
 
 .cb-tabs {
@@ -2756,7 +2756,7 @@ body.cb-acct #content>#wishlist {
     padding: 12px 16px;
     color: #000;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .cb-tabs a.is-on {
@@ -2789,14 +2789,14 @@ body.cb-acct #content>#wishlist {
 .cb-ready .cb-head h2 {
     margin: 0;
     color: #fff;
-    font-size: 48px;
+    font-size: 43px;
     letter-spacing: -0.96px;
 }
 
 .cb-ready .cb-head>p {
     max-width: 493px;
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.45;
 }
 
@@ -2822,7 +2822,7 @@ body.cb-acct #content>#wishlist {
     border-radius: 160px;
     background: #fff;
     color: #000;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-ready .cb-btn--white:hover {
@@ -2849,13 +2849,13 @@ body.cb-acct #content>#wishlist {
 .cb-steps h3,
 .cb-works h3 {
     margin: 16px 0 8px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     letter-spacing: -0.4px;
 }
 
 .cb-num {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .cb-confidence {
@@ -2892,8 +2892,8 @@ body.cb-acct #content>#wishlist {
     margin: 0;
     max-width: 443px;
     color: #000;
-    font-family: "Times New Roman", Times, serif;
-    font-size: 48px;
+
+    font-size: 43px;
     font-weight: 400;
     line-height: 1.039;
     letter-spacing: -0.96px;
@@ -2917,7 +2917,7 @@ body.cb-acct #content>#wishlist {
 .cb-confidence h3 {
     margin: 0 0 8px;
     color: #000;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     line-height: 1.45;
 }
@@ -2925,7 +2925,7 @@ body.cb-acct #content>#wishlist {
 .cb-confidence .cb-muted {
     margin: 0;
     color: rgba(0, 0, 0, 0.7);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.45;
 }
 
@@ -2934,7 +2934,7 @@ body.cb-acct #content>#wishlist {
     padding: 12px 16px;
     border: 0.5px solid #fff;
     border-radius: 160px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-photos {
@@ -2997,13 +2997,13 @@ body.cb-acct #content>#wishlist {
 .cb-collections .cb-head h2 {
     margin: 0;
     color: #fff;
-    font-size: 48px;
+    font-size: 43px;
     letter-spacing: -0.96px;
 }
 
 .cb-collections .cb-head>p {
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.45;
 }
 
@@ -3057,14 +3057,14 @@ body.cb-acct #content>#wishlist {
 
 .cb-tile__num {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.45;
 }
 
 body.cb .cb-tile h3 {
     margin: 0;
     max-width: 100%;
-    font-family: "Times New Roman", Times, serif;
+
     font-size: clamp(11px, 4.8cqi, 20px);
     font-weight: 400;
     line-height: 1.15;
@@ -3097,7 +3097,7 @@ body.cb .cb-tile h3 {
 
 .cb-tile__more p {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.45;
 }
 
@@ -3160,9 +3160,9 @@ body.cb .cb-tile h3 {
 }
 
 .cb-desk__copy h2 {
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 80px;
+    font-size: 72px;
     line-height: 1;
     letter-spacing: -1.6px;
     margin: 32px 0;
@@ -3191,7 +3191,7 @@ body.cb .cb-tile h3 {
 }
 
 .cb-custom__copy h2 {
-    font-size: 48px;
+    font-size: 43px;
 }
 
 .cb-custom__copy h2 em {
@@ -3223,13 +3223,13 @@ body.cb .cb-tile h3 {
 
 .cb-scores strong {
     display: block;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 500;
 }
 
 .cb-scores span {
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .cb-quotes {
@@ -3246,12 +3246,12 @@ body.cb .cb-tile h3 {
 
 .cb-quotes p {
     margin: 0 0 16px;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .cb-quotes small {
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .cb-notes {
@@ -3277,8 +3277,8 @@ body.cb .cb-tile h3 {
 
 .cb-notes h3 {
     margin: 24px 0 12px;
-    font-family: "Times New Roman", Times, serif;
-    font-size: 28px;
+
+    font-size: 25px;
     font-weight: 400;
     line-height: 1.15;
 }
@@ -3289,7 +3289,7 @@ body.cb .cb-tile h3 {
     gap: 12px;
     color: #000;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 0.4px;
 }
 
@@ -3305,7 +3305,7 @@ body.cb .cb-tile h3 {
 }
 
 .cb-works h2 {
-    font-size: 40px;
+    font-size: 36px;
     letter-spacing: -0.8px;
 }
 
@@ -3326,7 +3326,7 @@ body.cb .cb-tile h3 {
 }
 
 .cb-works h3 {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .cb-retail {
@@ -3344,7 +3344,7 @@ body.cb .cb-tile h3 {
 .cb-retail h2 {
     margin: 16px 0 0;
     color: #fff;
-    font-size: 40px;
+    font-size: 36px;
     letter-spacing: -0.8px;
 }
 
@@ -3372,7 +3372,7 @@ body.cb footer.cb-footer {
 
 .cb-footer h3 {
     margin: 0 0 24px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
 }
 
@@ -3381,7 +3381,7 @@ body.cb footer.cb-footer {
     color: #000;
     text-decoration: none;
     margin-bottom: 24px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-footer__brand img {
@@ -3396,9 +3396,9 @@ body.cb footer.cb-footer {
 
 .cb-footer h2 {
     margin: 0 0 16px;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 40px;
+    font-size: 36px;
     letter-spacing: -0.8px;
 }
 
@@ -3435,7 +3435,7 @@ body.cb footer.cb-footer {
 
 .cb-news button .cb-arrow {
     margin: 0;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .cb-crumb {
@@ -3445,7 +3445,7 @@ body.cb footer.cb-footer {
     padding: 24px 70px;
     border-top: 1px solid #ded8ce;
     border-bottom: 1px solid #ded8ce;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
 }
 
@@ -3515,7 +3515,7 @@ body.cb .cb-crumb a {
 
 .cb-pdp__meta {
     margin: 16px 0 0;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 1.04px;
     line-height: 1.3;
@@ -3526,9 +3526,9 @@ body.cb .cb-pdp h1 {
     margin: 16px 0 0;
     max-width: none;
     color: #000;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 40px;
+    font-size: 36px;
     line-height: 1.08;
     letter-spacing: -0.8px;
 }
@@ -3536,15 +3536,15 @@ body.cb .cb-pdp h1 {
 .cb-pdp__collection {
     margin: 16px 0 0;
     color: #69706f;
-    font-family: "Times New Roman", Times, serif;
+
     font-style: italic;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.3;
 }
 
 .cb-pdp .cb-ship {
     margin-top: 16px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-pdp .cb-ship--wait {
@@ -3554,7 +3554,7 @@ body.cb .cb-pdp h1 {
 .cb-pdp__summary {
     max-width: 526px;
     margin: 16px 0 0;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.5;
 }
 
@@ -3575,16 +3575,16 @@ body.cb .cb-pdp h1 {
     display: block;
     margin-bottom: 12px;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.96px;
     text-transform: uppercase;
 }
 
 .cb-pdp__figures strong {
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 32px;
+    font-size: 29px;
     letter-spacing: -0.64px;
     line-height: 1.1;
 }
@@ -3593,7 +3593,7 @@ body.cb .cb-pdp h1 {
     display: block;
     margin-top: 6px;
     color: #8d8a84;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     letter-spacing: 0;
 }
@@ -3607,7 +3607,7 @@ body.cb .cb-pdp h1 {
     margin-top: 8px;
     color: #007f4c;
     font-style: normal;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.2px;
 }
@@ -3617,9 +3617,9 @@ body.cb .cb-pdp__price h2 {
     padding-top: 24px;
     border-top: 1px solid #dfdfdf;
     color: #000;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 26px;
+    font-size: 23px;
     line-height: 1.2;
     letter-spacing: -0.4px;
 }
@@ -3627,7 +3627,7 @@ body.cb .cb-pdp__price h2 {
 .cb-pdp__price p {
     margin: 16px 0 0;
     color: #69706f;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
 }
 
@@ -3647,7 +3647,7 @@ body.cb .cb-pdp__price h2 {
     gap: 24px;
     padding: 12px 0;
     border-bottom: 1px solid #e5e5e5;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .cb-specs dt {
@@ -3686,21 +3686,25 @@ body.cb .cb-pdp__price h2 {
 body.cb .cb-coll-hero h1 {
     margin: 0 0 24px;
     color: #fff;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 48px;
+    font-size: 26px;
     line-height: 1.08;
     letter-spacing: -1px;
+    text-transform: uppercase;
 }
 
 .cb-coll-hero p {
     max-width: 588px;
     margin: 0 0 48px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .cb-coll-hero .cb-kicker {
     color: #fff;
+    font-size: 12px;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
 }
 
 .cb-coll-switch {
@@ -3719,7 +3723,7 @@ body.cb .cb-coll-hero h1 {
     padding: 0 32px;
     border-right: 1px solid #ded8ce;
     color: rgba(0, 0, 0, .7);
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 1.68px;
     text-transform: uppercase;
 }
@@ -3744,7 +3748,7 @@ body.cb .cb-coll-hero h1 {
     padding: 0 28px;
     border-right: 1px solid #ded8ce;
     color: #000;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
     letter-spacing: 1.68px;
     line-height: 1.2;
@@ -3787,7 +3791,7 @@ body.cb .cb-coll-hero h1 {
 
 .cb-coll-note h2 {
     max-width: 676px;
-    font-size: 48px;
+    font-size: 43px;
 }
 
 .cb-coll-note__list {
@@ -3802,7 +3806,7 @@ body.cb .cb-coll-hero h1 {
 
 .cb-coll-note__list h3 {
     margin: 0 0 8px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.64px;
     text-transform: uppercase;
@@ -3811,7 +3815,7 @@ body.cb .cb-coll-hero h1 {
 .cb-coll-note__list p {
     margin: 0;
     color: rgba(0, 0, 0, .7);
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-coll-products {
@@ -3839,7 +3843,7 @@ body.cb .cb-coll-hero h1 {
     padding: 12px 16px;
     color: #000;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .cb-coll-filters a.is-on {
@@ -3853,7 +3857,7 @@ body.cb .cb-coll-hero h1 {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .cb-coll-sort label {
@@ -3910,7 +3914,7 @@ body.cb .cb-coll-hero h1 {
 
 .cb-coll-story__copy h2 {
     max-width: 382px;
-    font-size: 48px;
+    font-size: 43px;
 }
 
 .cb-coll-story__copy p {
@@ -3930,7 +3934,7 @@ body.cb .cb-coll-hero h1 {
 .cb-unlock h2 {
     max-width: 640px;
     margin: 16px 0 0;
-    font-size: 40px;
+    font-size: 36px;
 }
 
 .cb-unlock__actions {
@@ -3942,7 +3946,7 @@ body.cb .cb-coll-hero h1 {
 
 body.cb .cb-unlock__login {
     color: #000;
-    font-size: 14px;
+    font-size: 13px;
     text-decoration: underline;
 }
 
@@ -5046,7 +5050,7 @@ body.cb-nav-open {
 .cb-cart__kicker {
     margin: 0;
     color: #1c1c1c;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.4px;
     text-transform: uppercase;
@@ -5055,9 +5059,9 @@ body.cb-nav-open {
 body.cb .cb-cart h1 {
     margin: 8px 0 0;
     color: #1c1c1c;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 36px;
+    font-size: 32px;
     letter-spacing: -0.4px;
 }
 
@@ -5091,9 +5095,9 @@ body.cb .cb-cart h2 {
     margin: 0 auto 14px;
     max-width: 340px;
     color: #1c1c1c;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 34px;
+    font-size: 31px;
     line-height: 1.08;
     letter-spacing: -0.4px;
 }
@@ -5102,7 +5106,7 @@ body.cb .cb-cart h2 {
     margin: 0 auto 18px;
     max-width: 360px;
     color: #8d8a84;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.45;
 }
 
@@ -5136,7 +5140,7 @@ body.cb .cb-cart .cb-btn--line {
 .cb-cart__fine {
     margin: 14px 0 0 !important;
     color: #8d8a84;
-    font-size: 13px !important;
+    font-size: 12px !important;
 }
 
 .cb-cart__draft {
@@ -5190,9 +5194,9 @@ body.cb .cb-cart .cb-btn--line {
 
 #checkout-cart .cb-bag h1 {
     margin: 0 0 24px;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 48px;
+    font-size: 43px;
     letter-spacing: -0.96px;
 }
 
@@ -5200,7 +5204,7 @@ body.cb .cb-cart .cb-btn--line {
     margin-left: 8px;
     color: #69706f;
     font-family: Inter, Arial, sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 0;
 }
 
@@ -5230,7 +5234,7 @@ body.cb .cb-cart .cb-btn--line {
     gap: 8px;
     margin: 0;
     color: #222;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
 }
@@ -5249,7 +5253,7 @@ body.cb .cb-cart .cb-btn--line {
     padding: 16px 20px;
     border-bottom: 1px solid #eeeae4;
     color: #222;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     letter-spacing: 0;
     text-transform: none;
@@ -5264,7 +5268,7 @@ body.cb .cb-cart .cb-btn--line {
     background: transparent;
     padding: 0;
     color: #222;
-    font-size: 14px;
+    font-size: 13px;
     text-decoration: none;
     cursor: pointer;
 }
@@ -5308,7 +5312,7 @@ body.cb .cb-cart .cb-btn--line {
     display: block;
     color: #8d8a84;
     font-style: normal;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 #checkout-cart .cb-bag__pack {
@@ -5326,7 +5330,7 @@ body.cb .cb-cart .cb-btn--line {
 #checkout-cart .cb-bag__copy label {
     margin: 0;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.6px;
     text-transform: uppercase;
@@ -5343,7 +5347,7 @@ body.cb .cb-cart .cb-btn--line {
     border: 1px solid #dfdfdf;
     background: #fff;
     color: #000;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1;
     cursor: pointer;
 }
@@ -5386,13 +5390,13 @@ body.cb .cb-cart .cb-btn--line {
 
 #checkout-cart .cb-bag__money strong {
     display: block;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
 }
 
 #checkout-cart .cb-bag__money span {
     color: #8d8a84;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 #checkout-cart .cb-bag__summary {
@@ -5404,9 +5408,9 @@ body.cb .cb-cart .cb-btn--line {
 
 #checkout-cart .cb-bag__summary h2 {
     margin: 0 0 16px;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 28px;
+    font-size: 25px;
 }
 
 #checkout-cart .cb-bag__row {
@@ -5418,7 +5422,7 @@ body.cb .cb-cart .cb-btn--line {
 }
 
 #checkout-cart .cb-bag__row.is-total {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 #checkout-cart .cb-bag__summary .cb-btn {
@@ -5445,14 +5449,14 @@ body.cb .cb-cart .cb-btn--line {
 
 #checkout-cart .cb-also__head h2 {
     margin: 0;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 28px;
+    font-size: 25px;
 }
 
 #checkout-cart .cb-also__head a {
     color: #222;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     text-decoration: none;
 }
@@ -5485,14 +5489,14 @@ body.cb .cb-cart .cb-btn--line {
 #checkout-cart .cb-trust strong {
     display: block;
     color: #111;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 #checkout-cart .cb-trust em {
     display: block;
     color: #8d8a84;
     font-style: normal;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 #checkout-cart [data-bs-target="#collapse-shipping"]::before,
@@ -5530,7 +5534,7 @@ body.cb .cb-cart .cb-btn--line {
     box-shadow: none;
     padding: 14px 0;
     color: #000;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 #checkout-cart .accordion-body {
@@ -5554,7 +5558,7 @@ body.cb .cb-cart .cb-btn--line {
     margin: 0 0 8px;
     padding: 0;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.6px;
     text-align: left;
@@ -5581,7 +5585,7 @@ body.cb .cb-cart .cb-btn--line {
 #checkout-cart .accordion-body .btn-danger {
     border-radius: 160px;
     padding: 10px 18px;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 #checkout-cart .accordion-body .btn-primary {
@@ -5629,9 +5633,9 @@ body.cb .cb-cart .cb-btn--line {
 
 #checkout-checkout h1 {
     margin: 0 0 24px;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 48px;
+    font-size: 43px;
     letter-spacing: -0.96px;
 }
 
@@ -5679,16 +5683,16 @@ body.cb .cb-cart .cb-btn--line {
     margin: 0 0 16px;
     padding: 0;
     border: 0;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 28px;
+    font-size: 25px;
     line-height: 1.15;
 }
 
 #checkout-checkout .form-label {
     margin-bottom: 8px;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.6px;
     text-transform: uppercase;
@@ -5770,7 +5774,7 @@ body.cb .cb-cart .cb-btn--line {
 
 .cb-cart__head span {
     color: #8d8a84;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 400;
 }
 
@@ -5801,7 +5805,7 @@ body.cb .cb-cart .cb-btn--line {
 
 .cb-cart__item a {
     color: #1c1c1c;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     text-decoration: none;
 }
@@ -5812,7 +5816,7 @@ body.cb .cb-cart .cb-btn--line {
     margin-top: 2px;
     color: #8d8a84;
     font-style: normal;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 400;
 }
 
@@ -5823,7 +5827,7 @@ body.cb .cb-cart .cb-btn--line {
     border: 0;
     background: transparent;
     color: #b0aaa2;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1;
     text-decoration: none;
 }
@@ -5831,7 +5835,7 @@ body.cb .cb-cart .cb-btn--line {
 .cb-cart__empty {
     margin: 8px 0 16px;
     color: #8d8a84;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-cart__bar {
@@ -5852,7 +5856,7 @@ body.cb .cb-cart .cb-btn--line {
 .cb-cart__guide p {
     margin: 0;
     color: #8d8a84;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-cart__ways a {
@@ -5876,13 +5880,13 @@ body.cb .cb-cart .cb-btn--line {
     background: #e7f0e6;
     color: #1c1c1c;
     font-style: normal;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
 }
 
 .cb-cart__ways strong {
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
 }
 
@@ -5894,7 +5898,7 @@ body.cb .cb-cart .cb-btn--line {
     display: block;
     margin-top: 4px;
     color: #8d8a84;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-cart__ways img {
@@ -5913,7 +5917,7 @@ body.cb .cb-cart .cb-btn--line {
 
 .cb-cart__ask span {
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
 }
 
@@ -5921,14 +5925,14 @@ body.cb .cb-cart .cb-btn--line {
     display: inline-block;
     margin-top: 6px;
     border-bottom: 1px solid #fff;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
 }
 
 .cb-cart__alert {
     margin: 0 0 12px;
     color: #7f0000;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .cb-cart__alert--ok {
@@ -6091,7 +6095,7 @@ body.cb .cb-cart .cb-btn--line {
     body.cb .cb-pdp__price h2,
     body.cb .cb-pdp__figures strong {
         font-size: 28px;
-        line-height: 1.12;
+       
         letter-spacing: -0.3px;
     }
 
@@ -6375,9 +6379,9 @@ body.cb .cb-cart .cb-btn--line {
 
 #information-contact h1 {
     margin: 0 0 12px;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 48px;
+    font-size: 43px;
     letter-spacing: -0.96px;
 }
 
@@ -6385,7 +6389,7 @@ body.cb .cb-cart .cb-btn--line {
     margin: 0 0 28px;
     max-width: 100%;
     color: #69706f;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.45;
     overflow-wrap: break-word;
 }
@@ -6401,9 +6405,9 @@ body.cb .cb-cart .cb-btn--line {
     margin: 0 0 16px;
     padding: 0;
     border: 0;
-    font-family: "Times New Roman", Times, serif;
+
     font-weight: 400;
-    font-size: 28px;
+    font-size: 25px;
     line-height: 1.15;
 }
 
@@ -6426,7 +6430,7 @@ body.cb .cb-cart .cb-btn--line {
 #information-contact .cb-contact__place strong {
     display: block;
     margin: 0 0 6px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 #information-contact .cb-contact__place address,
@@ -6441,7 +6445,7 @@ body.cb .cb-cart .cb-btn--line {
     display: block;
     margin: 0 0 6px;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.6px;
     text-transform: uppercase;
@@ -6457,7 +6461,7 @@ body.cb .cb-cart .cb-btn--line {
     margin-top: 12px;
     height: auto;
     padding: 10px 16px;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 #information-contact form fieldset {
@@ -6470,7 +6474,7 @@ body.cb .cb-cart .cb-btn--line {
     display: block;
     margin: 0 0 8px;
     color: #69706f;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.4px;
     text-transform: uppercase;
@@ -6858,7 +6862,7 @@ body.cb .cb-cart .cb-btn--line {
 .cb-about-story .cb-story__copy p {
     max-width: 520px;
     color: #1c1c1c;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.55;
 }
 
@@ -6875,7 +6879,7 @@ body.cb .cb-cart .cb-btn--line {
 
 .cb-about__pillars h3 {
     margin: 12px 0;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     letter-spacing: -0.4px;
 }
@@ -6884,7 +6888,7 @@ body.cb .cb-cart .cb-btn--line {
     margin: 0 0 12px;
     max-width: none;
     color: #3d4443;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.55;
 }
 

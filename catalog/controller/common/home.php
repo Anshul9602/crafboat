@@ -32,8 +32,8 @@ class Home extends \Opencart\System\Engine\Controller {
 		$data['shop'] = $this->url->link('product/category', 'language=' . $language . '&path=100');
 		$data['arrivals'] = $this->url->link('product/category', 'language=' . $language . '&path=100_108');
 		$data['bestsellers_link'] = $this->url->link('product/category', 'language=' . $language . '&path=100_109');
-		$data['ready_link'] = $collection_url('holiday-collection-ready-to-ship');
-		$data['holiday'] = $collection_url('holiday-collection-ready-to-ship');
+		$data['ready_link'] = $this->url->link('product/category', 'language=' . $language . '&path=100_110');
+		$data['holiday'] = $this->url->link('product/category', 'language=' . $language . '&path=100_111');
 		$data['paper'] = $collection_url('stationery-paper-goods-moss-green-story');
 		$data['dept_home'] = $collection_url('picture-frames');
 		$data['dept_storage'] = $collection_url('desk-organization-moss-green-story');

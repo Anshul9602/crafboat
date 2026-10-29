@@ -5,10 +5,56 @@ namespace Opencart\Admin\Model\Catalog;
  */
 class Collection extends \Opencart\System\Engine\Model {
 	/**
+	 * @return array<string, bool>
+	 */
+	private function getColumns(): array {
+		static $columns = null;
+
+		if ($columns !== null) {
+			return $columns;
+		}
+
+		$columns = [];
+
+		foreach ($this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "collection`")->rows as $row) {
+			$columns[$row['Field']] = true;
+		}
+
+		return $columns;
+	}
+
+	public function hasColumn(string $name): bool {
+		$columns = $this->getColumns();
+
+		return isset($columns[$name]);
+	}
+
+	/**
+	 * Kept for callers; does not ALTER (shared hosts drop the connection on DDL).
+	 */
+	public function ensureSchema(): void {
+		$this->getColumns();
+	}
+
+	/**
 	 * @param array<string, mixed> $data
 	 */
 	public function addCollection(array $data): int {
-		$this->db->query("INSERT INTO `" . DB_PREFIX . "collection` SET `name` = '" . $this->db->escape((string)$data['name']) . "', `code` = '" . $this->db->escape((string)$data['code']) . "', `image` = '" . $this->db->escape((string)($data['image'] ?? '')) . "', `video` = '" . $this->db->escape((string)($data['video'] ?? '')) . "', `blurb` = '" . $this->db->escape((string)($data['blurb'] ?? '')) . "', `summary` = '" . $this->db->escape((string)($data['summary'] ?? '')) . "', `sort_order` = '" . (int)($data['sort_order'] ?? 0) . "', `status` = '" . (int)($data['status'] ?? 1) . "', `menu` = '" . (int)($data['menu'] ?? 1) . "', `date_added` = NOW(), `date_modified` = NOW()");
+		$sql = "INSERT INTO `" . DB_PREFIX . "collection` SET `name` = '" . $this->db->escape((string)$data['name']) . "', `code` = '" . $this->db->escape((string)$data['code']) . "', `image` = '" . $this->db->escape((string)($data['image'] ?? '')) . "'";
+
+		if ($this->hasColumn('video')) {
+			$sql .= ", `video` = '" . $this->db->escape((string)($data['video'] ?? '')) . "'";
+		}
+
+		$sql .= ", `blurb` = '" . $this->db->escape((string)($data['blurb'] ?? '')) . "', `summary` = '" . $this->db->escape((string)($data['summary'] ?? '')) . "', `sort_order` = '" . (int)($data['sort_order'] ?? 0) . "', `status` = '" . (int)($data['status'] ?? 1) . "'";
+
+		if ($this->hasColumn('menu')) {
+			$sql .= ", `menu` = '" . (int)($data['menu'] ?? 1) . "'";
+		}
+
+		$sql .= ", `date_added` = NOW(), `date_modified` = NOW()";
+
+		$this->db->query($sql);
 
 		return $this->db->getLastId();
 	}
@@ -20,7 +66,21 @@ class Collection extends \Opencart\System\Engine\Model {
 		$old = $this->getCollection($collection_id);
 		$old_name = (string)($old['name'] ?? '');
 
-		$this->db->query("UPDATE `" . DB_PREFIX . "collection` SET `name` = '" . $this->db->escape((string)$data['name']) . "', `code` = '" . $this->db->escape((string)$data['code']) . "', `image` = '" . $this->db->escape((string)($data['image'] ?? '')) . "', `video` = '" . $this->db->escape((string)($data['video'] ?? '')) . "', `blurb` = '" . $this->db->escape((string)($data['blurb'] ?? '')) . "', `summary` = '" . $this->db->escape((string)($data['summary'] ?? '')) . "', `sort_order` = '" . (int)($data['sort_order'] ?? 0) . "', `status` = '" . (int)($data['status'] ?? 1) . "', `menu` = '" . (int)($data['menu'] ?? 1) . "', `date_modified` = NOW() WHERE `collection_id` = '" . (int)$collection_id . "'");
+		$sql = "UPDATE `" . DB_PREFIX . "collection` SET `name` = '" . $this->db->escape((string)$data['name']) . "', `code` = '" . $this->db->escape((string)$data['code']) . "', `image` = '" . $this->db->escape((string)($data['image'] ?? '')) . "'";
+
+		if ($this->hasColumn('video')) {
+			$sql .= ", `video` = '" . $this->db->escape((string)($data['video'] ?? '')) . "'";
+		}
+
+		$sql .= ", `blurb` = '" . $this->db->escape((string)($data['blurb'] ?? '')) . "', `summary` = '" . $this->db->escape((string)($data['summary'] ?? '')) . "', `sort_order` = '" . (int)($data['sort_order'] ?? 0) . "', `status` = '" . (int)($data['status'] ?? 1) . "'";
+
+		if ($this->hasColumn('menu')) {
+			$sql .= ", `menu` = '" . (int)($data['menu'] ?? 1) . "'";
+		}
+
+		$sql .= ", `date_modified` = NOW() WHERE `collection_id` = '" . (int)$collection_id . "'";
+
+		$this->db->query($sql);
 
 		// Keep product ↔ collection link in sync when the name changes
 		if ($old_name !== '' && $old_name !== (string)$data['name']) {

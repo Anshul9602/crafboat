@@ -42,7 +42,7 @@ class Header extends \Opencart\System\Engine\Controller {
 		$data['bootstrap'] = 'catalog/view/stylesheet/bootstrap.css';
 		$data['icons'] = 'catalog/view/stylesheet/fonts/fontawesome/css/all.min.css';
 		$data['stylesheet'] = 'catalog/view/stylesheet/stylesheet.css';
-		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=form64';
+		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=form65';
 		$route = (string)($this->request->get['route'] ?? '');
 		$data['account_page'] = str_starts_with($route, 'account/');
 		$data['topbar_note'] = in_array(($this->request->get['route'] ?? ''), ['product/collection', 'product/category', 'product/product'], true) ? 'Ships from Jaipur, India  |   Opening order $500' : '';
@@ -155,8 +155,8 @@ class Header extends \Opencart\System\Engine\Controller {
 			'catalog'    => $category_url(100),
 			'new'        => $category_url(108),
 			'favourites' => $category_url(109),
-			'ready'      => $collection_url('holiday-collection-ready-to-ship'),
-			'holiday'    => $collection_url('holiday-collection-ready-to-ship'),
+			'ready'      => $category_url(110),
+			'holiday'    => $category_url(111),
 			'saffron'    => $collection_url('classic-stripe'),
 			'marbled'    => $collection_url('ocean-collection'),
 			'desk'       => $collection_url('desk-organization-moss-green-story'),
@@ -164,7 +164,7 @@ class Header extends \Opencart\System\Engine\Controller {
 			'textiles'   => $collection_url('home-decor-textiles-moss-green-story'),
 			'stationery' => $collection_url('stationery-paper-goods-moss-green-story'),
 			'gifting'    => $collection_url('jewellery-pouch-a-small-object-with-a-lot-of-charm'),
-			'seasonal'   => $collection_url('holiday-collection-ready-to-ship'),
+			'seasonal'   => $category_url(111),
 			'storage'    => $collection_url('handcrafted-trays-catchalls-moss-green-story'),
 			'lighting'   => $collection_url('lampshades-lighting-moss-green-story'),
 			'pouches'    => $collection_url('travel-essentials-moss-green-story')

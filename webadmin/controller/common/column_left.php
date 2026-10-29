@@ -29,6 +29,9 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				'children' => []
 			];
 
+			$data['view_shop'] = defined('HTTP_CATALOG') ? HTTP_CATALOG : '/';
+			$data['text_view_shop'] = 'View shop';
+
 			// Catalog (shown as Products, Faire-style)
 			$catalog = [];
 			$more = [];
@@ -922,9 +925,14 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 					$data['other_status'] = 0;
 				}
 
-				$data['statistics_status'] = true;
+				$data['statistics_status'] = false;
 			} else {
 				$data['statistics_status'] = false;
+			}
+
+			if (!isset($data['view_shop'])) {
+				$data['view_shop'] = defined('HTTP_CATALOG') ? HTTP_CATALOG : '/';
+				$data['text_view_shop'] = 'View shop';
 			}
 
 			return $this->load->view('common/column_left', $data);
