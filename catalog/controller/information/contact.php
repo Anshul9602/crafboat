@@ -39,13 +39,30 @@ class Contact extends \Opencart\System\Engine\Controller {
 			$data['image'] = '';
 		}
 
+		$language = $this->config->get('config_language');
 		$data['store'] = $this->config->get('config_name');
-		$data['address'] = nl2br($this->config->get('config_address'));
+
+		$address = trim((string)$this->config->get('config_address'));
+		if ($address === '' || preg_match('/^address\s*\d*$/i', $address)) {
+			$address = "Jaipur, Rajasthan\nIndia";
+		}
+		$data['address'] = nl2br($address);
+
 		$data['geocode'] = $this->config->get('config_geocode');
-		$data['geocode_hl'] = $this->config->get('config_language');
-		$data['telephone'] = $this->config->get('config_telephone');
+		$data['geocode_hl'] = $language;
+
+		$telephone = trim((string)$this->config->get('config_telephone'));
+		if ($telephone === '' || preg_match('/^1?23456789$/', preg_replace('/\D+/', '', $telephone) ?? '')) {
+			$telephone = '';
+		}
+		$data['telephone'] = $telephone;
+
 		$data['open'] = nl2br($this->config->get('config_open'));
 		$data['comment'] = nl2br($this->config->get('config_comment'));
+		$data['email'] = (string)($this->config->get('config_email') ?: 'info@shopcraftboat.com');
+		$data['about'] = $this->url->link('information/about', 'language=' . $language);
+		$data['shop'] = $this->url->link('product/category', 'language=' . $language . '&path=100');
+		$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');
 
 		// Location
 		$data['locations'] = [];
@@ -71,7 +88,7 @@ class Contact extends \Opencart\System\Engine\Controller {
 		}
 
 		$data['name'] = $this->customer->getFirstName();
-		$data['email'] = $this->customer->getEmail();
+		$data['email_value'] = $this->customer->getEmail();
 
 		// Captcha
 		$this->load->model('setting/extension');

@@ -1,115 +1,111 @@
 {{ header }}
-<div id="information-contact" class="container cb-apply">
-  <ul class="breadcrumb">
-    {% for breadcrumb in breadcrumbs %}
-      <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-    {% endfor %}
-  </ul>
-  <div class="row">{{ column_left }}
-    <div id="content" class="col">{{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      <p class="cb-contact__intro">Write to the Craft Boat trade team for stock, custom work or account help.</p>
+<div id="information-contact" class="cb-contact">
+  <section class="cb-contact__hero">
+    <p class="cb-kicker">{{ text_kicker }}</p>
+    <h1>{{ heading_title }}</h1>
+    <p class="cb-contact__intro">{{ text_intro }}</p>
+  </section>
 
-      <section class="cb-contact__block">
-        <h2>{{ text_location }}</h2>
-        <div class="cb-contact__places">
-          <article class="cb-contact__place">
-            {% if image %}
-              <img src="{{ image }}" alt="{{ store }}" class="cb-contact__photo">
-            {% endif %}
-            <div>
-              <strong>{{ store }}</strong>
-              <address>{{ address }}</address>
-              {% if geocode %}
-                <a class="cb-btn cb-btn--line" href="https://maps.google.com/maps?q={{ geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" rel="noopener">{{ button_map }}</a>
-              {% endif %}
-            </div>
-            {% if telephone %}
-              <div>
-                <span>Telephone</span>
-                <p>{{ telephone }}</p>
-              </div>
-            {% endif %}
-            {% if open or comment %}
-              <div>
-                {% if open %}
-                  <span>{{ text_open }}</span>
-                  <p>{{ open }}</p>
-                {% endif %}
-                {% if comment %}
-                  <span>{{ text_comment }}</span>
-                  <p>{{ comment }}</p>
-                {% endif %}
-              </div>
-            {% endif %}
-          </article>
-        </div>
-      </section>
+  <div class="cb-contact__layout">
+    <aside class="cb-contact__aside">
+      <div class="cb-contact__card">
+        <p class="cb-contact__label">{{ text_email }}</p>
+        <a class="cb-contact__link" href="mailto:{{ email }}">{{ email }}</a>
+        <p class="cb-contact__hint">{{ text_email_hint }}</p>
+      </div>
 
-      {% if locations %}
-        <section class="cb-contact__block">
-          <h2>{{ text_store }}</h2>
-          <div class="cb-contact__places">
-            {% for location in locations %}
-              <article class="cb-contact__place">
-                {% if location.image %}
-                  <img src="{{ location.image }}" alt="{{ location.name }}" class="cb-contact__photo">
-                {% endif %}
-                <div>
-                  <strong>{{ location.name }}</strong>
-                  <address>{{ location.address }}</address>
-                  {% if location.geocode %}
-                    <a class="cb-btn cb-btn--line" href="https://maps.google.com/maps?q={{ location.geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" rel="noopener">{{ button_map }}</a>
-                  {% endif %}
-                </div>
-                <div>
-                  <span>{{ text_telephone }}</span>
-                  <p>{{ location.telephone }}</p>
-                </div>
-                {% if location.open or location.comment %}
-                  <div>
-                    {% if location.open %}
-                      <span>{{ text_open }}</span>
-                      <p>{{ location.open }}</p>
-                    {% endif %}
-                    {% if location.comment %}
-                      <p>{{ location.comment }}</p>
-                    {% endif %}
-                  </div>
-                {% endif %}
-              </article>
-            {% endfor %}
-          </div>
-        </section>
+      {% if telephone %}
+      <div class="cb-contact__card">
+        <p class="cb-contact__label">{{ text_telephone }}</p>
+        <a class="cb-contact__link" href="tel:{{ telephone|replace({' ': '', '-': ''}) }}">{{ telephone }}</a>
+      </div>
       {% endif %}
 
-      <form id="form-contact" action="{{ send }}" method="post" data-oc-toggle="ajax">
-        <fieldset>
-          <legend>{{ text_contact }}</legend>
-          <div class="row">
-            <div class="col-md-6 mb-3 required">
-              <label class="form-label" for="input-name">{{ entry_name }}</label>
-              <input type="text" name="name" value="{{ name }}" id="input-name" class="form-control"/>
-              <div id="error-name" class="invalid-feedback"></div>
-            </div>
-            <div class="col-md-6 mb-3 required">
-              <label class="form-label" for="input-email">{{ entry_email }}</label>
-              <input type="email" name="email" value="{{ email }}" id="input-email" class="form-control"/>
-              <div id="error-email" class="invalid-feedback"></div>
-            </div>
-            <div class="col-12 mb-3 required">
-              <label class="form-label" for="input-enquiry">{{ entry_enquiry }}</label>
-              <textarea name="enquiry" rows="6" id="input-enquiry" class="form-control"></textarea>
-              <div id="error-enquiry" class="invalid-feedback"></div>
-            </div>
+      <div class="cb-contact__card">
+        <p class="cb-contact__label">{{ text_studio }}</p>
+        <strong>{{ store }}</strong>
+        <address>{{ address }}</address>
+        {% if geocode %}
+        <a class="cb-contact__map" href="https://maps.google.com/maps?q={{ geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" rel="noopener">{{ button_map }} <span class="cb-arrow" aria-hidden="true"></span></a>
+        {% endif %}
+      </div>
+
+      {% if open or comment %}
+      <div class="cb-contact__card">
+        {% if open %}
+        <p class="cb-contact__label">{{ text_open }}</p>
+        <p>{{ open }}</p>
+        {% endif %}
+        {% if comment %}
+        <p class="cb-contact__label"{% if open %} style="margin-top:16px"{% endif %}>{{ text_comment }}</p>
+        <p>{{ comment }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if locations %}
+        {% for location in locations %}
+        <div class="cb-contact__card">
+          {% if location.image %}
+          <img src="{{ location.image }}" alt="{{ location.name }}" class="cb-contact__photo">
+          {% endif %}
+          <p class="cb-contact__label">{{ text_store }}</p>
+          <strong>{{ location.name }}</strong>
+          <address>{{ location.address }}</address>
+          {% if location.telephone %}
+          <p>{{ location.telephone }}</p>
+          {% endif %}
+          {% if location.geocode %}
+          <a class="cb-contact__map" href="https://maps.google.com/maps?q={{ location.geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" rel="noopener">{{ button_map }} <span class="cb-arrow" aria-hidden="true"></span></a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="cb-contact__links">
+        <a href="{{ about }}">{{ text_about_link }} <span class="cb-arrow" aria-hidden="true"></span></a>
+        <a href="{{ shop }}">{{ text_shop_link }} <span class="cb-arrow" aria-hidden="true"></span></a>
+      </div>
+    </aside>
+
+    <section class="cb-contact__form-wrap">
+      <p class="cb-kicker">{{ text_form_kicker }}</p>
+      <h2>{{ text_contact }}</h2>
+      <p class="cb-contact__form-help">{{ text_form_help }}</p>
+
+      <form id="form-contact" action="{{ send }}" method="post" data-oc-toggle="ajax" class="cb-contact__form">
+        <div class="cb-contact__fields">
+          <div class="cb-contact__field required">
+            <label class="form-label" for="input-name">{{ entry_name }}</label>
+            <input type="text" name="name" value="{{ name }}" id="input-name" class="form-control" placeholder="{{ entry_name }}" autocomplete="name"/>
+            <div id="error-name" class="invalid-feedback"></div>
           </div>
-          {{ captcha }}
-        </fieldset>
-        <div class="text-end">
-          <button type="submit" class="btn btn-primary">{{ button_submit }}</button>
+          <div class="cb-contact__field required">
+            <label class="form-label" for="input-email">{{ entry_email }}</label>
+            <input type="email" name="email" value="{{ email_value }}" id="input-email" class="form-control" placeholder="{{ entry_email }}" autocomplete="email"/>
+            <div id="error-email" class="invalid-feedback"></div>
+          </div>
+          <div class="cb-contact__field cb-contact__field--full required">
+            <label class="form-label" for="input-enquiry">{{ entry_enquiry }}</label>
+            <textarea name="enquiry" rows="7" id="input-enquiry" class="form-control" placeholder="{{ entry_enquiry_placeholder }}"></textarea>
+            <div id="error-enquiry" class="invalid-feedback"></div>
+          </div>
+        </div>
+        {{ captcha }}
+        <div class="cb-contact__actions">
+          <button type="submit" class="cb-btn cb-btn--black">{{ button_submit }}</button>
         </div>
       </form>
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
+    </section>
+  </div>
+
+  <section class="cb-contact__note">
+    <div>
+      <p class="cb-kicker">{{ text_trade_kicker }}</p>
+      <h2>{{ text_trade_title }}</h2>
+      <p>{{ text_trade_copy }}</p>
+    </div>
+    <a class="cb-btn cb-btn--black" href="{{ register }}">{{ text_trade_cta }}</a>
+  </section>
 </div>
 {{ footer }}
