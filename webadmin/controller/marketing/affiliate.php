@@ -126,51 +126,47 @@ class Affiliate extends \Opencart\System\Engine\Controller {
 		$data['complete'] = $this->url->link('marketing/affiliate.complete', 'user_token=' . $this->session->data['user_token']);
 		$data['add'] = $this->url->link('marketing/affiliate.form', 'user_token=' . $this->session->data['user_token'] . $url);
 		$data['delete'] = $this->url->link('marketing/affiliate.delete', 'user_token=' . $this->session->data['user_token']);
+		$data['store'] = HTTP_CATALOG;
+
+		$this->load->model('marketing/affiliate');
+
+		$overview = $this->model_marketing_affiliate->getOverview();
+		$counts = [
+			'all'      => $this->model_marketing_affiliate->getTotalAffiliates(),
+			'active'   => $this->model_marketing_affiliate->getTotalAffiliates(['filter_status' => '1']),
+			'inactive' => $this->model_marketing_affiliate->getTotalAffiliates(['filter_status' => '0'])
+		];
+
+		$data['overview'] = [
+			'partners'   => number_format($overview['total']),
+			'active'     => number_format($overview['active']),
+			'balance'    => $this->currency->format($overview['balance'], $this->config->get('config_currency')),
+			'commission' => number_format($overview['avg_commission'], 1) . '%'
+		];
+
+		$tab = 'all';
+
+		if ($filter_status === '1' || $filter_status === 1) {
+			$tab = 'active';
+		} elseif ($filter_status === '0' || $filter_status === 0) {
+			$tab = 'inactive';
+		}
+
+		$base = 'user_token=' . $this->session->data['user_token'];
+		$search_q = $filter_customer !== '' ? '&filter_customer=' . urlencode($filter_customer) : '';
+
+		$data['tabs'] = [
+			['key' => 'all', 'label' => sprintf($this->language->get('text_tab_all'), $counts['all']), 'href' => $this->url->link('marketing/affiliate', $base . $search_q), 'active' => $tab === 'all'],
+			['key' => 'active', 'label' => sprintf($this->language->get('text_tab_active'), $counts['active']), 'href' => $this->url->link('marketing/affiliate', $base . '&filter_status=1' . $search_q), 'active' => $tab === 'active'],
+			['key' => 'inactive', 'label' => sprintf($this->language->get('text_tab_inactive'), $counts['inactive']), 'href' => $this->url->link('marketing/affiliate', $base . '&filter_status=0' . $search_q), 'active' => $tab === 'inactive']
+		];
 
 		$data['list'] = $this->getList();
 
-		$data['payment_methods'] = [];
-
-		$data['payment_methods'][] = [
-			'text'  => $this->language->get('text_cheque'),
-			'value' => 'cheque'
-		];
-
-		$data['payment_methods'][] = [
-			'text'  => $this->language->get('text_paypal'),
-			'value' => 'paypal'
-		];
-
-		$data['payment_methods'][] = [
-			'text'  => $this->language->get('text_bank'),
-			'value' => 'bank'
-		];
-
-		$data['limits'] = [];
-
-		$data['limits'][] = [
-			'text'  => $this->config->get('config_pagination'),
-			'value' => $this->config->get('config_pagination')
-		];
-
-		$data['limits'][] = [
-			'text'  => 100,
-			'value' => 100
-		];
-
-		$data['limits'][] = [
-			'text'  => 200,
-			'value' => 200
-		];
-
-		$data['limits'][] = [
-			'text'  => 400,
-			'value' => 400
-		];
-
-		$data['limits'][] = [
-			'text'  => 800,
-			'value' => 800
+		$data['payment_methods'] = [
+			['text' => $this->language->get('text_cheque'), 'value' => 'cheque'],
+			['text' => $this->language->get('text_paypal'), 'value' => 'paypal'],
+			['text' => $this->language->get('text_bank'), 'value' => 'bank']
 		];
 
 		$data['filter_customer'] = $filter_customer;
@@ -180,9 +176,8 @@ class Affiliate extends \Opencart\System\Engine\Controller {
 		$data['filter_date_from'] = $filter_date_from;
 		$data['filter_date_to'] = $filter_date_to;
 		$data['filter_status'] = $filter_status;
-
+		$data['filter_tab'] = $tab;
 		$data['limit'] = $limit;
-
 		$data['user_token'] = $this->session->data['user_token'];
 
 		$data['header'] = $this->load->controller('common/header');
@@ -345,11 +340,17 @@ class Affiliate extends \Opencart\System\Engine\Controller {
 		$results = $this->model_marketing_affiliate->getAffiliates($filter_data);
 
 		foreach ($results as $result) {
+			$active = !empty($result['status']);
+
 			$data['affiliates'][] = [
-				'balance'    => $this->currency->format(is_numeric($result['balance']) ? (float)$result['balance'] : 0, $this->config->get('config_currency')),
-				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'customer'   => $this->url->link('customer/customer.form', 'user_token=' . $this->session->data['user_token'] . '&customer_id=' . $result['customer_id']),
-				'edit'       => $this->url->link('marketing/affiliate.form', 'user_token=' . $this->session->data['user_token'] . '&customer_id=' . $result['customer_id'] . $url)
+				'balance'      => $this->currency->format(is_numeric($result['balance']) ? (float)$result['balance'] : 0, $this->config->get('config_currency')),
+				'commission'   => number_format((float)$result['commission'], 1) . '%',
+				'date_added'   => date('M j, Y', strtotime($result['date_added'])),
+				'customer'     => $this->url->link('customer/customer.form', 'user_token=' . $this->session->data['user_token'] . '&customer_id=' . $result['customer_id']),
+				'edit'         => $this->url->link('marketing/affiliate.form', 'user_token=' . $this->session->data['user_token'] . '&customer_id=' . $result['customer_id'] . $url),
+				'lifecycle'    => $active ? 'active' : 'off',
+				'status_label' => $active ? $this->language->get('text_status_active') : $this->language->get('text_status_inactive'),
+				'company'      => (string)($result['company'] ?? '')
 			] + $result;
 		}
 

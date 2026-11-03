@@ -209,7 +209,7 @@ class Affiliate extends \Opencart\System\Engine\Model {
 		$implode = [];
 
 		if (!empty($data['filter_name'])) {
-			$implode[] = "LCASE(CONCAT(`c`.`firstname`, ' ', `c`.`lastname`)) LIKE '" . $this->db->escape(oc_strtolower($data['filter_name']) . '%') . "'";
+			$implode[] = "LCASE(CONCAT(`c`.`firstname`, ' ', `c`.`lastname`)) LIKE '%" . $this->db->escape(oc_strtolower($data['filter_name'])) . "%'";
 		}
 
 		if (!empty($data['filter_tracking'])) {
@@ -312,13 +312,32 @@ class Affiliate extends \Opencart\System\Engine\Model {
 	 *
 	 * $affiliate_total = $this->model_marketing_affiliate->getTotalAffiliates($filter_data);
 	 */
+	/**
+	 * @return array<string, float|int>
+	 */
+	public function getOverview(): array {
+		$query = $this->db->query("SELECT
+			COUNT(*) AS `total`,
+			SUM(CASE WHEN `status` = 1 THEN 1 ELSE 0 END) AS `active`,
+			COALESCE(SUM(`balance`), 0) AS `balance`,
+			COALESCE(AVG(`commission`), 0) AS `avg_commission`
+			FROM `" . DB_PREFIX . "customer_affiliate`");
+
+		return [
+			'total'          => (int)($query->row['total'] ?? 0),
+			'active'         => (int)($query->row['active'] ?? 0),
+			'balance'        => (float)($query->row['balance'] ?? 0),
+			'avg_commission' => (float)($query->row['avg_commission'] ?? 0)
+		];
+	}
+
 	public function getTotalAffiliates(array $data = []): int {
 		$sql = "SELECT COUNT(*) AS `total` FROM `" . DB_PREFIX . "customer_affiliate` `ca` LEFT JOIN `" . DB_PREFIX . "customer` `c` ON (`ca`.`customer_id` = `c`.`customer_id`)";
 
 		$implode = [];
 
 		if (!empty($data['filter_name'])) {
-			$implode[] = "LCASE(CONCAT(`c`.`firstname`, ' ', `c`.`lastname`)) LIKE '" . $this->db->escape(oc_strtolower($data['filter_name']) . '%') . "'";
+			$implode[] = "LCASE(CONCAT(`c`.`firstname`, ' ', `c`.`lastname`)) LIKE '%" . $this->db->escape(oc_strtolower($data['filter_name'])) . "%'";
 		}
 
 		if (!empty($data['filter_tracking'])) {

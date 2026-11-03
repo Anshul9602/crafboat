@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']             = 'Affiliates';
+$_['heading_title']             = 'Affiliate Partnership';
 
 // Text
 $_['text_success']              = 'Success: You have modified affiliates!';
@@ -20,9 +20,26 @@ $_['text_transaction']          = 'Transactions';
 $_['text_transaction_add']      = 'Add Transaction';
 $_['text_report']               = 'Reports';
 $_['text_filter']               = 'Filter';
+$_['text_intro']               = 'Partner with retailers and creators who promote your shop and earn commission on referred orders.';
+$_['text_view_shop']            = 'View shop';
+$_['text_add_partner']          = 'Add partner';
+$_['text_search']               = 'Search by partner name';
+$_['text_more_filters']         = 'Filters';
+$_['text_all']                  = 'All';
+$_['text_tab_all']              = 'All (%s)';
+$_['text_tab_active']           = 'Active (%s)';
+$_['text_tab_inactive']         = 'Inactive (%s)';
+$_['text_metric_partners']      = 'Total partners';
+$_['text_metric_active']        = 'Active partners';
+$_['text_metric_balance']       = 'Outstanding balance';
+$_['text_metric_commission']    = 'Average commission';
+$_['text_status_active']        = 'Active';
+$_['text_status_inactive']      = 'Inactive';
+$_['text_empty']                = 'No partners yet. Add an affiliate partner to start tracking referrals.';
 
 // Column
 $_['column_name']               = 'Customer Name';
+$_['column_partner']            = 'Partner';
 $_['column_tracking']           = 'Tracking';
 $_['column_commission']         = 'Commission';
 $_['column_balance']            = 'Balance';
