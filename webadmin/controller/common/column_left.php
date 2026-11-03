@@ -29,6 +29,31 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				'children' => []
 			];
 
+			if ($this->user->hasPermission('access', 'customer/customer')) {
+				$unread_messages = 0;
+
+				try {
+					$this->load->model('customer/message');
+					$unread_messages = $this->model_customer_message->getUnreadCount();
+				} catch (\Throwable $e) {
+					$unread_messages = 0;
+				}
+
+				$messages_name = 'Messages';
+
+				if ($unread_messages > 0) {
+					$messages_name .= ' <span class="faire-sidebar-badge faire-sidebar-badge--messages">' . (int)$unread_messages . '</span>';
+				}
+
+				$data['menus'][] = [
+					'id'       => 'menu-messages',
+					'icon'     => 'fas fa-comment',
+					'name'     => $messages_name,
+					'href'     => $this->url->link('customer/message', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+			}
+
 			$data['view_shop'] = defined('HTTP_CATALOG') ? HTTP_CATALOG : '/';
 			$data['text_view_shop'] = 'View shop';
 
@@ -372,13 +397,23 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				];
 			}
 
-			// Sales
+			// Orders (Faire-style)
 			$sale = [];
 
 			if ($this->user->hasPermission('access', 'sale/order')) {
 				$sale[] = [
-					'name'     => $this->language->get('text_order'),
+					'name'     => 'Orders',
 					'href'     => $this->url->link('sale/order', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+				$sale[] = [
+					'name'     => 'Issues',
+					'href'     => $this->url->link('sale/issue', 'user_token=' . $this->session->data['user_token']),
+					'children' => []
+				];
+				$sale[] = [
+					'name'     => 'Invoices',
+					'href'     => $this->url->link('sale/order', 'user_token=' . $this->session->data['user_token'] . '&filter_tab=fulfilled'),
 					'children' => []
 				];
 			}
@@ -403,7 +438,7 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				$data['menus'][] = [
 					'id'       => 'menu-sale',
 					'icon'     => 'fas fa-shopping-cart',
-					'name'     => $this->language->get('text_sale'),
+					'name'     => 'Orders',
 					'href'     => '',
 					'children' => $sale
 				];
@@ -934,6 +969,45 @@ class ColumnLeft extends \Opencart\System\Engine\Controller {
 				$data['view_shop'] = defined('HTTP_CATALOG') ? HTTP_CATALOG : '/';
 				$data['text_view_shop'] = 'View shop';
 			}
+
+			// Faire-style sidebar brand + account actions
+			$data['logged'] = true;
+			$data['home'] = $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token']);
+			$data['brand_name'] = (string)$this->config->get('config_name') ?: 'Craft Boat';
+			$data['profile'] = $this->url->link('user/profile', 'user_token=' . $this->session->data['user_token']);
+			$data['logout'] = $this->url->link('common/logout', 'user_token=' . $this->session->data['user_token']);
+			$data['text_profile'] = 'Your Profile';
+			$data['text_logout'] = 'Logout';
+			$data['text_notification_all'] = 'See all notifications';
+			$data['text_no_results'] = 'No notifications';
+
+			$this->load->model('tool/image');
+			$store_logo = html_entity_decode((string)$this->config->get('config_logo'), ENT_QUOTES, 'UTF-8');
+
+			if ($store_logo && is_file(DIR_IMAGE . $store_logo)) {
+				$data['logo'] = $this->model_tool_image->resize($store_logo, 180, 48);
+			} else {
+				$data['logo'] = 'view/image/logo.png';
+			}
+
+			$filter_data = [
+				'start' => 0,
+				'limit' => 5
+			];
+
+			$data['notifications'] = [];
+
+			$this->load->model('tool/notification');
+
+			foreach ($this->model_tool_notification->getNotifications($filter_data) as $result) {
+				$data['notifications'][] = [
+					'title' => $result['title'],
+					'href'  => $this->url->link('tool/notification.info', 'user_token=' . $this->session->data['user_token'] . '&notification_id=' . $result['notification_id'])
+				];
+			}
+
+			$data['notification_all'] = $this->url->link('tool/notification', 'user_token=' . $this->session->data['user_token']);
+			$data['notification_total'] = $this->model_tool_notification->getTotalNotifications(['filter_status' => 0]);
 
 			return $this->load->view('common/column_left', $data);
 		} else {

@@ -1,0 +1,22 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="faire-page faire-page--wide faire-orders">
+    <div class="faire-orders__head">
+      <div>
+        <h1 class="faire-page__title">{{ heading_title }}</h1>
+        <p class="faire-page__intro">{{ text_intro }}</p>
+      </div>
+      <a href="{{ orders_href }}" class="faire-link">Back to orders</a>
+    </div>
+
+    <div class="faire-orders__card">
+      <div class="faire-tabs faire-orders__tabs">
+        {% for tab in tabs %}
+          <a href="#" class="{% if tab.active %}is-on{% endif %}">{{ tab.label }}</a>
+        {% endfor %}
+      </div>
+      <div class="faire-orders__empty" style="padding:48px 24px;text-align:center;">{{ text_empty }}</div>
+    </div>
+  </div>
+</div>
+{{ footer }}

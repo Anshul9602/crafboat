@@ -1,200 +1,307 @@
 {{ header }}{{ column_left }}
 <div id="content">
-  <div class="page-header">
-    <div class="container-fluid">
-      <div class="float-end">
-        <button type="button" data-bs-toggle="tooltip" title="{{ button_filter }}" onclick="$('#filter-order').toggleClass('d-none');" class="btn btn-light d-lg-none"><i class="fa-solid fa-filter"></i></button>
-        <button type="submit" id="button-invoice" form="form-order" formaction="{{ invoice }}" formtarget="_blank" data-bs-toggle="tooltip" title="{{ button_invoice_print }}" class="btn btn-info"><i class="fa-solid fa-print"></i></button>
-        <button type="submit" id="button-shipping" form="form-order" formaction="{{ shipping }}" formtarget="_blank" data-bs-toggle="tooltip" title="{{ button_shipping_print }}" class="btn btn-info"><i class="fa-solid fa-truck"></i></button>
-        <a href="{{ add }}" data-bs-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
-        <button type="submit" data-oc-toggle="ajax" form="form-order" formaction="{{ delete }}"  data-bs-toggle="tooltip" title="{{ button_delete }}" onclick="return confirm('{{ text_confirm }}');" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+  <div class="faire-page faire-page--wide faire-orders">
+    <div class="faire-orders__head">
+      <h1 class="faire-page__title">{{ heading_title }}</h1>
+      <div class="faire-orders__actions">
+        <button type="submit" form="form-order" formaction="{{ invoice }}" formtarget="_blank" class="faire-link" id="button-export">{{ text_export }}</button>
+        <div class="dropdown">
+          <button type="button" class="faire-btn dropdown-toggle" data-bs-toggle="dropdown">{{ text_create_order }}</button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{{ create }}"><i class="fa-solid fa-plus fa-fw"></i> {{ text_create_order }}</a></li>
+            <li><a class="dropdown-item" href="{{ create }}"><i class="fa-solid fa-upload fa-fw"></i> {{ text_upload_order }}</a></li>
+            <li><a class="dropdown-item" href="{{ issues }}"><i class="fa-regular fa-envelope fa-fw"></i> {{ text_forward_email }} <span class="faire-home-beta">{{ text_new }}</span></a></li>
+          </ul>
+        </div>
       </div>
-      <h1>{{ heading_title }}</h1>
-      <ol class="breadcrumb">
-        {% for breadcrumb in breadcrumbs %}
-          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    </div>
+
+    <div class="faire-orders__card">
+      <div class="faire-tabs faire-orders__tabs">
+        {% for tab in tabs %}
+          <a href="{{ tab.href }}" class="{% if tab.active %}is-on{% endif %}">{{ tab.label }}</a>
         {% endfor %}
-      </ol>
+      </div>
+
+      <div class="faire-orders__toolbar">
+        <div class="faire-search faire-orders__search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" id="input-order-search" value="{{ filter_search }}" placeholder="{{ text_search_orders }}"/>
+        </div>
+        <div class="faire-orders__filters">
+          <button type="button" class="faire-chip" id="chip-order-date">{{ text_order_date }}</button>
+          <button type="button" class="faire-chip" id="chip-order-type">{{ text_order_type }}</button>
+          <button type="button" class="faire-chip{% if filter_pending_ship %} is-on{% endif %}" id="chip-pending-ship">{{ text_pending_shipment }}</button>
+        </div>
+      </div>
+
+      <div class="faire-orders__bulk">
+        <button type="submit" form="form-order" formaction="{{ shipping }}" formtarget="_blank" class="faire-orders__bulk-btn" id="button-shipping" disabled><i class="fa-solid fa-print"></i> {{ text_print_slips }}</button>
+        <button type="button" class="faire-orders__bulk-btn" id="button-ship-date" disabled><i class="fa-solid fa-truck"></i> {{ text_edit_ship_date }}</button>
+        <button type="button" class="faire-orders__bulk-btn" id="button-ship-orders" disabled><i class="fa-solid fa-box"></i> {{ text_ship_orders }}</button>
+        <div class="dropdown faire-orders__pick">
+          <button type="button" class="faire-orders__bulk-btn dropdown-toggle" id="button-pick-list" data-bs-toggle="dropdown" disabled><i class="fa-solid fa-list"></i> {{ text_pick_list }}</button>
+          <ul class="dropdown-menu">
+            <li><button type="button" class="dropdown-item" id="button-pick-print"><i class="fa-solid fa-print fa-fw"></i> {{ text_print_pick_list }}</button></li>
+            <li><button type="button" class="dropdown-item" id="button-pick-csv"><i class="fa-solid fa-download fa-fw"></i> {{ text_download_csv }}</button></li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="order">{{ list }}</div>
     </div>
   </div>
-  <div class="container-fluid">
-    <div class="row">
-      <div id="filter-order" class="col-lg-3 col-md-12 order-lg-last d-none d-lg-block mb-3">
-        <div class="card">
-          <div class="card-header"><i class="fa-solid fa-filter"></i> {{ text_filter }}</div>
-          <div class="card-body">
-            <form id="form-filter">
-              <div class="mb-3">
-                <label for="input-order-id" class="form-label">{{ entry_order_id }}</label>
-                <input type="text" name="filter_order_id" value="{{ filter_order_id }}" placeholder="{{ entry_order_id }}" id="input-order-id" class="form-control"/>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">{{ entry_customer }}</label>
-                <input type="text" name="filter_customer" value="{{ filter_customer }}" placeholder="{{ entry_customer }}" id="input-customer" data-oc-target="autocomplete-customer" class="form-control" autocomplete="off"/>
-                <ul id="autocomplete-customer" class="dropdown-menu"></ul>
-              </div>
-              <div class="mb-3">
-                <label for="input-store" class="form-label">{{ entry_store }}</label>
-                <select name="filter_store_id" id="input-store" class="form-select">
-                  <option value=""></option>
-                  {% for store in stores %}
-                    <option value="{{ store.store_id }}"{% if store.store_id == filter_store_id %} selected{% endif %}>{{ store.name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="input-order-status" class="form-label">{{ entry_order_status }}</label>
-                <select name="filter_order_status_id" id="input-order-status" class="form-select">
-                  <option value=""></option>
-                  <option value="0"{% if filter_order_status_id == '0' %} selected{% endif %}>{{ text_missing }}</option>
-                  {% for order_status in order_statuses %}
-                    <option value="{{ order_status.order_status_id }}"{% if order_status.order_status_id == filter_order_status_id %} selected{% endif %}>{{ order_status.name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="input-total" class="form-label">{{ entry_total }}</label>
-                <input type="text" name="filter_total" value="{{ filter_total }}" placeholder="{{ entry_total }}" id="input-total" class="form-control"/>
-              </div>
-              <div class="mb-3">
-                <label for="input-date-from" class="form-label">{{ entry_date_from }}</label>
-                <input type="date" name="filter_date_from" value="{{ filter_date_from }}" placeholder="{{ entry_date_from }}" id="input-date-from" class="form-control"/>
-              </div>
-              <div class="mb-3">
-                <label for="input-date-to" class="form-label">{{ entry_date_to }}</label>
-                <input type="date" name="filter_date_to" value="{{ filter_date_to }}" placeholder="{{ entry_date_to }}" id="input-date-to" class="form-control"/>
-              </div>
-              <div class="mb-3">
-                <label for="input-date-modified-from" class="form-label">{{ entry_date_modified_from }}</label>
-                <input type="date" name="filter_date_modified_from" value="{{ filter_date_modified_from }}" placeholder="{{ entry_date_modified_from }}" id="input-date-modified-from" class="form-control"/>
-              </div>
-              <div class="mb-3">
-                <label for="input-date-modified-to" class="form-label">{{ entry_date_modified_to }}</label>
-                <input type="date" name="filter_date_modified_to" value="{{ filter_date_modified_to }}" placeholder="{{ entry_date_modified_to }}" id="input-date-modified-to" class="form-control"/>
-              </div>
-              <div class="text-end">
-                <button type="button" id="button-filter" class="btn btn-light"><i class="fa-solid fa-filter"></i> {{ button_filter }}</button>
-                <button type="reset" data-bs-toggle="tooltip" title="{{ button_reset }}" class="btn btn-outline-secondary"><i class="fa-solid fa-filter-circle-xmark"></i></button>
-              </div>
-            </form>
-          </div>
-        </div>
+</div>
+
+<div class="modal fade faire-modal" id="modal-ship-date" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ text_edit_ship_date }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="col-lg-9 col-md-12">
-        <div class="card">
-          <div class="card-header"><i class="fa-solid fa-list"></i> {{ text_list }}</div>
-          <div id="order" class="card-body">{{ list }}</div>
-        </div>
+      <div class="modal-body">
+        <p class="mb-2">Set the expected ship date for the selected order(s). You’ll see On time / Late after shipping.</p>
+        <label class="form-label" for="input-expected-ship-date">Expected ship date</label>
+        <input type="date" id="input-expected-ship-date" class="form-control"/>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="button-save-ship-date">Save ship date</button>
       </div>
     </div>
   </div>
 </div>
+
+<input type="hidden" id="input-date-from" value="{{ filter_date_from }}"/>
+<input type="hidden" id="input-date-to" value="{{ filter_date_to }}"/>
 <script type="text/javascript"><!--
+function faireOrdersUrl() {
+  var url = '';
+  var tab = '{{ filter_tab }}';
+  if (tab) url += '&filter_tab=' + encodeURIComponent(tab);
+
+  var search = $('#input-order-search').val().trim();
+  if (search) {
+    if (/^\d+$/.test(search)) {
+      url += '&filter_order_id=' + encodeURIComponent(search);
+    } else {
+      url += '&filter_customer=' + encodeURIComponent(search);
+    }
+  }
+
+  var from = $('#input-date-from').val();
+  var to = $('#input-date-to').val();
+  if (from) url += '&filter_date_from=' + encodeURIComponent(from);
+  if (to) url += '&filter_date_to=' + encodeURIComponent(to);
+
+  if ($('#chip-pending-ship').hasClass('is-on')) {
+    url += '&filter_pending_ship=1';
+  }
+
+  return url;
+}
+
+function faireOrdersReload() {
+  var url = faireOrdersUrl();
+  window.history.pushState({}, null, 'index.php?route=sale/order&user_token={{ user_token }}' + url);
+  $('#order').load('index.php?route=sale/order.list&user_token={{ user_token }}' + url, function() {
+    faireUpdateBulkButtons();
+  });
+}
+
+function faireSelectedIds() {
+  return $('#order input[name^=\'selected\']:checked').map(function() {
+    return $(this).val();
+  }).get();
+}
+
+function faireUpdateBulkButtons() {
+  var selected = $('#order input[name^=\'selected\']:checked');
+  var hasSelected = !!selected.length;
+
+  $('#button-export, #button-ship-orders, #button-pick-list').prop('disabled', !hasSelected);
+
+  var canEditShipDate = false;
+  var canShip = false;
+
+  selected.each(function() {
+    var row = $(this).closest('tr');
+    var expected = String(row.attr('data-expected-ship') || '').trim();
+
+    // Enable Edit ship date only for orders that do not have a date yet
+    if (!expected || expected === '0000-00-00') {
+      canEditShipDate = true;
+    }
+
+    if (row.find('input[name^=\'shipping_method\']').val()) {
+      canShip = true;
+    }
+  });
+
+  $('#button-ship-date').prop('disabled', !canEditShipDate);
+  $('#button-shipping').prop('disabled', !canShip);
+}
+
+function faireSubmitPickList(url, targetBlank) {
+  var ids = faireSelectedIds();
+  if (!ids.length) {
+    alert('Select at least one order.');
+    return;
+  }
+
+  var form = document.createElement('form');
+  form.method = 'post';
+  form.action = url;
+  if (targetBlank) form.target = '_blank';
+
+  ids.forEach(function(id) {
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'selected[]';
+    input.value = id;
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+}
+
 $('#order').on('click', 'thead a, .pagination a', function(e) {
+  e.preventDefault();
+  $('#order').load(this.href);
+});
+
+$('#input-order-search').on('keydown', function(e) {
+  if (e.key === 'Enter') {
     e.preventDefault();
-
-    $('#order').load(this.href);
+    faireOrdersReload();
+  }
 });
 
-$('#button-filter').on('click', function() {
-    url = '';
-
-    var filter_order_id = $('#input-order-id').val();
-
-    if (filter_order_id) {
-        url += '&filter_order_id=' + filter_order_id;
-    }
-
-    var filter_customer = $('#input-customer').val();
-
-    if (filter_customer) {
-        url += '&filter_customer=' + encodeURIComponent(filter_customer);
-    }
-
-    var filter_store_id = $('#input-store').val();
-
-    if (filter_store_id !== '') {
-        url += '&filter_store_id=' + filter_store_id;
-    }
-
-    var filter_order_status_id = $('#input-order-status').val();
-
-    if (filter_order_status_id !== '') {
-        url += '&filter_order_status_id=' + filter_order_status_id;
-    }
-
-    var filter_total = $('#input-total').val();
-
-    if (filter_total) {
-        url += '&filter_total=' + encodeURIComponent(filter_total);
-    }
-
-    var filter_date_from = $('#input-date-from').val();
-
-    if (filter_date_from) {
-        url += '&filter_date_from=' + encodeURIComponent(filter_date_from);
-    }
-
-    var filter_date_to = $('#input-date-to').val();
-
-    if (filter_date_to) {
-        url += '&filter_date_to=' + encodeURIComponent(filter_date_to);
-    }
-
-    var filter_date_modified_from = $('#input-date-modified-from').val();
-
-    if (filter_date_modified_from) {
-        url += '&filter_date_modified_from=' + encodeURIComponent(filter_date_modified_from);
-    }
-
-    var filter_date_modified_to = $('#input-date-modified-to').val();
-
-    if (filter_date_modified_to) {
-        url += '&filter_date_modified_to=' + encodeURIComponent(filter_date_modified_to);
-    }
-
-    window.history.pushState({}, null, 'index.php?route=sale/order&user_token={{ user_token }}' + url);
-
-    $('#order').load('index.php?route=sale/order.list&user_token={{ user_token }}' + url);
+$('#chip-pending-ship').on('click', function() {
+  $(this).toggleClass('is-on');
+  faireOrdersReload();
 });
 
-$('#input-customer').autocomplete({
-    'source': function(request, response) {
-        $.ajax({
-            url: 'index.php?route=customer/customer.autocomplete&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
-            dataType: 'json',
-            success: function(json) {
-                response($.map(json, function(item) {
-                    return {
-                        label: item['name'],
-                        value: item['customer_id']
-                    }
-                }));
-            }
-        });
+$('#chip-order-date').on('click', function() {
+  var from = prompt('Order date from (YYYY-MM-DD)', $('#input-date-from').val() || '');
+  if (from === null) return;
+  var to = prompt('Order date to (YYYY-MM-DD)', $('#input-date-to').val() || from);
+  if (to === null) return;
+  $('#input-date-from').val(from);
+  $('#input-date-to').val(to);
+  faireOrdersReload();
+});
+
+$('#order').on('change', 'input[name^=\'selected\']', faireUpdateBulkButtons);
+
+$('#button-ship-date').on('click', function() {
+  if ($(this).prop('disabled')) return;
+
+  var unset = $('#order input[name^=\'selected\']:checked').filter(function() {
+    var expected = String($(this).closest('tr').attr('data-expected-ship') || '').trim();
+    return !expected || expected === '0000-00-00';
+  });
+
+  if (!unset.length) {
+    alert('Selected order(s) already have a ship date.');
+    return;
+  }
+
+  $('#input-expected-ship-date').val(new Date().toISOString().slice(0, 10));
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-ship-date')).show();
+});
+
+$('#button-save-ship-date').on('click', function() {
+  var ids = $('#order input[name^=\'selected\']:checked').filter(function() {
+    var expected = String($(this).closest('tr').attr('data-expected-ship') || '').trim();
+    return !expected || expected === '0000-00-00';
+  }).map(function() {
+    return $(this).val();
+  }).get();
+
+  var shipDate = $('#input-expected-ship-date').val();
+
+  if (!ids.length) {
+    alert('Selected order(s) already have a ship date.');
+    return;
+  }
+  if (!shipDate) {
+    alert('Choose an expected ship date.');
+    return;
+  }
+
+  var form = new FormData();
+  form.append('ship_date', shipDate);
+  ids.forEach(function(id) {
+    form.append('selected[]', id);
+  });
+
+  $.ajax({
+    url: {{ ship_date|json_encode|raw }},
+    type: 'post',
+    data: form,
+    processData: false,
+    contentType: false,
+    dataType: 'json',
+    success: function(json) {
+      if (json['error']) {
+        alert(json['error']);
+        return;
+      }
+      var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-ship-date'));
+      modal.hide();
+      faireOrdersReload();
     },
-    'select': function(item) {
-        $('#input-customer').val(decodeHTMLEntities(item['label']));
+    error: function(xhr) {
+      alert('Could not save ship date. ' + (xhr.responseText ? xhr.responseText.substring(0, 180) : ''));
     }
+  });
 });
 
-$('input[name^=\'selected\']').on('change', function() {
-    $('#button-shipping, #button-invoice').prop('disabled', true);
+$('#button-ship-orders').on('click', function() {
+  var ids = faireSelectedIds();
+  if (!ids.length) return;
 
-    var selected = $('input[name^=\'selected\']:checked');
+  var shipped = prompt('Shipped date (YYYY-MM-DD)', new Date().toISOString().slice(0, 10));
+  if (!shipped) return;
 
-    if (selected.length) {
-        $('#button-invoice').prop('disabled', false);
+  var form = new FormData();
+  form.append('shipped_date', shipped);
+  ids.forEach(function(id) {
+    form.append('selected[]', id);
+  });
+
+  $.ajax({
+    url: {{ ship_orders|json_encode|raw }},
+    type: 'post',
+    data: form,
+    processData: false,
+    contentType: false,
+    dataType: 'json',
+    success: function(json) {
+      if (json['error']) {
+        alert(json['error']);
+        return;
+      }
+      faireOrdersReload();
+    },
+    error: function(xhr) {
+      alert('Could not mark orders shipped. ' + (xhr.responseText ? xhr.responseText.substring(0, 180) : ''));
     }
-
-    for (i = 0; i < selected.length; i++) {
-        if ($(selected[i]).parent().find('input[name^=\'shipping_method\']').val()) {
-            $('#button-shipping').prop('disabled', false);
-            break;
-        }
-    }
+  });
 });
 
-$('#button-shipping, #button-invoice').prop('disabled', true);
+$('#button-pick-print').on('click', function() {
+  faireSubmitPickList({{ pick_list|json_encode|raw }}, true);
+});
+
+$('#button-pick-csv').on('click', function() {
+  faireSubmitPickList({{ pick_list_csv|json_encode|raw }}, false);
+});
+
+faireUpdateBulkButtons();
 //--></script>
 {{ footer }}

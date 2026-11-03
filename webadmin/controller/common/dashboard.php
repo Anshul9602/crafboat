@@ -48,7 +48,8 @@ class Dashboard extends \Opencart\System\Engine\Controller {
 
 		$orders = $this->getOpenOrders(6);
 		$data['open_orders_title'] = $this->language->get('text_open_orders');
-		$data['open_orders_summary'] = sprintf($this->language->get('text_open_summary'), $orders['new_count'], $orders['unfulfilled_count']);
+		$open_total = (int)$orders['new_count'] + (int)$orders['unfulfilled_count'];
+		$data['open_orders_summary'] = sprintf($this->language->get('text_open_summary'), $open_total);
 		$data['text_no_orders'] = $this->language->get('text_no_orders');
 		$data['orders_href'] = $this->url->link('sale/order', $token);
 		$data['open_orders'] = $orders['rows'];
@@ -119,7 +120,7 @@ class Dashboard extends \Opencart\System\Engine\Controller {
 				'store'   => $store,
 				'insight' => $insight,
 				'action'  => 'Message ' . $first,
-				'href'    => $this->url->link('customer/customer.form', $token . '&customer_id=' . (int)$row['customer_id'])
+				'href'    => $this->url->link('customer/message', $token . '&customer_id=' . (int)$row['customer_id'])
 			];
 
 			if (count($out) >= $limit) {
@@ -165,10 +166,13 @@ class Dashboard extends \Opencart\System\Engine\Controller {
 				$name = trim($row['firstname'] . ' ' . $row['lastname']);
 			}
 
-			$discount = (float)$row['discount'];
-			$discount_label = $discount < 0
-				? $this->currency->format(abs($discount), $row['currency_code'], $row['currency_value'])
-				: '';
+			$discount = abs((float)$row['discount']);
+			$order_total = abs((float)$row['total']);
+			$discount_label = '';
+
+			if ($discount > 0 && $order_total > 0) {
+				$discount_label = (string)round(($discount / max($order_total + $discount, 0.01)) * 100) . '%';
+			}
 
 			$out[] = [
 				'status'         => $is_new ? $this->language->get('text_status_new') : $this->language->get('text_status_unfulfilled'),

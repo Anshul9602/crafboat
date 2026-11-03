@@ -1,0 +1,61 @@
+{{ header }}
+<div id="account-message" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+      <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <div class="row">{{ column_left }}
+    <div id="content" class="col">{{ content_top }}
+      <h1>{{ heading_title }}</h1>
+
+      {% if success %}
+        <div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check"></i> {{ success }}</div>
+      {% endif %}
+      {% if error %}
+        <div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
+      {% endif %}
+
+      <div class="cb-messages">
+        <div class="cb-messages__stream">
+          {% if messages %}
+            {% for item in messages %}
+              {% if item.type == 'system' %}
+                <div class="cb-messages__system">{{ item.body }} · {{ item.time }}</div>
+              {% else %}
+                <div class="cb-messages__bubble-wrap cb-messages__bubble-wrap--{{ item.sender }}">
+                  <div class="cb-messages__bubble">{{ item.body|raw }}</div>
+                  <div class="cb-messages__meta">{{ item.name }} · {{ item.time }}</div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <div class="cb-messages__empty">{{ text_empty }}</div>
+          {% endif %}
+        </div>
+
+        <form action="{{ action }}" method="post" class="cb-messages__composer">
+          <input type="hidden" name="thread_id" value="{{ thread_id }}"/>
+          <textarea name="message" rows="3" placeholder="{{ text_type }}" required></textarea>
+          <button type="submit" class="btn btn-primary">{{ text_send }}</button>
+        </form>
+      </div>
+
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+<style>
+.cb-messages{background:#fff;border:1px solid #e8e4dc;border-radius:14px;overflow:hidden;margin-bottom:28px}
+.cb-messages__stream{min-height:360px;max-height:560px;overflow:auto;padding:20px;background:#faf9f6;display:flex;flex-direction:column;gap:14px}
+.cb-messages__empty,.cb-messages__system{text-align:center;color:#8a867e;font-size:13px}
+.cb-messages__bubble-wrap{max-width:78%;display:flex;flex-direction:column}
+.cb-messages__bubble-wrap--customer{align-self:flex-end}
+.cb-messages__bubble-wrap--admin{align-self:flex-start}
+.cb-messages__bubble{padding:12px 14px;border-radius:14px;background:#fff;border:1px solid #ebe8e2;font-size:14px;line-height:1.45;white-space:pre-wrap}
+.cb-messages__bubble-wrap--customer .cb-messages__bubble{background:#123942;color:#fff;border-color:#123942}
+.cb-messages__meta{margin-top:4px;font-size:11px;color:#8a867e}
+.cb-messages__bubble-wrap--customer .cb-messages__meta{text-align:right}
+.cb-messages__composer{display:flex;flex-direction:column;gap:12px;padding:16px;border-top:1px solid #efece6;background:#fff}
+.cb-messages__composer textarea{width:100%;border:1px solid #e7e3db;border-radius:10px;padding:12px;resize:vertical}
+</style>
+{{ footer }}

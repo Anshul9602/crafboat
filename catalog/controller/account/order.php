@@ -63,6 +63,12 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$results = $this->model_account_order->getOrders(($page - 1) * $limit, $limit);
 
+		$this->load->model('catalog/product');
+		$this->load->model('tool/image');
+
+		$complete = array_map('intval', (array)$this->config->get('config_complete_status'));
+		$processing = array_map('intval', (array)$this->config->get('config_processing_status'));
+
 		foreach ($results as $result) {
 			$order_status_info = $this->model_localisation_order_status->getOrderStatus($result['order_status_id']);
 
@@ -72,10 +78,50 @@ class Order extends \Opencart\System\Engine\Controller {
 				$order_status = '';
 			}
 
+			$status_id = (int)$result['order_status_id'];
+
+			if (in_array($status_id, $complete, true)) {
+				$status_class = 'fulfilled';
+			} elseif (in_array($status_id, $processing, true)) {
+				$status_class = 'new';
+			} else {
+				$status_class = 'open';
+			}
+
+			$product_total = $this->model_account_order->getTotalProductsByOrderId($result['order_id']);
+			$order_products = $this->model_account_order->getProducts($result['order_id']);
+			$thumbs = [];
+			$product_names = [];
+
+			foreach (array_slice($order_products, 0, 4) as $order_product) {
+				$product_names[] = $order_product['name'];
+				$image = 'no_image.png';
+				$info = $this->model_catalog_product->getProduct((int)$order_product['product_id']);
+
+				if ($info && !empty($info['image']) && is_file(DIR_IMAGE . html_entity_decode($info['image'], ENT_QUOTES, 'UTF-8'))) {
+					$image = $info['image'];
+				}
+
+				$thumbs[] = $this->model_tool_image->resize($image, 72, 72);
+			}
+
+			$summary = '';
+
+			if ($product_names) {
+				$summary = $product_names[0];
+
+				if (count($product_names) > 1) {
+					$summary .= ' +' . (count($product_names) - 1) . ' more';
+				}
+			}
+
 			$data['orders'][] = [
 				'status'        => $order_status,
-				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'product_total' => $this->model_account_order->getTotalProductsByOrderId($result['order_id']),
+				'status_class'  => $status_class,
+				'date_added'    => date('M j, Y', strtotime($result['date_added'])),
+				'product_total' => $product_total,
+				'thumbs'        => $thumbs,
+				'summary'       => $summary,
 				'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
 				'view'          => $this->url->link('account/order.info', 'language=' . $this->config->get('config_language') . '&customer_token=' . $this->session->data['customer_token'] . '&order_id=' . $result['order_id']),
 			] + $result;
@@ -181,7 +227,18 @@ class Order extends \Opencart\System\Engine\Controller {
 				$data['order_status'] = '';
 			}
 
-			$data['date_added'] = date($this->language->get('date_format_short'), strtotime($order_info['date_added']));
+			$complete = array_map('intval', (array)$this->config->get('config_complete_status'));
+			$status_id = (int)$order_info['order_status_id'];
+			$status_name = strtolower((string)$data['order_status']);
+			$delivered = in_array($status_id, $complete, true)
+				|| str_contains($status_name, 'deliver')
+				|| str_contains($status_name, 'complete')
+				|| str_contains($status_name, 'shipped')
+				|| str_contains($status_name, 'fulfilled');
+
+			$data['can_return'] = $delivered;
+			$data['status_class'] = $delivered ? 'fulfilled' : (in_array($status_id, array_map('intval', (array)$this->config->get('config_processing_status')), true) ? 'new' : 'open');
+			$data['date_added'] = date('M j, Y', strtotime($order_info['date_added']));
 
 			// Payment Address
 			if ($order_info['payment_address_format']) {
@@ -283,6 +340,7 @@ class Order extends \Opencart\System\Engine\Controller {
 
 			// Product
 			$this->load->model('catalog/product');
+			$this->load->model('tool/image');
 
 			// Upload
 			$this->load->model('tool/upload');
@@ -351,11 +409,19 @@ class Order extends \Opencart\System\Engine\Controller {
 					$subscription = '';
 				}
 
+				$thumb = 'no_image.png';
+				$product_info = $this->model_catalog_product->getProduct((int)$product['product_id']);
+
+				if ($product_info && !empty($product_info['image']) && is_file(DIR_IMAGE . html_entity_decode($product_info['image'], ENT_QUOTES, 'UTF-8'))) {
+					$thumb = $product_info['image'];
+				}
+
 				$data['products'][] = [
 					'option'               => $option_data,
 					'subscription_plan_id' => $subscription_plan_id,
 					'subscription_plan'    => $subscription_plan,
 					'subscription'         => $subscription,
+					'thumb'                => $this->model_tool_image->resize($thumb, 88, 88),
 					'price'                => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $order_info['currency_code'], $order_info['currency_value']),
 					'total'                => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $order_info['currency_code'], $order_info['currency_value']),
 					'view'                 => $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $product['product_id']),
@@ -378,6 +444,8 @@ class Order extends \Opencart\System\Engine\Controller {
 			$data['history'] = $this->getHistory();
 
 			$data['continue'] = $this->url->link('account/order', 'language=' . $this->config->get('config_language') . '&customer_token=' . $this->session->data['customer_token']);
+			$data['message'] = $this->url->link('account/message', 'language=' . $this->config->get('config_language') . '&customer_token=' . $this->session->data['customer_token'] . '&order_id=' . $order_id);
+			$data['text_message'] = 'Message Craft Boat about this order';
 
 			$data['language'] = $this->config->get('config_language');
 

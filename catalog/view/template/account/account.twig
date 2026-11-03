@@ -32,6 +32,11 @@
           <span class="cb-acct-tile__copy"><strong>Orders</strong><em>View your order history.</em></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
+        <a class="cb-acct-tile" href="{{ message }}">
+          <span class="cb-acct-tile__icon"><i class="fa-regular fa-comment"></i></span>
+          <span class="cb-acct-tile__copy"><strong>Messages{% if message_unread %} ({{ message_unread }}){% endif %}</strong><em>Chat with the Craft Boat team about orders.</em></span>
+          <span class="cb-acct-tile__go" aria-hidden="true">→</span>
+        </a>
         <a class="cb-acct-tile" href="{{ download }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-download"></i></span>
           <span class="cb-acct-tile__copy"><strong>Downloads</strong><em>Files from your orders.</em></span>

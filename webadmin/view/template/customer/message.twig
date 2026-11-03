@@ -1,0 +1,192 @@
+{{ header }}{{ column_left }}
+<div id="content" class="faire-messages-page">
+  <div class="faire-messages" data-send="{{ send_href }}" data-star="{{ star_href }}">
+    <aside class="faire-messages__list">
+      <div class="faire-messages__list-head">
+        <h1>{{ heading_title }}</h1>
+      </div>
+
+      <form class="faire-messages__search" method="get" action="{{ base_href }}">
+        <input type="hidden" name="route" value="customer/message"/>
+        <input type="hidden" name="user_token" value="{{ user_token }}"/>
+        {% if filter_unread %}<input type="hidden" name="filter_unread" value="1"/>{% endif %}
+        {% if filter_starred %}<input type="hidden" name="filter_starred" value="1"/>{% endif %}
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" name="filter_search" value="{{ filter_search }}" placeholder="{{ text_search }}"/>
+      </form>
+
+      <div class="faire-messages__filters">
+        <a href="{{ base_href }}{% if filter_unread %}{% else %}&filter_unread=1{% endif %}{% if filter_search %}&filter_search={{ filter_search|url_encode }}{% endif %}" class="faire-messages__chip{% if filter_unread %} is-on{% endif %}">{{ text_unread }} ({{ unread_count }})</a>
+        <a href="{{ base_href }}{% if filter_starred %}{% else %}&filter_starred=1{% endif %}{% if filter_search %}&filter_search={{ filter_search|url_encode }}{% endif %}" class="faire-messages__chip{% if filter_starred %} is-on{% endif %}">{{ text_starred }} ({{ starred_count }})</a>
+      </div>
+
+      <div class="faire-messages__threads">
+        {% if threads %}
+          {% for thread in threads %}
+            <a href="{{ thread.href }}" class="faire-messages__thread{% if thread.active %} is-active{% endif %}{% if thread.unread %} is-unread{% endif %}">
+              <span class="faire-messages__avatar">{{ thread.initial }}</span>
+              <span class="faire-messages__thread-body">
+                <span class="faire-messages__thread-top">
+                  <strong>{{ thread.name }}</strong>
+                  <em>{{ thread.time }}</em>
+                </span>
+                <span class="faire-messages__thread-preview">{{ thread.preview }}</span>
+              </span>
+              {% if thread.unread %}<span class="faire-messages__dot"></span>{% endif %}
+              {% if thread.starred %}<i class="fa-solid fa-star faire-messages__star-mark"></i>{% endif %}
+            </a>
+          {% endfor %}
+        {% else %}
+          <div class="faire-messages__empty">{{ text_empty }}</div>
+        {% endif %}
+      </div>
+    </aside>
+
+    <section class="faire-messages__chat">
+      {% if active %}
+        <div class="faire-messages__chat-head">
+          <h2>{{ active.name }}</h2>
+          <div class="faire-messages__chat-actions">
+            <button type="button" class="faire-messages__icon-btn" id="button-star" data-thread="{{ active.thread_id }}" aria-label="Star">
+              <i class="fa-{% if active.starred %}solid{% else %}regular{% endif %} fa-star"></i>
+            </button>
+            <a href="{{ active.customer_href }}" class="faire-messages__icon-btn" title="Customer"><i class="fa-solid fa-ellipsis"></i></a>
+          </div>
+        </div>
+
+        <div class="faire-messages__stream" id="message-stream">
+          {% for item in active.messages %}
+            {% if item.type == 'day' %}
+              <div class="faire-messages__day">{{ item.label }}</div>
+            {% elseif item.type == 'system' %}
+              <div class="faire-messages__system">{{ item.body }}</div>
+            {% else %}
+              <div class="faire-messages__bubble-wrap faire-messages__bubble-wrap--{{ item.sender }}">
+                <div class="faire-messages__bubble">{{ item.body|raw }}</div>
+                <div class="faire-messages__meta">{{ item.name }} · {{ item.time }}</div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <form class="faire-messages__composer" id="message-form">
+          <input type="hidden" name="thread_id" value="{{ active.thread_id }}"/>
+          <textarea name="message" rows="1" placeholder="{{ text_type }}" id="input-message"></textarea>
+          <button type="submit" class="faire-messages__send" title="{{ text_send }}"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      {% else %}
+        <div class="faire-messages__empty-chat">{{ text_empty_thread }}</div>
+      {% endif %}
+    </section>
+
+    <aside class="faire-messages__context">
+      {% if active %}
+        <div class="faire-messages__profile">
+          <h3>{{ active.name }}</h3>
+          <p>{{ text_online_store }}</p>
+          <p class="faire-messages__muted">{{ active.member_since }}</p>
+        </div>
+
+        <div class="faire-messages__stats">
+          <div>
+            <span>{{ text_order_volume }}</span>
+            <strong>{{ active.volume }}</strong>
+          </div>
+          <div>
+            <span>{{ text_total_orders }}</span>
+            <strong>{{ active.orders_total }}</strong>
+          </div>
+        </div>
+
+        <div class="faire-messages__block">
+          <h4>{{ text_contact }}</h4>
+          <p><strong>{{ active.contact_name }}</strong></p>
+          <p class="faire-messages__muted">{{ active.email }}</p>
+          {% if active.telephone %}<p class="faire-messages__muted">{{ active.telephone }}</p>{% endif %}
+        </div>
+
+        {% if active.address %}
+          <div class="faire-messages__block">
+            <h4>{{ text_address }}</h4>
+            <p class="faire-messages__muted">{{ active.address }}</p>
+          </div>
+        {% endif %}
+
+        <div class="faire-messages__block">
+          <h4>{{ text_recent_orders }}</h4>
+          {% if active.orders %}
+            {% for order in active.orders %}
+              <a href="{{ order.href }}" class="faire-messages__order">
+                <div class="faire-messages__order-top">
+                  <strong>#{{ order.order_id }}</strong>
+                  <span>{{ order.date }}</span>
+                </div>
+                <div class="faire-messages__order-thumbs">
+                  {% for thumb in order.thumbs %}
+                    <img src="{{ thumb }}" alt=""/>
+                  {% endfor %}
+                  {% if order.extra %}<span>+{{ order.extra }}</span>{% endif %}
+                </div>
+                <div class="faire-messages__order-status">{{ order.status }} · {{ order.total }}</div>
+              </a>
+            {% endfor %}
+          {% else %}
+            <p class="faire-messages__muted">{{ text_no_orders }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+    </aside>
+  </div>
+</div>
+<script type="text/javascript"><!--
+(function () {
+  var root = document.querySelector('.faire-messages');
+  if (!root) return;
+
+  var stream = document.getElementById('message-stream');
+  if (stream) stream.scrollTop = stream.scrollHeight;
+
+  var form = document.getElementById('message-form');
+  var input = document.getElementById('input-message');
+
+  if (input) {
+    input.addEventListener('input', function () {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var body = (input.value || '').trim();
+      if (!body) return;
+
+      var data = new FormData(form);
+      fetch(root.getAttribute('data-send'), { method: 'POST', body: data, credentials: 'same-origin' })
+        .then(function (r) { return r.json(); })
+        .then(function (json) {
+          if (json.error) {
+            alert(json.error);
+            return;
+          }
+          window.location.reload();
+        });
+    });
+  }
+
+  var star = document.getElementById('button-star');
+  if (star) {
+    star.addEventListener('click', function () {
+      var data = new FormData();
+      data.append('thread_id', star.getAttribute('data-thread'));
+      fetch(root.getAttribute('data-star'), { method: 'POST', body: data, credentials: 'same-origin' })
+        .then(function (r) { return r.json(); })
+        .then(function (json) {
+          if (json.success) window.location.reload();
+        });
+    });
+  }
+})();
+//--></script>
+{{ footer }}

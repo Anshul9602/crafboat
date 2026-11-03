@@ -9,168 +9,152 @@
     {{ column_left }}
     <div id="content" class="col">
       {{ content_top }}
-      <div class="row">
-        <div class="col mb-3">
-          <div class="form-control" style="min-height: 64px;">
-            <strong class="lead">{{ text_invoice_no }}</strong>
-            <br/>
-            {% if invoice_no %}{{ invoice_no }}{% else %}{{ text_tbc }}{% endif %}
-          </div>
-        </div>
-        <div class="col mb-3">
-          <div class="form-control" style="min-height: 64px;">
-            <strong class="lead">{{ text_order_id }}</strong>
-            <br/>
-            {{ order_id }}
-          </div>
-        </div>
-      </div>
-      {% if payment_address or shipping_address %}
-        <div class="row">
-          {% if payment_address %}
-            <div class="col mb-3">
-              <div class="form-control" style="min-height: 128px;">
-                <strong class="lead">{{ text_payment_address }}</strong>
-                <br/>
-                {{ payment_address }}
-              </div>
+      <div class="cb-order">
+        <div class="cb-order__head">
+          <div>
+            <a href="{{ continue }}" class="cb-order__back">← Back to orders</a>
+            <h1>Order #{{ order_id }}</h1>
+            <div class="cb-order__meta">
+              <span class="cb-order-card__status cb-order-card__status--{{ status_class }}">{{ order_status }}</span>
+              <span>Placed {{ date_added }}</span>
+              {% if invoice_no %}
+                <span>Invoice {{ invoice_no }}</span>
+              {% else %}
+                <span>Invoice {{ text_tbc }}</span>
+              {% endif %}
             </div>
-          {% endif %}
+          </div>
+          <div class="cb-order__actions">
+            {% if message %}
+              <a href="{{ message }}" class="cb-btn cb-btn--line"><i class="fa-regular fa-comment"></i> Message</a>
+            {% endif %}
+            <a href="index.php?route=product/search&language={{ language }}" class="cb-btn cb-btn--black">Continue shopping</a>
+          </div>
+        </div>
+
+        <div class="cb-order__grid">
           {% if shipping_address %}
-            <div class="col mb-3">
-              <div class="form-control" style="min-height: 128px;">
-                <strong class="lead">{{ text_shipping_address }}</strong>
-                <br/>
-                {{ shipping_address }}
-              </div>
+            <div class="cb-order__panel">
+              <h2>{{ text_shipping_address }}</h2>
+              <div class="cb-order__copy">{{ shipping_address }}</div>
+              {% if shipping_method %}<p class="cb-order__note">{{ text_shipping_method }}: {{ shipping_method }}</p>{% endif %}
             </div>
           {% endif %}
+          <div class="cb-order__panel">
+            <h2>{{ text_payment_method }}</h2>
+            <div class="cb-order__copy">{% if payment_method %}{{ payment_method }}{% else %}—{% endif %}</div>
+            {% if payment_address %}
+              <p class="cb-order__note">{{ text_payment_address }}</p>
+              <div class="cb-order__copy">{{ payment_address }}</div>
+            {% endif %}
+          </div>
         </div>
-      {% endif %}
-      <div class="row">
-        {% if shipping_method %}
-          <div class="col mb-3">
-            <div class="form-control" style="min-height: 64px;">
-              <strong class="lead">{{ text_shipping_method }}</strong>
-              <br/>
-              {{ shipping_method }}
-            </div>
+
+        <div class="cb-order__panel cb-order__panel--wide">
+          <div class="cb-order__panel-head">
+            <h2>Items</h2>
+            <span>{{ products|length }} item{% if products|length != 1 %}s{% endif %}</span>
+          </div>
+          <div class="cb-order__table-wrap">
+            <table class="cb-order__table">
+              <thead>
+                <tr>
+                  <th>{{ column_product }}</th>
+                  <th class="text-end">{{ column_price }}</th>
+                  <th class="text-end">{{ column_quantity }}</th>
+                  <th class="text-end">{{ column_total }}</th>
+                  <th class="text-end">{{ column_action }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% set product_row = 0 %}
+                {% for product in products %}
+                  <tr id="product-row-{{ product_row }}">
+                    <td>
+                      <div class="cb-order__product">
+                        <a class="cb-order__thumb" href="{{ product.view }}"><img src="{{ product.thumb }}" alt="{{ product.name }}"/></a>
+                        <div class="cb-order__item-copy">
+                          <a href="{{ product.view }}"><strong>{{ product.name }}</strong></a>
+                          <div id="error-{{ product_row }}-product" class="invalid-feedback mt-0"></div>
+                          <span>{{ text_model }}: {{ product.model }}</span>
+                          {% for option in product.option %}
+                            <span>{{ option.name }}: {{ option.value }}</span>
+                            <div id="error-{{ product_row }}-option-{{ option.product_option_id }}" class="invalid-feedback mt-0"></div>
+                          {% endfor %}
+                          {% if product.subscription %}
+                            <span>{{ text_subscription }}: {% if product.subscription %}<a href="{{ product.subscription }}" target="_blank">{{ product.subscription_plan }}</a>{% else %}{{ product.subscription_plan }}{% endif %}</span>
+                            <div id="error-{{ product_row }}-subscription" class="invalid-feedback mt-0"></div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-end">{{ product.price }}</td>
+                    <td class="text-end">{{ product.quantity }}</td>
+                    <td class="text-end"><strong>{{ product.total }}</strong></td>
+                    <td class="text-end">
+                      <div class="cb-order__item-actions">
+                        <form id="form-product-{{ product_row }}">
+                          <input type="hidden" name="product_id" value="{{ product.product_id }}"/>
+                          <input type="hidden" name="quantity" value="{{ product.quantity }}"/>
+                          {% for option in product.option %}
+                            {% if option.type == 'select' or option.type == 'radio' %}
+                              <input type="hidden" name="option[{{ option.product_option_id }}]" value="{{ option.product_option_value_id }}"/>
+                            {% endif %}
+                            {% if option.type == 'checkbox' %}
+                              <input type="hidden" name="option[{{ option.product_option_id }}][]" value="{{ option.product_option_value_id }}"/>
+                            {% endif %}
+                            {% if option.type == 'text' or option.type == 'textarea' or option.type == 'file' or option.type == 'date' or option.type == 'datetime' or option.type == 'time' %}
+                              <input type="hidden" name="option[{{ option.product_option_id }}]" value="{{ option.value }}"/>
+                            {% endif %}
+                          {% endfor %}
+                          <input type="hidden" name="subscription_plan_id" value="{{ product.subscription_plan_id }}"/>
+                          <button type="submit" form="form-product-{{ product_row }}" class="cb-btn cb-btn--black">{{ button_reorder }}</button>
+                        </form>
+                        {% if can_return %}
+                          <a href="{{ product.return }}" class="cb-btn cb-btn--line">{{ button_return }}</a>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  {% set product_row = product_row + 1 %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cb-order__totals">
+            {% for total in totals %}
+              <div class="{% if loop.last %}is-total{% endif %}">
+                <span>{{ total.title }}</span>
+                <strong>{{ total.text }}</strong>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% if comment %}
+          <div class="cb-order__panel cb-order__panel--wide">
+            <h2>{{ text_comment }}</h2>
+            <div class="cb-order__copy">{{ comment }}</div>
           </div>
         {% endif %}
-        <div class="col mb-3">
-          <div class="form-control" style="min-height: 64px;">
-            <strong class="lead">{{ text_payment_method }}</strong>
-            <br/>
-            {{ payment_method }}
-          </div>
+
+        <div class="cb-order__panel cb-order__panel--wide">
+          <h2>{{ text_history }}</h2>
+          <div id="history" class="cb-order__history">{{ history }}</div>
         </div>
       </div>
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th>{{ column_product }}</th>
-              <th class="text-end">{{ column_quantity }}</th>
-              <th class="text-end">{{ column_price }}</th>
-              <th class="text-end">{{ column_total }}</th>
-              <th class="text-end">{{ column_action }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% set product_row = 0 %}
-            {% for product in products %}
-              <tr id="product-row-{{ product_row }}">
-                <td><a href="{{ product.view }}">{{ product.name }}</a>
-                  <div id="error-{{ product_row }}-product" class="invalid-feedback mt-0"></div>
-                  <ul class="list-unstyled mb-0">
-                    <li>
-                      <small> - {{ text_model }}: {{ product.model }}</small>
-                    </li>
-                    {% for option in product.option %}
-                      <li>
-                        <small> - {{ option.name }}: {{ option.value }}</small>
-                        <div id="error-{{ product_row }}-option-{{ option.product_option_id }}" class="invalid-feedback mt-0"></div>
-                      </li>
-                    {% endfor %}
-                    {% if product.subscription %}
-                      <li>
-                        <small> - {{ text_subscription }}: {% if product.subscription %}<a href="{{ product.subscription }}" target="_blank">{{ product.subscription_plan }}</a>{% else %}{{ product.subscription_plan }}{% endif %}</small>
-                        <div id="error-{{ product_row }}-subscription" class="invalid-feedback mt-0"></div>
-                      </li>
-                    {% endif %}
-                    {% if product.reward %}
-                      <li>
-                        <small> - {{ text_points }}: {{ product.reward }}</small>
-                      </li>
-                    {% endif %}
-                  </ul>
-                  <form id="form-product-{{ product_row }}">
-                    <input type="hidden" name="product_id" value="{{ product.product_id }}"/> <input type="hidden" name="quantity" value="{{ product.quantity }}"/>
-                    {% for option in product.option %}
-                      {% if option.type == 'select' or option.type == 'radio' %}
-                        <input type="hidden" name="option[{{ option.product_option_id }}]" value="{{ option.product_option_value_id }}"/>
-                      {% endif %}
-                      {% if option.type == 'checkbox' %}
-                        <input type="hidden" name="option[{{ option.product_option_id }}][]" value="{{ option.product_option_value_id }}"/>
-                      {% endif %}
-                      {% if option.type == 'text' or option.type == 'textarea' or option.type == 'file' or option.type == 'date' or option.type == 'datetime' or option.type == 'time' %}
-                        <input type="hidden" name="option[{{ option.product_option_id }}]" value="{{ option.value }}"/>
-                      {% endif %}
-                    {% endfor %}
-                    <input type="hidden" name="subscription_plan_id" value="{{ product.subscription_plan_id }}"/>
-                  </form>
-                </td>
-                <td class="text-end">{{ product.quantity }}</td>
-                <td class="text-end">{{ product.price }}</td>
-                <td class="text-end">{{ product.total }}</td>
-                <td class="text-end text-nowrap" style="width: 1px;">
-                  <div class="d-grid">
-                    <button type="submit" form="form-product-{{ product_row }}" class="btn btn-primary mb-1">{{ button_reorder }}</button>
-                    <a href="{{ product.return }}" class="btn btn-danger">{{ button_return }}</a>
-                  </div>
-                </td>
-              </tr>
-              {% set product_row = product_row + 1 %}
-            {% endfor %}
-            {% for total in totals %}
-              <tr>
-                <td colspan="2"></td>
-                <td class="text-end"><strong>{{ total.title }}</strong></td>
-                <td class="text-end">{{ total.text }}</td>
-                <td></td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      {% if comment %}
-        <div class="form-control mb-3" style="min-height: 64px;">
-          <strong class="lead">{{ text_comment }}</strong>
-          <br/>
-          {{ comment }}
-        </div>
-      {% endif %}
-      <h2>{{ text_history }}</h2>
-      <div id="history">{{ history }}</div>
-      <div class="text-end mt-3"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
       {{ content_bottom }}
     </div>
     {{ column_right }}
   </div>
 </div>
 <script type="text/javascript"><!--
-var product_row = 0;
-
 $('form').on('submit', function(e) {
     e.preventDefault();
 
     var element = this;
-
-    if (e.originalEvent !== undefined && e.originalEvent.submitter !== undefined) {
-        var button = e.originalEvent.submitter;
-    } else {
-        var button = '';
-    }
+    var button = (e.originalEvent !== undefined && e.originalEvent.submitter !== undefined) ? e.originalEvent.submitter : '';
 
     $.ajax({
         url: 'index.php?route=checkout/cart.add&language={{ language }}',
@@ -186,18 +170,15 @@ $('form').on('submit', function(e) {
             $(button).button('reset');
         },
         success: function(json) {
-            console.log(json);
-
             $('form').find('.invalid-feedback').removeClass('d-block');
 
             if (json['error']) {
                 $('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> {{ error_reorder }} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
 
-                product_row = $(element).attr('id').substr(13);
+                var product_row = $(element).attr('id').substr(13);
 
                 if (json['error']['warning']) {
                     $('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + json['error']['warning'] + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
-
                     delete json['error']['warning'];
                 }
 
@@ -208,7 +189,6 @@ $('form').on('submit', function(e) {
 
             if (json['success']) {
                 $('#alert').prepend('<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-circle-check"></i> ' + json['success'] + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
-
                 $('#cart').load('index.php?route=common/cart.info&language={{ language }}');
             }
         },
@@ -220,7 +200,6 @@ $('form').on('submit', function(e) {
 
 $('#history').on('click', '.pagination a', function(e) {
     e.preventDefault();
-
     $('#history').load(this.href);
 });
 //--></script>

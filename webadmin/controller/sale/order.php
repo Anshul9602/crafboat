@@ -153,9 +153,52 @@ class Order extends \Opencart\System\Engine\Controller {
 		];
 
 		$data['add'] = $this->url->link('sale/order.info', 'user_token=' . $this->session->data['user_token'] . $url);
+		$data['create'] = $this->url->link('sale/order.create', 'user_token=' . $this->session->data['user_token']);
 		$data['delete'] = $this->url->link('sale/order.delete', 'user_token=' . $this->session->data['user_token'] . $url);
 		$data['invoice'] = $this->url->link('sale/order.invoice', 'user_token=' . $this->session->data['user_token']);
 		$data['shipping'] = $this->url->link('sale/order.shipping', 'user_token=' . $this->session->data['user_token']);
+		$data['ship_date'] = html_entity_decode($this->url->link('sale/order.shipDate', 'user_token=' . $this->session->data['user_token']), ENT_QUOTES, 'UTF-8');
+		$data['ship_orders'] = html_entity_decode($this->url->link('sale/order.shipOrders', 'user_token=' . $this->session->data['user_token']), ENT_QUOTES, 'UTF-8');
+		$data['pick_list'] = html_entity_decode($this->url->link('sale/order.pickList', 'user_token=' . $this->session->data['user_token']), ENT_QUOTES, 'UTF-8');
+		$data['pick_list_csv'] = html_entity_decode($this->url->link('sale/order.pickListCsv', 'user_token=' . $this->session->data['user_token']), ENT_QUOTES, 'UTF-8');
+		$data['issues'] = $this->url->link('sale/issue', 'user_token=' . $this->session->data['user_token']);
+
+		$filter_tab = (string)($this->request->get['filter_tab'] ?? 'all');
+		$filter_search = '';
+
+		if ($filter_order_id !== '') {
+			$filter_search = (string)$filter_order_id;
+		} elseif ($filter_customer !== '') {
+			$filter_search = (string)$filter_customer;
+		}
+
+		$token = 'user_token=' . $this->session->data['user_token'];
+		$tab_keys = ['all', 'new', 'unfulfilled', 'fulfilled', 'canceled'];
+		$data['tabs'] = [];
+
+		foreach ($tab_keys as $tab_key) {
+			$data['tabs'][] = [
+				'label'  => $this->language->get('tab_' . $tab_key),
+				'href'   => $this->url->link('sale/order', $token . '&filter_tab=' . $tab_key),
+				'active' => ($filter_tab === $tab_key)
+			];
+		}
+
+		$data['text_export'] = $this->language->get('text_export');
+		$data['text_create_order'] = $this->language->get('text_create_order');
+		$data['text_upload_order'] = $this->language->get('text_upload_order');
+		$data['text_forward_email'] = $this->language->get('text_forward_email');
+		$data['text_new'] = $this->language->get('text_new');
+		$data['text_search_orders'] = $this->language->get('text_search_orders');
+		$data['text_order_date'] = $this->language->get('text_order_date');
+		$data['text_order_type'] = $this->language->get('text_order_type');
+		$data['text_pending_shipment'] = $this->language->get('text_pending_shipment');
+		$data['text_print_slips'] = $this->language->get('text_print_slips');
+		$data['text_edit_ship_date'] = $this->language->get('text_edit_ship_date');
+		$data['text_ship_orders'] = $this->language->get('text_ship_orders');
+		$data['text_pick_list'] = $this->language->get('text_pick_list');
+		$data['text_print_pick_list'] = $this->language->get('text_print_pick_list');
+		$data['text_download_csv'] = $this->language->get('text_download_csv');
 
 		$data['list'] = $this->getList();
 
@@ -191,6 +234,9 @@ class Order extends \Opencart\System\Engine\Controller {
 		$data['filter_date_to'] = $filter_date_to;
 		$data['filter_date_modified_from'] = $filter_date_modified_from;
 		$data['filter_date_modified_to'] = $filter_date_modified_to;
+		$data['filter_tab'] = $filter_tab;
+		$data['filter_search'] = $filter_search;
+		$data['filter_pending_ship'] = !empty($this->request->get['filter_pending_ship']);
 
 		$data['user_token'] = $this->session->data['user_token'];
 
@@ -360,10 +406,49 @@ class Order extends \Opencart\System\Engine\Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}
 
+		if (isset($this->request->get['filter_tab'])) {
+			$url .= '&filter_tab=' . urlencode((string)$this->request->get['filter_tab']);
+		}
+
+		if (!empty($this->request->get['filter_pending_ship'])) {
+			$url .= '&filter_pending_ship=1';
+		}
+
 		$data['action'] = $this->url->link('sale/order.list', 'user_token=' . $this->session->data['user_token'] . $url);
 
 		// Orders
 		$data['orders'] = [];
+
+		$complete = array_map('intval', (array)$this->config->get('config_complete_status'));
+		$processing = array_map('intval', (array)$this->config->get('config_processing_status'));
+		$canceled = $this->getCanceledStatusIds();
+		$filter_tab = (string)($this->request->get['filter_tab'] ?? 'all');
+
+		if ($filter_tab === 'new' && $processing) {
+			$filter_order_status = implode(',', $processing);
+			$filter_order_status_id = '';
+		} elseif ($filter_tab === 'fulfilled' && $complete) {
+			$filter_order_status = implode(',', $complete);
+			$filter_order_status_id = '';
+		} elseif ($filter_tab === 'canceled' && $canceled) {
+			$filter_order_status = implode(',', $canceled);
+			$filter_order_status_id = '';
+		} elseif ($filter_tab === 'unfulfilled') {
+			$open = [];
+
+			$this->load->model('localisation/order_status');
+
+			foreach ($this->model_localisation_order_status->getOrderStatuses() as $status) {
+				$id = (int)$status['order_status_id'];
+
+				if ($id && !in_array($id, $complete, true) && !in_array($id, $canceled, true)) {
+					$open[] = $id;
+				}
+			}
+
+			$filter_order_status = $open ? implode(',', $open) : '-1';
+			$filter_order_status_id = '';
+		}
 
 		$filter_data = [
 			'filter_order_id'           => $filter_order_id,
@@ -386,6 +471,7 @@ class Order extends \Opencart\System\Engine\Controller {
 		$this->load->model('sale/order');
 
 		$results = $this->model_sale_order->getOrders($filter_data);
+		$pending_only = !empty($this->request->get['filter_pending_ship']);
 
 		foreach ($results as $result) {
 			if (isset($result['shipping_method']['name'])) {
@@ -394,13 +480,97 @@ class Order extends \Opencart\System\Engine\Controller {
 				$shipping_method = '';
 			}
 
+			$status_id = (int)($result['order_status_id'] ?? 0);
+			$is_complete = in_array($status_id, $complete, true);
+			$is_processing = in_array($status_id, $processing, true);
+			$is_canceled = in_array($status_id, $canceled, true);
+
+			if ($pending_only && $is_complete) {
+				continue;
+			}
+
+			if ($is_complete) {
+				$status_class = 'fulfilled';
+			} elseif ($is_canceled) {
+				$status_class = 'canceled';
+			} elseif ($is_processing) {
+				$status_class = 'new';
+			} else {
+				$status_class = 'unfulfilled';
+			}
+
+			$expected_raw = !empty($result['expected_ship_date']) && $result['expected_ship_date'] !== '0000-00-00'
+				? substr((string)$result['expected_ship_date'], 0, 10)
+				: '';
+			$shipped_raw = !empty($result['shipped_date']) && $result['shipped_date'] !== '0000-00-00'
+				? substr((string)$result['shipped_date'], 0, 10)
+				: '';
+
+			if ($is_complete && !$shipped_raw) {
+				$shipped_raw = date('Y-m-d', strtotime($result['date_modified']));
+			}
+
+			$ship_date = '—';
+			$ship_track = '';
+			$ship_track_class = '';
+
+			if ($expected_raw) {
+				$ship_date = date('M j, Y', strtotime($expected_raw));
+
+				if ($shipped_raw) {
+					if ($shipped_raw <= $expected_raw) {
+						$ship_track = 'On time';
+						$ship_track_class = 'on-time';
+					} else {
+						$ship_track = 'Late';
+						$ship_track_class = 'late';
+					}
+
+					$ship_date .= ' · shipped ' . date('M j', strtotime($shipped_raw));
+				} elseif (!$is_canceled) {
+					if ($expected_raw < date('Y-m-d')) {
+						$ship_track = 'Overdue';
+						$ship_track_class = 'late';
+					} else {
+						$ship_track = 'Scheduled';
+						$ship_track_class = 'scheduled';
+					}
+				}
+			} elseif ($shipped_raw) {
+				$ship_date = date('M j, Y', strtotime($shipped_raw));
+				$ship_track = 'Shipped';
+				$ship_track_class = 'on-time';
+			}
+
+			$customer_display = trim((string)($result['customer'] ?? ''));
+
+			try {
+				if (!empty($result['customer_id'])) {
+					$company_q = $this->db->query("SELECT COALESCE((SELECT `a`.`company` FROM `" . DB_PREFIX . "address` `a` WHERE `a`.`customer_id` = '" . (int)$result['customer_id'] . "' ORDER BY `a`.`default` DESC, `a`.`address_id` ASC LIMIT 1), '') AS `company`")->row;
+					$company = trim((string)($company_q['company'] ?? ''));
+
+					if ($company !== '') {
+						$customer_display = $company;
+					}
+				}
+			} catch (\Throwable $e) {
+			}
+
 			$data['orders'][] = [
-				'order_status'    => $result['order_status'] ? $result['order_status'] : $this->language->get('text_missing'),
-				'total'           => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
-				'date_added'      => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'date_modified'   => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
-				'shipping_method' => $shipping_method,
-				'view'            => $this->url->link('sale/order.info', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'] . $url)
+				'order_status'      => $result['order_status'] ? $result['order_status'] : $this->language->get('text_missing'),
+				'status_class'      => $status_class,
+				'order_code'        => '#' . $result['order_id'],
+				'customer_display'  => $customer_display,
+				'total'             => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+				'date_added'        => date('M j, Y', strtotime($result['date_added'])),
+				'date_modified'     => date('M j, Y', strtotime($result['date_modified'])),
+				'ship_date'         => $ship_date,
+				'ship_track'        => $ship_track,
+				'ship_track_class'  => $ship_track_class,
+				'expected_ship_date'=> $expected_raw,
+				'shipping_method'   => $shipping_method,
+				'message_href'      => !empty($result['customer_id']) ? $this->url->link('customer/message', 'user_token=' . $this->session->data['user_token'] . '&customer_id=' . (int)$result['customer_id'] . '&order_id=' . (int)$result['order_id']) : '',
+				'view'              => $this->url->link('sale/order.info', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'] . $url)
 			] + $result;
 		}
 
@@ -450,11 +620,26 @@ class Order extends \Opencart\System\Engine\Controller {
 			$url .= '&filter_date_modified_to=' . $this->request->get['filter_date_modified_to'];
 		}
 
+		if (isset($this->request->get['filter_tab'])) {
+			$url .= '&filter_tab=' . urlencode((string)$this->request->get['filter_tab']);
+		}
+
+		if (!empty($this->request->get['filter_pending_ship'])) {
+			$url .= '&filter_pending_ship=1';
+		}
+
 		if ($order == 'ASC') {
 			$url .= '&order=DESC';
 		} else {
 			$url .= '&order=ASC';
 		}
+
+		$data['column_order'] = $this->language->get('column_order');
+		$data['column_order_date'] = $this->language->get('column_order_date');
+		$data['column_ship_date'] = $this->language->get('column_ship_date');
+		$data['column_commission'] = $this->language->get('column_commission');
+		$data['column_source'] = $this->language->get('column_source');
+		$data['column_payout'] = $this->language->get('column_payout');
 
 		// Sorts
 		$data['sort_order'] = $this->url->link('sale/order.list', 'user_token=' . $this->session->data['user_token'] . '&sort=o.order_id' . $url);
@@ -509,6 +694,14 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		if (isset($this->request->get['filter_date_modified_to'])) {
 			$url .= '&filter_date_modified_to=' . $this->request->get['filter_date_modified_to'];
+		}
+
+		if (isset($this->request->get['filter_tab'])) {
+			$url .= '&filter_tab=' . urlencode((string)$this->request->get['filter_tab']);
+		}
+
+		if (!empty($this->request->get['filter_pending_ship'])) {
+			$url .= '&filter_pending_ship=1';
 		}
 
 		if (isset($this->request->get['sort'])) {
@@ -661,9 +854,11 @@ class Order extends \Opencart\System\Engine\Controller {
 		if (!empty($order_info)) {
 			$data['customer_id'] = $order_info['customer_id'];
 			$data['customer_edit'] = $this->url->link('customer/customer.form', 'user_token=' . $this->session->data['user_token'] . '&customer_id=' . $order_info['customer_id']);
+			$data['message_href'] = $this->url->link('customer/message', 'user_token=' . $this->session->data['user_token'] . '&customer_id=' . (int)$order_info['customer_id'] . '&order_id=' . (int)$order_id);
 		} else {
 			$data['customer_id'] = 0;
 			$data['customer_edit'] = '';
+			$data['message_href'] = '';
 		}
 
 		// Customer Group
@@ -1583,35 +1778,25 @@ class Order extends \Opencart\System\Engine\Controller {
 	public function shipping(): void {
 		$this->load->language('sale/order');
 
-		$data['title'] = $this->language->get('text_shipping');
-
+		$data['title'] = 'PACKING SLIP';
 		$data['base'] = HTTP_SERVER;
+		$data['catalog'] = defined('HTTP_CATALOG') ? HTTP_CATALOG : HTTP_SERVER;
 		$data['direction'] = $this->language->get('direction');
 		$data['lang'] = $this->language->get('code');
 
-		// Hard coding CSS so they can be replaced via the event's system.
-		$data['bootstrap_css'] = 'view/stylesheet/bootstrap.css';
-		$data['icons'] = 'view/stylesheet/fonts/fontawesome/css/all.min.css';
-		$data['stylesheet'] = 'view/stylesheet/stylesheet.css';
+		$logo = (string)$this->config->get('config_logo');
 
-		// Hard coding scripts so they can be replaced via the event's system.
-		$data['jquery'] = 'view/javascript/jquery/jquery-3.7.1.min.js';
-		$data['bootstrap_js'] = 'view/javascript/bootstrap/js/bootstrap.bundle.min.js';
+		if ($logo && is_file(DIR_IMAGE . $logo)) {
+			$data['logo'] = rtrim($data['catalog'], '/') . '/image/' . str_replace(' ', '%20', $logo);
+		} elseif (is_file(DIR_CATALOG . 'view/image/craftboat/logo.svg')) {
+			$data['logo'] = rtrim($data['catalog'], '/') . '/catalog/view/image/craftboat/logo.svg';
+		} else {
+			$data['logo'] = '';
+		}
 
-		// Order
 		$this->load->model('sale/order');
-
-		// Product
 		$this->load->model('catalog/product');
-
-		// Setting
-		$this->load->model('setting/setting');
-
-		// Upload
 		$this->load->model('tool/upload');
-
-		// Subscription
-		$this->load->model('sale/subscription');
 
 		$data['orders'] = [];
 
@@ -1626,140 +1811,106 @@ class Order extends \Opencart\System\Engine\Controller {
 		}
 
 		foreach ($orders as $order_id) {
+			$order_id = (int)$order_id;
 			$order_info = $this->model_sale_order->getOrder($order_id);
 
-			// Make sure there is a shipping method
-			if ($order_info && $order_info['shipping_method']) {
-				$store_info = $this->model_setting_setting->getSetting('config', $order_info['store_id']);
+			if (!$order_info) {
+				continue;
+			}
 
-				if ($store_info) {
-					$store_address = $store_info['config_address'];
-					$store_email = $store_info['config_email'];
-					$store_telephone = $store_info['config_telephone'];
-				} else {
-					$store_address = $this->config->get('config_address');
-					$store_email = $this->config->get('config_email');
-					$store_telephone = $this->config->get('config_telephone');
-				}
+			$has_shipping = !empty($order_info['shipping_method']) || !empty($order_info['shipping_firstname']) || !empty($order_info['shipping_address_1']);
 
-				if ($order_info['invoice_no']) {
-					$invoice_no = $order_info['invoice_prefix'] . $order_info['invoice_no'];
-				} else {
-					$invoice_no = '';
-				}
+			if (!$has_shipping) {
+				continue;
+			}
 
-				// Shipping Address
-				if ($order_info['shipping_address_format']) {
-					$format = $order_info['shipping_address_format'];
-				} else {
-					$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
-				}
+			$prefix = !empty($order_info['shipping_firstname']) || !empty($order_info['shipping_address_1']) ? 'shipping' : 'payment';
 
-				$find = [
-					'{firstname}',
-					'{lastname}',
-					'{company}',
-					'{address_1}',
-					'{address_2}',
-					'{city}',
-					'{postcode}',
-					'{zone}',
-					'{zone_code}',
-					'{country}'
-				];
+			$ship_name_parts = array_filter([
+				trim((string)($order_info[$prefix . '_company'] ?? '')),
+				trim($order_info[$prefix . '_firstname'] . ' ' . $order_info[$prefix . '_lastname'])
+			]);
 
-				$replace = [
-					'firstname' => $order_info['shipping_firstname'],
-					'lastname'  => $order_info['shipping_lastname'],
-					'company'   => $order_info['shipping_company'],
-					'address_1' => $order_info['shipping_address_1'],
-					'address_2' => $order_info['shipping_address_2'],
-					'city'      => $order_info['shipping_city'],
-					'postcode'  => $order_info['shipping_postcode'],
-					'zone'      => $order_info['shipping_zone'],
-					'zone_code' => $order_info['shipping_zone_code'],
-					'country'   => $order_info['shipping_country']
-				];
+			$ship_lines = array_filter([
+				$order_info[$prefix . '_address_1'] ?? '',
+				$order_info[$prefix . '_address_2'] ?? '',
+				trim(($order_info[$prefix . '_city'] ?? '') . (!empty($order_info[$prefix . '_zone']) ? ', ' . $order_info[$prefix . '_zone'] : '') . (!empty($order_info[$prefix . '_postcode']) ? ' ' . $order_info[$prefix . '_postcode'] : '')),
+				$order_info[$prefix . '_country'] ?? ''
+			]);
 
-				$pattern_1 = [
-					"\r\n",
-					"\r",
-					"\n"
-				];
+			$first_order = false;
 
-				$pattern_2 = [
-					"/\\s\\s+/",
-					"/\r\r+/",
-					"/\n\n+/"
-				];
+			try {
+				$count = $this->db->query("SELECT COUNT(*) AS `total` FROM `" . DB_PREFIX . "order` WHERE `customer_id` = '" . (int)$order_info['customer_id'] . "' AND `order_status_id` > '0' AND `order_id` <= '" . $order_id . "'")->row;
+				$first_order = ((int)($count['total'] ?? 0) <= 1);
+			} catch (\Throwable $e) {
+			}
 
-				$shipping_address = str_replace($pattern_1, '<br/>', preg_replace($pattern_2, '<br/>', trim(str_replace($find, $replace, $format))));
+			$expected_ship = '';
 
-				$product_data = [];
+			if (!empty($order_info['expected_ship_date']) && $order_info['expected_ship_date'] !== '0000-00-00') {
+				$expected_ship = date('M j, Y', strtotime($order_info['expected_ship_date']));
+			} elseif (!empty($order_info['shipped_date']) && $order_info['shipped_date'] !== '0000-00-00') {
+				$expected_ship = date('M j, Y', strtotime($order_info['shipped_date']));
+			}
 
-				$products = $this->model_sale_order->getProducts($order_id);
+			$product_data = [];
+			$products = $this->model_sale_order->getProducts($order_id);
 
-				foreach ($products as $product) {
-					$option_weight = 0;
+			foreach ($products as $product) {
+				$option_data = [];
+				$options = $this->model_sale_order->getOptions($order_id, $product['order_product_id']);
 
-					$product_info = $this->model_catalog_product->getProduct($product['product_id']);
-
-					if ($product_info) {
-						$option_data = [];
-
-						$options = $this->model_sale_order->getOptions($order_id, $product['order_product_id']);
-
-						foreach ($options as $option) {
-							if ($option['type'] != 'file') {
-								$value = $option['value'];
-							} else {
-								$upload_info = $this->model_tool_upload->getUploadByCode($option['value']);
-
-								if ($upload_info) {
-									$value = $upload_info['name'];
-								} else {
-									$value = '';
-								}
-							}
-
-							$option_data[] = ['value' => $value] + $option;
-
-							$product_option_value_info = $this->model_catalog_product->getOptionValue($product['product_id'], $option['product_option_value_id']);
-
-							if (!empty($product_option_value_info['weight'])) {
-								if ($product_option_value_info['weight_prefix'] == '+') {
-									$option_weight += $product_option_value_info['weight'];
-								} elseif ($product_option_value_info['weight_prefix'] == '-') {
-									$option_weight -= $product_option_value_info['weight'];
-								}
-							}
-						}
-
-						$product_data[] = [
-							'option'   => $option_data,
-							'quantity' => $product['quantity'],
-							'weight'   => $this->weight->format(($product_info['weight'] + (float)$option_weight) * $product['quantity'], $product_info['weight_class_id'], $this->language->get('decimal_point'), $this->language->get('thousand_point'))
-						] + $product_info;
+				foreach ($options as $option) {
+					if ($option['type'] != 'file') {
+						$value = $option['value'];
+					} else {
+						$upload_info = $this->model_tool_upload->getUploadByCode($option['value']);
+						$value = $upload_info ? $upload_info['name'] : '';
 					}
+
+					$option_data[] = ['name' => $option['name'], 'value' => $value];
 				}
 
-				$data['orders'][] = [
-					'order_id'         => $order_id,
-					'invoice_no'       => $invoice_no,
-					'date_added'       => date($this->language->get('date_format_short'), strtotime($order_info['date_added'])),
-					'store_name'       => $order_info['store_name'],
-					'store_url'        => rtrim($order_info['store_url'], '/'),
-					'store_address'    => nl2br($store_address),
-					'store_email'      => $store_email,
-					'store_telephone'  => $store_telephone,
-					'email'            => $order_info['email'],
-					'telephone'        => $order_info['telephone'],
-					'shipping_address' => $shipping_address,
-					'shipping_method'  => $order_info['shipping_method']['name'],
-					'product'          => $product_data,
-					'comment'          => nl2br($order_info['comment'])
+				$product_info = $this->model_catalog_product->getProduct((int)$product['product_id']);
+				$sku = trim((string)($product_info['sku'] ?? ''));
+
+				if ($sku === '') {
+					$sku = (string)$product['model'];
+				}
+
+				$wsp = (float)$product['price'];
+				$srp = $product_info ? (float)$product_info['price'] : $wsp;
+
+				if ($srp <= $wsp) {
+					$srp = $wsp * 2.5;
+				}
+
+				$product_data[] = [
+					'sku'      => $sku,
+					'name'     => (string)$product['name'],
+					'option'   => $option_data,
+					'quantity' => (int)$product['quantity'],
+					'wsp'      => $this->currency->format($wsp, $order_info['currency_code'], $order_info['currency_value']),
+					'srp'      => $this->currency->format($srp, $order_info['currency_code'], $order_info['currency_value']),
+					'subtotal' => $this->currency->format((float)$product['total'], $order_info['currency_code'], $order_info['currency_value'])
 				];
 			}
+
+			$data['orders'][] = [
+				'order_id'         => $order_id,
+				'order_code'       => '#' . $order_id,
+				'date_added'       => date('M j, Y', strtotime($order_info['date_added'])),
+				'ship_date'        => $expected_ship,
+				'store_name'       => $order_info['store_name'] ?: (string)$this->config->get('config_name'),
+				'store_url'        => rtrim((string)($order_info['store_url'] ?: (defined('HTTP_CATALOG') ? HTTP_CATALOG : '')), '/'),
+				'first_order'      => $first_order,
+				'ship_to_names'    => $ship_name_parts,
+				'ship_to_lines'    => $ship_lines,
+				'telephone'        => (string)$order_info['telephone'],
+				'product'          => $product_data,
+				'page'             => '1/1'
+			];
 		}
 
 		$this->response->setOutput($this->load->view('sale/order_shipping', $data));
@@ -2096,5 +2247,510 @@ class Order extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Aggregate products from selected orders for pick list
+	 *
+	 * @return array{store:string,order_codes:array<int,string>,products:array<int,array<string,mixed>>}
+	 */
+	private function getPickListData(): array {
+		$this->load->model('sale/order');
+		$this->load->model('catalog/product');
+
+		$selected = $this->request->post['selected'] ?? $this->request->get['selected'] ?? [];
+
+		if (!is_array($selected)) {
+			$selected = $selected !== '' && $selected !== null ? [$selected] : [];
+		}
+
+		$order_codes = [];
+		$lines = [];
+
+		foreach ($selected as $order_id) {
+			$order_id = (int)$order_id;
+			$order_info = $this->model_sale_order->getOrder($order_id);
+
+			if (!$order_info) {
+				continue;
+			}
+
+			$order_codes[] = '#' . $order_id;
+			$products = $this->model_sale_order->getProducts($order_id);
+
+			foreach ($products as $product) {
+				$sku = trim((string)$product['model']);
+
+				if (!$sku && !empty($product['product_id'])) {
+					$info = $this->model_catalog_product->getProduct((int)$product['product_id']);
+					$sku = trim((string)($info['sku'] ?? $info['model'] ?? ''));
+				}
+
+				if ($sku === '') {
+					$sku = 'SKU-' . (int)$product['product_id'];
+				}
+
+				$key = strtoupper($sku) . '|' . strtoupper(trim((string)$product['name']));
+
+				if (!isset($lines[$key])) {
+					$lines[$key] = [
+						'sku'      => $sku,
+						'name'     => (string)$product['name'],
+						'quantity' => 0
+					];
+				}
+
+				$lines[$key]['quantity'] += (int)$product['quantity'];
+			}
+		}
+
+		uasort($lines, static function (array $a, array $b): int {
+			return strcasecmp($a['sku'], $b['sku']);
+		});
+
+		return [
+			'store'       => (string)$this->config->get('config_name'),
+			'order_codes' => $order_codes,
+			'products'    => array_values($lines)
+		];
+	}
+
+	/**
+	 * Printable pick list for selected orders
+	 */
+	public function pickList(): void {
+		$this->load->language('sale/order');
+
+		$pick = $this->getPickListData();
+
+		$data['title'] = $this->language->get('text_print_pick_list');
+		$data['base'] = HTTP_SERVER;
+		$data['store'] = $pick['store'];
+		$data['order_codes'] = implode(', ', $pick['order_codes']);
+		$data['products'] = $pick['products'];
+		$data['text_for'] = $this->language->get('text_pick_list_for');
+		$data['text_orders'] = $this->language->get('text_pick_list_orders');
+		$data['column_sku'] = $this->language->get('column_sku');
+		$data['column_item'] = $this->language->get('column_item');
+		$data['column_qty'] = $this->language->get('column_qty');
+		$data['text_no_results'] = $this->language->get('text_no_results');
+
+		$this->response->setOutput($this->load->view('sale/order_picklist', $data));
+	}
+
+	/**
+	 * CSV pick list for selected orders
+	 */
+	public function pickListCsv(): void {
+		$this->load->language('sale/order');
+
+		$pick = $this->getPickListData();
+
+		header('Content-Type: text/csv; charset=utf-8');
+		header('Content-Disposition: attachment; filename="pick-list-' . date('Y-m-d') . '.csv"');
+
+		$out = fopen('php://output', 'w');
+
+		if ($out === false) {
+			return;
+		}
+
+		fputcsv($out, ['For', $pick['store']]);
+		fputcsv($out, ['Order #s', implode(', ', $pick['order_codes'])]);
+		fputcsv($out, []);
+		fputcsv($out, ['SKU', 'Item', 'Qty.']);
+
+		foreach ($pick['products'] as $row) {
+			fputcsv($out, [$row['sku'], $row['name'], $row['quantity']]);
+		}
+
+		fclose($out);
+		exit;
+	}
+
+	/**
+	 * Set expected ship date for selected orders
+	 */
+	public function shipDate(): void {
+		$this->load->language('sale/order');
+
+		$json = [];
+
+		if (!$this->user->hasPermission('modify', 'sale/order')) {
+			$json['error'] = $this->language->get('error_permission');
+		}
+
+		$selected = $this->request->post['selected'] ?? [];
+
+		if (!is_array($selected)) {
+			$selected = $selected !== '' && $selected !== null ? [$selected] : [];
+		}
+
+		$ship_date = trim((string)($this->request->post['ship_date'] ?? ''));
+
+		// Accept YYYY-MM-DD or DD-MM-YYYY from browser locales
+		if (preg_match('/^(\d{2})-(\d{2})-(\d{4})$/', $ship_date, $m)) {
+			$ship_date = $m[3] . '-' . $m[2] . '-' . $m[1];
+		}
+
+		if (!$json && !$selected) {
+			$json['error'] = 'Select at least one order.';
+		}
+
+		if (!$json && ($ship_date === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $ship_date))) {
+			$json['error'] = 'Enter a valid expected ship date.';
+		}
+
+		if (!$json) {
+			try {
+				$updated = 0;
+
+				foreach ($selected as $order_id) {
+					$query = $this->db->query("SELECT `expected_ship_date` FROM `" . DB_PREFIX . "order` WHERE `order_id` = '" . (int)$order_id . "'");
+					$existing = $query->row['expected_ship_date'] ?? '';
+
+					if ($existing && $existing !== '0000-00-00') {
+						continue;
+					}
+
+					$this->db->query("UPDATE `" . DB_PREFIX . "order` SET `expected_ship_date` = '" . $this->db->escape($ship_date) . "', `date_modified` = NOW() WHERE `order_id` = '" . (int)$order_id . "' AND (`expected_ship_date` IS NULL OR `expected_ship_date` = '0000-00-00')");
+					$updated++;
+				}
+
+				if (!$updated) {
+					$json['error'] = 'Ship date is already set for the selected order(s).';
+				} else {
+					$json['success'] = 'Expected ship date set for ' . $updated . ' order(s).';
+				}
+			} catch (\Throwable $e) {
+				$json['error'] = 'Could not update ship date. Please refresh and try again.';
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Mark selected orders as shipped today
+	 */
+	public function shipOrders(): void {
+		$this->load->language('sale/order');
+
+		$json = [];
+
+		if (!$this->user->hasPermission('modify', 'sale/order')) {
+			$json['error'] = $this->language->get('error_permission');
+		}
+
+		$selected = $this->request->post['selected'] ?? [];
+
+		if (!is_array($selected)) {
+			$selected = $selected !== '' && $selected !== null ? [$selected] : [];
+		}
+
+		$shipped_date = trim((string)($this->request->post['shipped_date'] ?? date('Y-m-d')));
+
+		if (preg_match('/^(\d{2})-(\d{2})-(\d{4})$/', $shipped_date, $m)) {
+			$shipped_date = $m[3] . '-' . $m[2] . '-' . $m[1];
+		}
+
+		if (!$json && !$selected) {
+			$json['error'] = 'Select at least one order.';
+		}
+
+		if (!$json && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $shipped_date)) {
+			$json['error'] = 'Enter a valid shipped date.';
+		}
+
+		if (!$json) {
+			$complete = array_map('intval', (array)$this->config->get('config_complete_status'));
+			$status_id = $complete ? $complete[0] : (int)$this->config->get('config_order_status_id');
+
+			foreach ($selected as $order_id) {
+				$order_id = (int)$order_id;
+
+				$this->db->query("UPDATE `" . DB_PREFIX . "order` SET `shipped_date` = '" . $this->db->escape($shipped_date) . "', `order_status_id` = '" . (int)$status_id . "', `date_modified` = NOW() WHERE `order_id` = '" . $order_id . "'");
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "order_history` SET `order_id` = '" . $order_id . "', `order_status_id` = '" . (int)$status_id . "', `notify` = '0', `comment` = '" . $this->db->escape('Marked shipped on ' . $shipped_date) . "', `date_added` = NOW()");
+			}
+
+			$json['success'] = 'Marked ' . count($selected) . ' order(s) as shipped.';
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Faire-style New invoice / create order page
+	 */
+	public function create(): void {
+		$this->document->setTitle('New invoice');
+
+		$token = 'user_token=' . $this->session->data['user_token'];
+
+		$data['heading_title'] = 'New invoice';
+		$data['back'] = $this->url->link('sale/order', $token);
+		$data['save'] = $this->url->link('sale/order.createSave', $token);
+		$data['customer_autocomplete'] = $this->url->link('customer/customer.autocomplete', $token);
+		$data['product_autocomplete'] = $this->url->link('sale/order.createProduct', $token);
+		$data['user_token'] = $this->session->data['user_token'];
+		$data['currency_code'] = (string)$this->config->get('config_currency');
+
+		$data['header'] = $this->load->controller('common/header');
+		$data['column_left'] = $this->load->controller('common/column_left');
+		$data['footer'] = $this->load->controller('common/footer');
+
+		$this->response->setOutput($this->load->view('sale/invoice', $data));
+	}
+
+	/**
+	 * Product autocomplete for New invoice
+	 */
+	public function createProduct(): void {
+		$json = [];
+		$filter = trim((string)($this->request->get['filter_name'] ?? ''));
+
+		if ($filter !== '') {
+			$this->load->model('catalog/product');
+			$this->load->model('tool/image');
+
+			$results = $this->model_catalog_product->getProducts([
+				'filter_name' => $filter,
+				'start'       => 0,
+				'limit'       => 12
+			]);
+
+			if (!$results) {
+				$results = $this->model_catalog_product->getProducts([
+					'filter_model' => $filter,
+					'start'        => 0,
+					'limit'        => 12
+				]);
+			}
+
+			foreach ($results as $result) {
+				$image = (!empty($result['image']) && is_file(DIR_IMAGE . html_entity_decode($result['image'], ENT_QUOTES, 'UTF-8')))
+					? $this->model_tool_image->resize($result['image'], 56, 56)
+					: $this->model_tool_image->resize('no_image.png', 56, 56);
+
+				$json[] = [
+					'product_id'  => (int)$result['product_id'],
+					'name'        => strip_tags(html_entity_decode($result['name'], ENT_QUOTES, 'UTF-8')),
+					'model'       => (string)$result['model'],
+					'sku'         => (string)($result['sku'] ?? $result['model']),
+					'quantity'    => (int)$result['quantity'],
+					'status'      => ((int)$result['status'] ? 'Published' : 'Draft'),
+					'price'       => (float)$result['price'],
+					'price_text'  => $this->currency->format($result['price'], $this->config->get('config_currency')),
+					'image'       => $image
+				];
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Save New invoice as an order
+	 */
+	public function createSave(): void {
+		$json = [];
+
+		if (!$this->user->hasPermission('modify', 'sale/order')) {
+			$json['error'] = 'You do not have permission to create orders.';
+		}
+
+		$customer_id = (int)($this->request->post['customer_id'] ?? 0);
+		$products = json_decode(html_entity_decode((string)($this->request->post['products'] ?? '[]'), ENT_QUOTES, 'UTF-8'), true);
+		$note = trim((string)($this->request->post['note'] ?? ''));
+		$ship_mode = (string)($this->request->post['ship_mode'] ?? 'now');
+		$ship_date = trim((string)($this->request->post['ship_date'] ?? ''));
+		$send_email = !empty($this->request->post['send_email']);
+
+		if (!$json && !$customer_id) {
+			$json['error'] = 'Select a customer to continue.';
+		}
+
+		if (!$json && (!is_array($products) || !$products)) {
+			$json['error'] = 'Add at least one item to the invoice.';
+		}
+
+		if (!$json) {
+			$this->load->model('customer/customer');
+			$customer = $this->model_customer_customer->getCustomer($customer_id);
+
+			if (!$customer) {
+				$json['error'] = 'Customer not found.';
+			}
+		}
+
+		if (!$json) {
+			$addresses = $this->model_customer_customer->getAddresses($customer_id);
+			$address = $addresses[0] ?? [];
+
+			$lines = [];
+			$subtotal = 0.0;
+
+			$this->load->model('catalog/product');
+
+			foreach ($products as $row) {
+				$product_id = (int)($row['product_id'] ?? 0);
+				$qty = max(1, (int)($row['quantity'] ?? 1));
+				$info = $product_id ? $this->model_catalog_product->getProduct($product_id) : [];
+
+				if ($product_id && !$info) {
+					continue;
+				}
+
+				$name = $info ? $info['name'] : trim((string)($row['name'] ?? 'Custom item'));
+				$model = $info ? $info['model'] : trim((string)($row['model'] ?? 'CUSTOM'));
+				$price = isset($row['price']) ? (float)$row['price'] : (float)($info['price'] ?? 0);
+				$total = $price * $qty;
+				$subtotal += $total;
+
+				$lines[] = [
+					'product_id' => $product_id,
+					'name'       => $name,
+					'model'      => $model,
+					'quantity'   => $qty,
+					'price'      => $price,
+					'total'      => $total,
+					'tax'        => 0,
+					'reward'     => 0
+				];
+			}
+
+			if (!$lines) {
+				$json['error'] = 'Add at least one valid product.';
+			} else {
+				$comment = $note;
+
+				if ($ship_mode === 'future' && $ship_date !== '') {
+					$comment = trim($comment . "\nShip date: " . $ship_date);
+				} elseif ($ship_mode === 'now') {
+					$comment = trim($comment . "\nShip now");
+				}
+
+				$payment_method = json_encode(['name' => 'Invoice', 'code' => 'invoice']);
+				$shipping_method = json_encode(['name' => 'Wholesale shipping', 'code' => 'wholesale.shipping', 'cost' => 0, 'tax_class_id' => 0]);
+
+				$processing = array_map('intval', (array)$this->config->get('config_processing_status'));
+				$order_status_id = $processing ? $processing[0] : 1;
+
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "order` SET
+					`subscription_id` = '0',
+					`invoice_prefix` = '" . $this->db->escape((string)$this->config->get('config_invoice_prefix')) . "',
+					`store_id` = '0',
+					`store_name` = '" . $this->db->escape((string)$this->config->get('config_name')) . "',
+					`store_url` = '" . $this->db->escape(defined('HTTP_CATALOG') ? HTTP_CATALOG : '') . "',
+					`customer_id` = '" . (int)$customer_id . "',
+					`customer_group_id` = '" . (int)$customer['customer_group_id'] . "',
+					`firstname` = '" . $this->db->escape($customer['firstname']) . "',
+					`lastname` = '" . $this->db->escape($customer['lastname']) . "',
+					`email` = '" . $this->db->escape($customer['email']) . "',
+					`telephone` = '" . $this->db->escape($customer['telephone']) . "',
+					`custom_field` = '" . $this->db->escape(json_encode([])) . "',
+					`payment_address_id` = '" . (int)($address['address_id'] ?? 0) . "',
+					`payment_firstname` = '" . $this->db->escape($address['firstname'] ?? $customer['firstname']) . "',
+					`payment_lastname` = '" . $this->db->escape($address['lastname'] ?? $customer['lastname']) . "',
+					`payment_company` = '" . $this->db->escape($address['company'] ?? '') . "',
+					`payment_address_1` = '" . $this->db->escape($address['address_1'] ?? '') . "',
+					`payment_address_2` = '" . $this->db->escape($address['address_2'] ?? '') . "',
+					`payment_city` = '" . $this->db->escape($address['city'] ?? '') . "',
+					`payment_postcode` = '" . $this->db->escape($address['postcode'] ?? '') . "',
+					`payment_country` = '" . $this->db->escape($address['country'] ?? '') . "',
+					`payment_country_id` = '" . (int)($address['country_id'] ?? 0) . "',
+					`payment_zone` = '" . $this->db->escape($address['zone'] ?? '') . "',
+					`payment_zone_id` = '" . (int)($address['zone_id'] ?? 0) . "',
+					`payment_address_format` = '',
+					`payment_custom_field` = '" . $this->db->escape(json_encode([])) . "',
+					`payment_method` = '" . $this->db->escape($payment_method) . "',
+					`shipping_address_id` = '" . (int)($address['address_id'] ?? 0) . "',
+					`shipping_firstname` = '" . $this->db->escape($address['firstname'] ?? $customer['firstname']) . "',
+					`shipping_lastname` = '" . $this->db->escape($address['lastname'] ?? $customer['lastname']) . "',
+					`shipping_company` = '" . $this->db->escape($address['company'] ?? '') . "',
+					`shipping_address_1` = '" . $this->db->escape($address['address_1'] ?? '') . "',
+					`shipping_address_2` = '" . $this->db->escape($address['address_2'] ?? '') . "',
+					`shipping_city` = '" . $this->db->escape($address['city'] ?? '') . "',
+					`shipping_postcode` = '" . $this->db->escape($address['postcode'] ?? '') . "',
+					`shipping_country` = '" . $this->db->escape($address['country'] ?? '') . "',
+					`shipping_country_id` = '" . (int)($address['country_id'] ?? 0) . "',
+					`shipping_zone` = '" . $this->db->escape($address['zone'] ?? '') . "',
+					`shipping_zone_id` = '" . (int)($address['zone_id'] ?? 0) . "',
+					`shipping_address_format` = '',
+					`shipping_custom_field` = '" . $this->db->escape(json_encode([])) . "',
+					`shipping_method` = '" . $this->db->escape($shipping_method) . "',
+					`comment` = '" . $this->db->escape($comment) . "',
+					`total` = '" . (float)$subtotal . "',
+					`order_status_id` = '" . (int)$order_status_id . "',
+					`affiliate_id` = '0',
+					`commission` = '0',
+					`marketing_id` = '0',
+					`tracking` = '',
+					`language_id` = '" . (int)$this->config->get('config_language_id') . "',
+					`language_code` = '" . $this->db->escape((string)$this->config->get('config_language')) . "',
+					`currency_id` = '" . (int)$this->currency->getId($this->config->get('config_currency')) . "',
+					`currency_code` = '" . $this->db->escape((string)$this->config->get('config_currency')) . "',
+					`currency_value` = '" . (float)$this->currency->getValue($this->config->get('config_currency')) . "',
+					`ip` = '" . $this->db->escape($this->request->server['REMOTE_ADDR'] ?? '') . "',
+					`forwarded_ip` = '',
+					`user_agent` = '',
+					`accept_language` = '',
+					`date_added` = NOW(),
+					`date_modified` = NOW()");
+
+				$order_id = (int)$this->db->getLastId();
+
+				foreach ($lines as $line) {
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "order_product` SET
+						`order_id` = '" . (int)$order_id . "',
+						`product_id` = '" . (int)$line['product_id'] . "',
+						`master_id` = '0',
+						`name` = '" . $this->db->escape($line['name']) . "',
+						`model` = '" . $this->db->escape($line['model']) . "',
+						`quantity` = '" . (int)$line['quantity'] . "',
+						`price` = '" . (float)$line['price'] . "',
+						`total` = '" . (float)$line['total'] . "',
+						`tax` = '0',
+						`reward` = '0'");
+				}
+
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "order_total` SET `order_id` = '" . (int)$order_id . "', `extension` = 'opencart', `code` = 'sub_total', `title` = 'Sub-Total', `value` = '" . (float)$subtotal . "', `sort_order` = '1'");
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "order_total` SET `order_id` = '" . (int)$order_id . "', `extension` = 'opencart', `code` = 'total', `title` = 'Total', `value` = '" . (float)$subtotal . "', `sort_order` = '9'");
+
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "order_history` SET `order_id` = '" . (int)$order_id . "', `order_status_id` = '" . (int)$order_status_id . "', `notify` = '" . ($send_email ? 1 : 0) . "', `comment` = '" . $this->db->escape($send_email ? 'Invoice emailed to customer.' : 'Invoice created from admin.') . "', `date_added` = NOW()");
+
+				$json['success'] = true;
+				$json['order_id'] = $order_id;
+				$json['redirect'] = $this->url->link('sale/order.info', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $order_id);
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * @return array<int, int>
+	 */
+	private function getCanceledStatusIds(): array {
+		$ids = [];
+
+		try {
+			$query = $this->db->query("SELECT `order_status_id`, `name` FROM `" . DB_PREFIX . "order_status` WHERE `language_id` = '" . (int)$this->config->get('config_language_id') . "'");
+
+			foreach ($query->rows as $row) {
+				$name = strtolower((string)$row['name']);
+
+				if (str_contains($name, 'cancel') || str_contains($name, 'void') || str_contains($name, 'denied') || str_contains($name, 'refund')) {
+					$ids[] = (int)$row['order_status_id'];
+				}
+			}
+		} catch (\Throwable $e) {
+		}
+
+		return $ids;
 	}
 }

@@ -1,0 +1,323 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="faire-page faire-page--wide faire-invoice" id="faire-invoice"
+       data-save="{{ save }}"
+       data-customer="{{ customer_autocomplete }}"
+       data-product="{{ product_autocomplete }}"
+       data-currency="{{ currency_code }}">
+    <div class="faire-invoice__top">
+      <a href="{{ back }}" class="faire-link"><i class="fa-solid fa-chevron-left"></i> Orders</a>
+      <div class="faire-invoice__actions">
+        <button type="button" class="faire-link" id="button-draft">Save draft</button>
+        <button type="button" class="faire-btn" id="button-email" disabled>Email invoice</button>
+      </div>
+    </div>
+
+    <h1 class="faire-page__title">{{ heading_title }}</h1>
+
+    <section class="faire-invoice-card">
+      <h2>Customer details</h2>
+      <div class="faire-invoice-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" id="input-customer-search" placeholder="Search by name, email, or store name" autocomplete="off"/>
+        <div class="faire-invoice-suggest" id="customer-suggest"></div>
+      </div>
+      <div class="faire-invoice-customer" id="customer-selected" hidden>
+        <div>
+          <strong id="customer-name"></strong>
+          <span id="customer-meta"></span>
+        </div>
+        <button type="button" class="faire-link" id="button-clear-customer">Change</button>
+      </div>
+      <input type="hidden" id="input-customer-id" value="0"/>
+    </section>
+
+    <section class="faire-invoice-card">
+      <div class="faire-invoice-card__head">
+        <h2>Order details</h2>
+        <button type="button" class="faire-link" id="button-custom-item">Add custom item</button>
+      </div>
+      <div class="faire-invoice-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" id="input-product-search" placeholder="Search by product name or SKU" autocomplete="off"/>
+        <div class="faire-invoice-suggest faire-invoice-suggest--products" id="product-suggest"></div>
+      </div>
+
+      <div class="faire-invoice-table-wrap">
+        <table class="faire-invoice-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Availability</th>
+              <th>Ship date</th>
+              <th>Qty</th>
+              <th>Status</th>
+              <th class="text-end">WS price</th>
+              <th class="text-end">Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="invoice-lines">
+            <tr class="faire-invoice-empty-row"><td colspan="8">No items added</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="faire-invoice-split">
+      <div class="faire-invoice-card">
+        <h2>Set a ship date</h2>
+        <p class="faire-invoice-help">If this order contains a ready to ship product you can specify the shipping date.</p>
+        <label class="faire-invoice-radio"><input type="radio" name="ship_mode" value="now" checked/> Ship now</label>
+        <label class="faire-invoice-radio"><input type="radio" name="ship_mode" value="future"/> Set future ship date</label>
+        <input type="date" id="input-ship-date" class="faire-invoice-date" disabled/>
+      </div>
+      <div class="faire-invoice-card">
+        <h2>Invoice summary</h2>
+        <div class="faire-invoice-summary">
+          <div><span>Subtotal</span><strong id="summary-subtotal">$0.00</strong></div>
+          <div><span>Add promotion</span><em class="faire-link">—</em></div>
+          <div><span>Estimated shipping</span><strong>TBD</strong></div>
+          <div class="faire-invoice-summary__total"><span>Total</span><strong id="summary-total">$0.00</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="faire-invoice-card">
+      <h2>Note to self</h2>
+      <textarea id="input-note" rows="3" placeholder="Add any order details you'd like to remember"></textarea>
+    </section>
+  </div>
+</div>
+<script type="text/javascript"><!--
+(function () {
+  var root = document.getElementById('faire-invoice');
+  if (!root) return;
+
+  var lines = [];
+  var currency = root.getAttribute('data-currency') || 'USD';
+
+  function money(n) {
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency: currency }).format(n || 0);
+  }
+
+  function refreshActions() {
+    var ready = !!document.getElementById('input-customer-id').value && document.getElementById('input-customer-id').value !== '0' && lines.length > 0;
+    document.getElementById('button-email').disabled = !ready;
+  }
+
+  function renderLines() {
+    var body = document.getElementById('invoice-lines');
+    if (!lines.length) {
+      body.innerHTML = '<tr class="faire-invoice-empty-row"><td colspan="8">No items added</td></tr>';
+      document.getElementById('summary-subtotal').textContent = money(0);
+      document.getElementById('summary-total').textContent = money(0);
+      refreshActions();
+      return;
+    }
+
+    var html = '';
+    var subtotal = 0;
+    lines.forEach(function (line, index) {
+      var total = line.price * line.quantity;
+      subtotal += total;
+      html += '<tr>' +
+        '<td><div class="faire-invoice-item"><img src="' + line.image + '" alt=""/><div><strong>' + line.name + '</strong><span>SKU: ' + (line.sku || line.model || '') + '</span></div></div></td>' +
+        '<td>' + line.quantity_available + ' available</td>' +
+        '<td>—</td>' +
+        '<td><input type="number" min="1" class="faire-invoice-qty" data-index="' + index + '" value="' + line.quantity + '"/></td>' +
+        '<td>' + line.status + '</td>' +
+        '<td class="text-end">' + money(line.price) + '</td>' +
+        '<td class="text-end">' + money(total) + '</td>' +
+        '<td><button type="button" class="faire-invoice-remove" data-index="' + index + '"><i class="fa-solid fa-xmark"></i></button></td>' +
+      '</tr>';
+    });
+    body.innerHTML = html;
+    document.getElementById('summary-subtotal').textContent = money(subtotal);
+    document.getElementById('summary-total').textContent = money(subtotal);
+    refreshActions();
+  }
+
+  function hideSuggest(id) {
+    var el = document.getElementById(id);
+    el.innerHTML = '';
+    el.classList.remove('is-open');
+  }
+
+  function debounce(fn, wait) {
+    var t;
+    return function () {
+      var args = arguments, ctx = this;
+      clearTimeout(t);
+      t = setTimeout(function () { fn.apply(ctx, args); }, wait);
+    };
+  }
+
+  document.getElementById('input-customer-search').addEventListener('input', debounce(function () {
+    var q = this.value.trim();
+    var box = document.getElementById('customer-suggest');
+    if (q.length < 2) { hideSuggest('customer-suggest'); return; }
+    fetch(root.getAttribute('data-customer') + '&filter_name=' + encodeURIComponent(q), { credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        if (!json.length) {
+          box.innerHTML = '<div class="faire-invoice-suggest__empty">No customers found</div>';
+          box.classList.add('is-open');
+          return;
+        }
+        box.innerHTML = json.map(function (item) {
+          var company = item.company || '';
+          return '<button type="button" class="faire-invoice-suggest__row" data-id="' + item.customer_id + '" data-name="' + (item.name || '').replace(/"/g, '&quot;') + '" data-email="' + (item.email || '') + '" data-company="' + String(company).replace(/"/g, '&quot;') + '"><strong>' + (company || item.name) + '</strong><span>' + item.name + (item.email ? ' · ' + item.email : '') + '</span></button>';
+        }).join('');
+        box.classList.add('is-open');
+      });
+  }, 220));
+
+  document.getElementById('customer-suggest').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-id]');
+    if (!btn) return;
+    document.getElementById('input-customer-id').value = btn.getAttribute('data-id');
+    document.getElementById('customer-name').textContent = btn.getAttribute('data-company') || btn.getAttribute('data-name');
+    document.getElementById('customer-meta').textContent = btn.getAttribute('data-name') + (btn.getAttribute('data-email') ? ' · ' + btn.getAttribute('data-email') : '');
+    document.getElementById('customer-selected').hidden = false;
+    document.getElementById('input-customer-search').value = '';
+    document.getElementById('input-customer-search').closest('.faire-invoice-search').hidden = true;
+    hideSuggest('customer-suggest');
+    refreshActions();
+  });
+
+  document.getElementById('button-clear-customer').addEventListener('click', function () {
+    document.getElementById('input-customer-id').value = '0';
+    document.getElementById('customer-selected').hidden = true;
+    document.getElementById('input-customer-search').closest('.faire-invoice-search').hidden = false;
+    refreshActions();
+  });
+
+  document.getElementById('input-product-search').addEventListener('input', debounce(function () {
+    var q = this.value.trim();
+    var box = document.getElementById('product-suggest');
+    if (q.length < 2) { hideSuggest('product-suggest'); return; }
+    fetch(root.getAttribute('data-product') + '&filter_name=' + encodeURIComponent(q), { credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        if (!json.length) {
+          box.innerHTML = '<div class="faire-invoice-suggest__empty">No products found</div>';
+          box.classList.add('is-open');
+          return;
+        }
+        box.innerHTML = json.map(function (item) {
+          return '<button type="button" class="faire-invoice-suggest__product" data-json="' + encodeURIComponent(JSON.stringify(item)) + '">' +
+            '<img src="' + item.image + '" alt=""/>' +
+            '<div><strong>' + item.name + '</strong><span>SKU: ' + (item.sku || item.model) + '</span></div>' +
+            '<em>' + item.status + '</em>' +
+            '<span>' + item.quantity + ' available</span>' +
+            '<b>' + item.price_text + '</b>' +
+          '</button>';
+        }).join('');
+        box.classList.add('is-open');
+      });
+  }, 220));
+
+  document.getElementById('product-suggest').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-json]');
+    if (!btn) return;
+    var item = JSON.parse(decodeURIComponent(btn.getAttribute('data-json')));
+    var existing = lines.find(function (line) { return line.product_id === item.product_id; });
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      lines.push({
+        product_id: item.product_id,
+        name: item.name,
+        model: item.model,
+        sku: item.sku,
+        image: item.image,
+        price: Number(item.price),
+        quantity: 1,
+        quantity_available: item.quantity,
+        status: item.status
+      });
+    }
+    document.getElementById('input-product-search').value = '';
+    hideSuggest('product-suggest');
+    renderLines();
+  });
+
+  document.getElementById('invoice-lines').addEventListener('change', function (e) {
+    if (!e.target.classList.contains('faire-invoice-qty')) return;
+    var index = Number(e.target.getAttribute('data-index'));
+    lines[index].quantity = Math.max(1, Number(e.target.value) || 1);
+    renderLines();
+  });
+
+  document.getElementById('invoice-lines').addEventListener('click', function (e) {
+    var btn = e.target.closest('.faire-invoice-remove');
+    if (!btn) return;
+    lines.splice(Number(btn.getAttribute('data-index')), 1);
+    renderLines();
+  });
+
+  document.getElementById('button-custom-item').addEventListener('click', function () {
+    var name = prompt('Custom item name');
+    if (!name) return;
+    var price = Number(prompt('Wholesale price', '0') || 0);
+    lines.push({
+      product_id: 0,
+      name: name,
+      model: 'CUSTOM',
+      sku: 'CUSTOM',
+      image: 'view/image/no_image.png',
+      price: price,
+      quantity: 1,
+      quantity_available: 999,
+      status: 'Custom'
+    });
+    renderLines();
+  });
+
+  document.querySelectorAll('input[name="ship_mode"]').forEach(function (el) {
+    el.addEventListener('change', function () {
+      document.getElementById('input-ship-date').disabled = document.querySelector('input[name="ship_mode"]:checked').value !== 'future';
+    });
+  });
+
+  function submitInvoice(sendEmail) {
+    var customerId = document.getElementById('input-customer-id').value;
+    if (!customerId || customerId === '0') {
+      alert('Select a customer first.');
+      return;
+    }
+    if (!lines.length) {
+      alert('Add at least one item.');
+      return;
+    }
+
+    var data = new FormData();
+    data.append('customer_id', customerId);
+    data.append('products', JSON.stringify(lines));
+    data.append('note', document.getElementById('input-note').value);
+    data.append('ship_mode', document.querySelector('input[name="ship_mode"]:checked').value);
+    data.append('ship_date', document.getElementById('input-ship-date').value);
+    if (sendEmail) data.append('send_email', '1');
+
+    fetch(root.getAttribute('data-save'), { method: 'POST', body: data, credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        if (json.error) {
+          alert(json.error);
+          return;
+        }
+        window.location = json.redirect;
+      });
+  }
+
+  document.getElementById('button-draft').addEventListener('click', function () { submitInvoice(false); });
+  document.getElementById('button-email').addEventListener('click', function () { submitInvoice(true); });
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('#customer-suggest') && !e.target.closest('#input-customer-search')) hideSuggest('customer-suggest');
+    if (!e.target.closest('#product-suggest') && !e.target.closest('#input-product-search')) hideSuggest('product-suggest');
+  });
+})();
+//--></script>
+{{ footer }}

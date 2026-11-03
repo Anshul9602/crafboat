@@ -1,0 +1,23 @@
+<?php
+$_['heading_title']       = 'Messages';
+$_['text_home']           = 'Home';
+$_['text_search']         = 'Search messages';
+$_['text_unread']         = 'Unread';
+$_['text_starred']        = 'Starred';
+$_['text_empty']          = 'No conversations yet.';
+$_['text_empty_thread']   = 'Select a conversation to start messaging.';
+$_['text_type']           = 'Type a message...';
+$_['text_send']           = 'Send';
+$_['text_member_since']   = 'Member since %s';
+$_['text_order_volume']   = 'Order volume';
+$_['text_total_orders']   = 'Total orders';
+$_['text_contact']        = 'Contact';
+$_['text_address']        = 'Address';
+$_['text_recent_orders']  = 'Recent orders';
+$_['text_no_orders']      = 'No orders yet.';
+$_['text_system_order']   = 'Order #%s placed';
+$_['text_online_store']   = 'Retailer';
+$_['text_you']            = 'You';
+$_['error_permission']    = 'Warning: You do not have permission to modify messages!';
+$_['error_message']       = 'Please enter a message.';
+$_['error_thread']        = 'Conversation not found.';

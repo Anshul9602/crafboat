@@ -1,13 +1,47 @@
 <nav id="column-left" class="faire-sidebar">
+	{% if logged %}
+		<div class="faire-sidebar-brand">
+			<a href="{{ home }}" class="faire-sidebar-brand__logo">
+				{% if logo %}
+					<img src="{{ logo }}" alt="{{ brand_name }}" title="{{ brand_name }}"/>
+				{% else %}
+					<span>{{ brand_name }}</span>
+				{% endif %}
+			</a>
+			<div class="faire-sidebar-brand__actions">
+				<div class="dropdown">
+					<a href="#" data-bs-toggle="dropdown" class="faire-sidebar-icon" aria-label="Notifications"><i class="fa-regular fa-bell"></i>{% if notification_total %} <span class="faire-sidebar-badge">{{ notification_total }}</span>{% endif %}</a>
+					<div class="dropdown-menu">
+						{% if notifications %}
+							{% for notification in notifications %}
+								<a href="{{ notification.href }}" data-bs-toggle="modal" class="dropdown-item">{{ notification.title }}</a>
+							{% endfor %}
+							<a href="{{ notification_all }}" class="dropdown-item text-center text-primary">{{ text_notification_all }}</a>
+						{% else %}
+							<span class="dropdown-item text-center">{{ text_no_results }}</span>
+						{% endif %}
+					</div>
+				</div>
+				<div class="dropdown">
+					<a href="#" data-bs-toggle="dropdown" class="faire-sidebar-icon" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+					<ul class="dropdown-menu">
+						<li><a href="{{ profile }}" class="dropdown-item"><i class="fa-solid fa-user-circle fa-fw"></i> {{ text_profile }}</a></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a href="{{ logout }}" class="dropdown-item"><i class="fa-solid fa-sign-out fa-fw"></i> {{ text_logout }}</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	{% endif %}
 	<div id="navigation"><span class="fa-solid fa-bars"></span> {{ text_navigation }}</div>
 	<ul id="menu">
 		{% set i = 0 %}
 		{% for menu in menus %}
 			<li id="{{ menu.id }}">
 				{% if menu.href %}
-					<a href="{{ menu.href }}"><i class="{{ menu.icon }}"></i> {{ menu.name }}</a>
+					<a href="{{ menu.href }}"><i class="{{ menu.icon }}"></i> {{ menu.name|raw }}</a>
 				{% else %}
-					<a href="#collapse-{{ i }}" data-bs-toggle="collapse" class="parent collapsed"><i class="{{ menu.icon }}"></i> {{ menu.name }}</a>
+					<a href="#collapse-{{ i }}" data-bs-toggle="collapse" class="parent collapsed"><i class="{{ menu.icon }}"></i> {{ menu.name|raw }}</a>
 				{% endif %}
 				{% if menu.children %}
 					<ul id="collapse-{{ i }}" class="collapse">

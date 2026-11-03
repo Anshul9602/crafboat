@@ -1,0 +1,62 @@
+{{ header }}
+<div id="checkout-success" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+      <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <div class="row">
+    {{ column_left }}
+    <div id="content" class="col">
+      {{ content_top }}
+
+      <section class="cb-thanks">
+        <div class="cb-thanks__mark" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="17" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10.5 18.5L15.5 23.5L25.5 12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <p class="cb-thanks__eyebrow">{{ text_eyebrow }}</p>
+        <h1>{{ heading_title }}</h1>
+        <p class="cb-thanks__lead">{{ text_lead }}</p>
+
+        {% if order_id %}
+          <div class="cb-thanks__order">
+            <span>{{ text_order_label }}</span>
+            <strong>#{{ order_id }}</strong>
+          </div>
+        {% endif %}
+
+        <ul class="cb-thanks__steps">
+          <li>
+            <strong>{{ text_step_email_title }}</strong>
+            <span>{{ text_step_email }}</span>
+          </li>
+          <li>
+            <strong>{{ text_step_review_title }}</strong>
+            <span>{{ text_step_review }}</span>
+          </li>
+          <li>
+            <strong>{{ text_step_help_title }}</strong>
+            <span>{{ text_step_help }}</span>
+          </li>
+        </ul>
+
+        <div class="cb-thanks__actions">
+          {% if order %}
+            <a href="{{ order }}" class="cb-btn cb-btn--black">{{ button_order }}</a>
+          {% endif %}
+          <a href="{{ continue }}" class="cb-btn {% if order %}cb-btn--line{% else %}cb-btn--black{% endif %}">{{ button_continue }}</a>
+          <a href="{{ contact }}" class="cb-thanks__link">{{ button_contact }}</a>
+        </div>
+      </section>
+
+      {{ content_bottom }}
+    </div>
+    {{ column_right }}
+  </div>
+</div>
+{{ footer }}

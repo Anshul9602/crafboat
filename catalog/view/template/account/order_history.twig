@@ -1,30 +1,19 @@
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>{{ column_date_added }}</th>
-        <th>{{ column_comment }}</th>
-        <th>{{ column_status }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% if histories %}
-        {% for history in histories %}
-          <tr>
-            <td>{{ history.date_added }}</td>
-            <td>{{ history.comment }}</td>
-            <td>{{ history.status }}</td>
-          </tr>
-        {% endfor %}
-      {% else %}
-        <tr>
-          <td class="text-center" colspan="3">{{ text_no_results }}</td>
-        </tr>
-      {% endif %}
-    </tbody>
-  </table>
-</div>
-<div class="row">
-  <div class="col-sm-6 text-start">{{ pagination }}</div>
-  <div class="col-sm-6 text-end">{{ results }}</div>
-</div>
+{% if histories %}
+  <div class="cb-order__timeline">
+    {% for history in histories %}
+      <div class="cb-order__timeline-row">
+        <div class="cb-order__timeline-date">{{ history.date_added }}</div>
+        <div class="cb-order__timeline-body">
+          <strong>{{ history.status }}</strong>
+          {% if history.comment %}<span>{{ history.comment }}</span>{% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="cb-orders__pager">
+    <div>{{ pagination }}</div>
+    <div>{{ results }}</div>
+  </div>
+{% else %}
+  <p class="cb-order__note">{{ text_no_results }}</p>
+{% endif %}

@@ -16,6 +16,10 @@ body {
     box-shadow: none !important;
 }
 
+body.faire-shell #header.faire-header-mobile {
+    display: none;
+}
+
 #header .navbar-brand img {
     max-height: 34px;
     width: auto;
@@ -33,10 +37,80 @@ body {
 
 #column-left,
 #column-left.faire-sidebar {
-    background: #faf9f7 !important;
-    border-right: 1px solid #ebe8e2 !important;
-    padding-top: 70px;
-    width: 260px !important;
+    background: #f3f1ec !important;
+    border-right: 1px solid #e7e3db !important;
+    padding-top: 0;
+    width: 248px !important;
+}
+
+.faire-sidebar-brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 20px 14px 14px;
+}
+
+.faire-sidebar-brand__logo {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    text-decoration: none;
+    color: #111;
+}
+
+.faire-sidebar-brand__logo img {
+    max-height: 36px;
+    max-width: 140px;
+    width: auto;
+    object-fit: contain;
+}
+
+.faire-sidebar-brand__logo span {
+    font-family: "Libre Baskerville", "Times New Roman", Times, serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.faire-sidebar-brand__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 auto;
+}
+
+.faire-sidebar-icon {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a4741;
+    text-decoration: none;
+}
+
+.faire-sidebar-icon:hover {
+    background: #ebe7df;
+    color: #111;
+}
+
+.faire-sidebar-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #111;
+    color: #fff;
+    font-size: 9px;
+    line-height: 14px;
+    text-align: center;
+    font-weight: 600;
 }
 
 @media (min-width: 992px) {
@@ -44,7 +118,18 @@ body {
     #column-left.active + #content + #footer,
     #column-left + #content,
     #column-left + #content + #footer {
-        margin-left: 260px !important;
+        margin-left: 248px !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    body.faire-shell #header.faire-header-mobile {
+        display: flex;
+    }
+
+    #column-left,
+    #column-left.faire-sidebar {
+        padding-top: 12px;
     }
 }
 
@@ -167,8 +252,51 @@ body {
 }
 
 #content {
-    background: #fff !important;
-    min-height: calc(100vh - 60px);
+    background: #f7f6f3 !important;
+    min-height: 100vh;
+}
+
+body.faire-shell #content {
+    padding-top: 8px;
+}
+
+#footer {
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0 40px 28px;
+    background: #f7f6f3;
+    border: 0;
+    text-align: left;
+    color: #8a867e;
+}
+
+.faire-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #ebe8e2;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.faire-footer__brand,
+.faire-footer__brand a {
+    color: #8a867e;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.faire-footer__meta {
+    color: #b0aaa0;
+}
+
+@media (max-width: 991.98px) {
+    #footer {
+        padding: 0 20px 24px;
+    }
 }
 
 #content .page-header {
@@ -1614,9 +1742,14 @@ body {
 }
 
 /* —— Home dashboard —— */
+.faire-home.faire-page,
+.faire-home.faire-page--wide,
 .faire-home {
-    max-width: 920px;
-    margin-left: 0;
+    width: 100%;
+    max-width: 90%;
+    margin: auto;
+    padding: 28px 40px 48px;
+    box-sizing: border-box;
 }
 
 .faire-home__head {
@@ -1624,15 +1757,23 @@ body {
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 22px;
+    margin-bottom: 28px;
+}
+
+.faire-home .faire-page__title {
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin: 0;
 }
 
 .faire-home-card {
-    border: 1px solid #ebe8e2;
-    border-radius: 14px;
+    border: 1px solid #e7e3db;
+    border-radius: 12px;
     background: #fff;
-    padding: 22px 22px 8px;
-    margin-bottom: 16px;
+    padding: 24px 24px 10px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 0 rgba(26, 26, 26, 0.02);
 }
 
 .faire-home-card__head {
@@ -1640,19 +1781,24 @@ body {
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .faire-home-card__head h2 {
     margin: 0 0 4px;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
+    color: #111;
 }
 
 .faire-home-card__head p {
     margin: 0;
     color: #8a867e;
     font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .faire-home-card__meta {
@@ -1664,8 +1810,8 @@ body {
 .faire-home-beta {
     display: inline-flex;
     align-items: center;
-    padding: 2px 8px;
-    border-radius: 999px;
+    padding: 1px 7px;
+    border-radius: 4px;
     background: #efece6;
     color: #6b6760;
     font-size: 11px;
@@ -1673,35 +1819,47 @@ body {
 }
 
 .faire-home-tip {
+    padding-bottom: 24px;
+}
+
+.faire-home-tip__title {
+    margin: 0 0 14px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111;
+}
+
+.faire-home-tip__box {
     display: flex;
-    gap: 16px;
+    gap: 14px;
     align-items: flex-start;
-    padding-bottom: 22px;
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    padding: 16px;
+    background: #fcfcfb;
 }
 
 .faire-home-tip__icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     background: #f0eee9;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #3d3d3d;
-    flex: 0 0 44px;
+    color: #6b6760;
+    flex: 0 0 40px;
 }
 
-.faire-home-tip__body h2 {
-    margin: 0 0 6px;
-    font-size: 16px;
-    font-weight: 600;
+.faire-home-tip__body {
+    min-width: 0;
 }
 
 .faire-home-tip__body p {
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     color: #4a4741;
     font-size: 14px;
-    line-height: 1.45;
+    line-height: 1.5;
 }
 
 .faire-home-list {
@@ -1715,7 +1873,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 16px 0;
+    padding: 18px 4px;
     border-top: 1px solid #f0eee9;
     text-decoration: none;
     color: inherit;
@@ -1726,11 +1884,32 @@ body {
     border-top: 0;
 }
 
+.faire-home-row__stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
 .faire-home-row__main {
     display: flex;
     align-items: center;
     gap: 12px;
     min-width: 0;
+    width: 100%;
+}
+
+.faire-home-row__copy {
+    min-width: 0;
+}
+
+.faire-home-row__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    flex: 0 0 auto;
 }
 
 .faire-home-badge {
@@ -1745,7 +1924,8 @@ body {
     white-space: nowrap;
 }
 
-.faire-home-badge--top {
+.faire-home-badge--top,
+.faire-home-badge--lead {
     background: #f3ebe0;
     color: #8a5a2b;
 }
@@ -1756,17 +1936,17 @@ body {
 }
 
 .faire-home-avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: #2f2f2f;
+    background: #1f1f1f;
     color: #fff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    flex: 0 0 36px;
+    flex: 0 0 40px;
 }
 
 .faire-home-name {
@@ -1775,6 +1955,7 @@ body {
     font-weight: 600;
     text-decoration: none;
     margin-bottom: 2px;
+    font-size: 15px;
 }
 
 .faire-home-insight {
@@ -1792,6 +1973,24 @@ body {
 
 .faire-home-msg:hover {
     text-decoration: underline;
+}
+
+.faire-home-dismiss {
+    width: 28px;
+    height: 28px;
+    border: 0;
+    background: transparent;
+    color: #b0aaa0;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.faire-home-dismiss:hover {
+    background: #f2f0eb;
+    color: #4a4741;
 }
 
 .faire-home-status {
@@ -1833,7 +2032,17 @@ body {
 }
 
 .faire-home-order__discount {
-    min-width: 80px;
+    min-width: 52px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #f2f0eb;
+    color: #6b6760;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.faire-home-order__discount--muted {
     color: #8a867e;
 }
 
@@ -1852,7 +2061,31 @@ body {
     background: #fbfaf8;
 }
 
+.faire-home .faire-empty {
+    padding: 18px 0 22px;
+    color: #8a867e;
+    font-size: 14px;
+}
+
+@media (max-width: 991.98px) {
+    .faire-home.faire-page,
+    .faire-home.faire-page--wide,
+    .faire-home {
+        padding: 20px 20px 40px;
+    }
+}
+
 @media (max-width: 767.98px) {
+    .faire-home.faire-page,
+    .faire-home.faire-page--wide,
+    .faire-home {
+        padding: 12px 16px 32px;
+    }
+
+    .faire-home .faire-page__title {
+        font-size: 30px;
+    }
+
     .faire-home-order {
         flex-wrap: wrap;
     }
@@ -1865,6 +2098,11 @@ body {
     .faire-home-row {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .faire-home-row__actions {
+        width: 100%;
+        justify-content: space-between;
     }
 }
 
@@ -2420,5 +2658,1168 @@ body {
         left: 16px;
         right: 16px;
         justify-content: center;
+    }
+}
+
+/* —— Messages (Faire-style) —— */
+body.faire-shell #content.faire-messages-page {
+    padding: 0 !important;
+    background: #f7f6f3 !important;
+}
+
+.faire-messages-page {
+    min-height: calc(100vh - 24px);
+}
+
+.faire-messages {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr) 300px;
+    min-height: calc(100vh - 24px);
+    background: #fff;
+    border-left: 1px solid #ebe8e2;
+}
+
+.faire-messages__list,
+.faire-messages__context {
+    background: #faf9f7;
+    border-right: 1px solid #ebe8e2;
+    min-height: calc(100vh - 24px);
+    display: flex;
+    flex-direction: column;
+}
+
+.faire-messages__context {
+    border-right: 0;
+    border-left: 1px solid #ebe8e2;
+    padding: 22px 18px;
+    gap: 18px;
+    overflow: auto;
+}
+
+.faire-messages__list-head {
+    padding: 22px 18px 10px;
+}
+
+.faire-messages__list-head h1 {
+    margin: 0;
+    font-size: 28px;
+    font-family: "Libre Baskerville", "Times New Roman", Times, serif;
+    font-weight: 400;
+}
+
+.faire-messages__search {
+    position: relative;
+    margin: 0 14px 12px;
+}
+
+.faire-messages__search i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-messages__search input {
+    width: 100%;
+    border: 1px solid #e7e3db;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 12px 10px 34px;
+    font-size: 13px;
+}
+
+.faire-messages__filters {
+    display: flex;
+    gap: 8px;
+    padding: 0 14px 12px;
+}
+
+.faire-messages__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #efece6;
+    color: #4a4741;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.faire-messages__chip.is-on {
+    background: #1f1f1f;
+    color: #fff;
+}
+
+.faire-messages__threads {
+    overflow: auto;
+    flex: 1;
+    padding-bottom: 20px;
+}
+
+.faire-messages__thread {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: start;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: inherit;
+    border-left: 3px solid transparent;
+}
+
+.faire-messages__thread:hover,
+.faire-messages__thread.is-active {
+    background: #f3f1ec;
+}
+
+.faire-messages__thread.is-active {
+    border-left-color: #1f1f1f;
+}
+
+.faire-messages__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #1f1f1f;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.faire-messages__thread-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.faire-messages__thread-top strong {
+    font-size: 14px;
+    color: #111;
+}
+
+.faire-messages__thread-top em,
+.faire-messages__thread-preview,
+.faire-messages__muted {
+    font-style: normal;
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-messages__thread-preview {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.faire-messages__thread.is-unread .faire-messages__thread-preview {
+    color: #4a4741;
+    font-weight: 500;
+}
+
+.faire-messages__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c47b3a;
+    margin-top: 8px;
+}
+
+.faire-messages__star-mark {
+    color: #c47b3a;
+    font-size: 11px;
+    margin-top: 6px;
+}
+
+.faire-messages__chat {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: #fff;
+}
+
+.faire-messages__chat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #f0eee9;
+}
+
+.faire-messages__chat-head h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.faire-messages__chat-actions {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.faire-messages__icon-btn {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    background: transparent;
+    border-radius: 8px;
+    color: #6b6760;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.faire-messages__icon-btn:hover {
+    background: #f2f0eb;
+    color: #111;
+}
+
+.faire-messages__stream {
+    flex: 1;
+    overflow: auto;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #fcfcfb;
+}
+
+.faire-messages__day,
+.faire-messages__system {
+    align-self: center;
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-messages__bubble-wrap {
+    max-width: min(72%, 520px);
+    display: flex;
+    flex-direction: column;
+}
+
+.faire-messages__bubble-wrap--customer {
+    align-self: flex-start;
+}
+
+.faire-messages__bubble-wrap--admin {
+    align-self: flex-end;
+}
+
+.faire-messages__bubble {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    color: #2c2c2c;
+    font-size: 14px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+}
+
+.faire-messages__bubble-wrap--admin .faire-messages__bubble {
+    background: #f3ebe0;
+    border-color: #eadfcf;
+}
+
+.faire-messages__meta {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #8a867e;
+}
+
+.faire-messages__bubble-wrap--admin .faire-messages__meta {
+    text-align: right;
+}
+
+.faire-messages__composer {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 14px 18px 18px;
+    border-top: 1px solid #f0eee9;
+    background: #fff;
+}
+
+.faire-messages__composer textarea {
+    flex: 1;
+    resize: none;
+    min-height: 44px;
+    max-height: 140px;
+    border: 1px solid #e7e3db;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.faire-messages__send {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 12px;
+    background: #1f1f1f;
+    color: #fff;
+    cursor: pointer;
+}
+
+.faire-messages__send:hover {
+    background: #000;
+}
+
+.faire-messages__empty,
+.faire-messages__empty-chat {
+    padding: 40px 20px;
+    color: #8a867e;
+    text-align: center;
+}
+
+.faire-messages__profile h3 {
+    margin: 0 0 4px;
+    font-size: 18px;
+}
+
+.faire-messages__profile p {
+    margin: 0;
+    color: #6b6760;
+    font-size: 13px;
+}
+
+.faire-messages__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.faire-messages__stats div {
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.faire-messages__stats span {
+    display: block;
+    color: #8a867e;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.faire-messages__stats strong {
+    font-size: 16px;
+    color: #111;
+}
+
+.faire-messages__block h4 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #8a867e;
+}
+
+.faire-messages__block p {
+    margin: 0 0 4px;
+    font-size: 13px;
+}
+
+.faire-messages__order {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.faire-messages__order-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.faire-messages__order-thumbs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.faire-messages__order-thumbs img {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #f2f0eb;
+}
+
+.faire-messages__order-thumbs span {
+    font-size: 12px;
+    color: #8a867e;
+}
+
+.faire-messages__order-status {
+    font-size: 12px;
+    color: #6b6760;
+}
+
+.faire-sidebar-badge--messages {
+    position: static;
+    margin-left: 8px;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    padding: 0 6px;
+    font-size: 11px;
+}
+
+#menu > li#menu-messages > a {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 1199.98px) {
+    .faire-messages {
+        grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    .faire-messages__context {
+        display: none;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .faire-messages {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .faire-messages__list {
+        min-height: auto;
+        max-height: 42vh;
+    }
+}
+
+/* —— Orders (Faire-style) —— */
+.faire-orders {
+    padding-top: 12px;
+}
+
+.faire-orders__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.faire-orders__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.faire-orders__card {
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.faire-orders__tabs {
+    padding: 0 20px;
+    border-bottom: 1px solid #f0eee9;
+    margin: 0;
+}
+
+.faire-orders__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 20px 8px;
+}
+
+.faire-orders__search {
+    flex: 1 1 280px;
+    max-width: 420px;
+}
+
+.faire-orders__filters {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.faire-orders__bulk {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 4px 20px 14px;
+}
+
+.faire-orders__bulk-btn {
+    border: 0;
+    background: transparent;
+    color: #8a867e;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.faire-orders__bulk-btn:not(:disabled) {
+    color: #4a4741;
+}
+
+.faire-orders__bulk-btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.faire-orders__table-wrap {
+    overflow-x: auto;
+}
+
+.faire-orders__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 980px;
+}
+
+.faire-orders__table th,
+.faire-orders__table td {
+    padding: 14px 12px;
+    border-top: 1px solid #f0eee9;
+    vertical-align: middle;
+    font-size: 13px;
+    color: #2c2c2c;
+}
+
+.faire-orders__table thead th {
+    border-top: 0;
+    color: #8a867e;
+    font-weight: 500;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.faire-orders__table tbody tr:hover {
+    background: #fbfaf8;
+}
+
+.faire-orders__check {
+    width: 36px;
+    text-align: center;
+}
+
+.faire-orders__id {
+    color: #111;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.faire-orders__id:hover {
+    text-decoration: underline;
+}
+
+.faire-orders__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f2f0eb;
+    color: #6b6760;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.faire-orders__status--new {
+    background: #1f1f1f;
+    color: #fff;
+}
+
+.faire-orders__status--unfulfilled {
+    background: #f3ebe0;
+    color: #8a5a2b;
+}
+
+.faire-orders__status--fulfilled {
+    background: #efece6;
+    color: #4a4741;
+}
+
+.faire-orders__status--canceled {
+    background: #f3e8e8;
+    color: #8a3b3b;
+}
+
+.faire-orders__customer {
+    display: inline;
+    font-weight: 500;
+}
+
+.faire-orders__msg {
+    margin-left: 8px;
+    color: #8a867e;
+    text-decoration: none;
+}
+
+.faire-orders__msg:hover {
+    color: #111;
+}
+
+.faire-orders__commission {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #f2f0eb;
+    color: #6b6760;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.faire-orders__empty {
+    padding: 36px 12px !important;
+    color: #8a867e;
+}
+
+.faire-chip.is-on {
+    background: #1f1f1f;
+    color: #fff;
+    border-color: #1f1f1f;
+}
+
+@media (max-width: 767.98px) {
+    .faire-orders__head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* —— New invoice / create order —— */
+.faire-invoice {
+    padding-bottom: 64px;
+}
+
+.faire-invoice__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.faire-invoice__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.faire-invoice-card {
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 16px;
+}
+
+.faire-invoice-card h2 {
+    margin: 0 0 14px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.faire-invoice-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.faire-invoice-card__head h2 {
+    margin: 0;
+}
+
+.faire-invoice-search {
+    position: relative;
+}
+
+.faire-invoice-search i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8a867e;
+    font-size: 13px;
+}
+
+.faire-invoice-search > input {
+    width: 100%;
+    border: 1px solid #e7e3db;
+    border-radius: 10px;
+    padding: 12px 14px 12px 38px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.faire-invoice-suggest {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    max-height: 320px;
+    overflow: auto;
+    z-index: 20;
+}
+
+.faire-invoice-suggest.is-open {
+    display: block;
+}
+
+.faire-invoice-suggest__row,
+.faire-invoice-suggest__product {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0eee9;
+    cursor: pointer;
+}
+
+.faire-invoice-suggest__row:hover,
+.faire-invoice-suggest__product:hover {
+    background: #faf9f7;
+}
+
+.faire-invoice-suggest__row strong,
+.faire-invoice-suggest__product strong {
+    display: block;
+    color: #111;
+    font-size: 14px;
+}
+
+.faire-invoice-suggest__row span,
+.faire-invoice-suggest__product span {
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-invoice-suggest__product {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto auto auto;
+    gap: 12px;
+    align-items: center;
+}
+
+.faire-invoice-suggest__product img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f2f0eb;
+}
+
+.faire-invoice-suggest__product em {
+    font-style: normal;
+    color: #6b6760;
+    font-size: 12px;
+}
+
+.faire-invoice-suggest__product b {
+    font-size: 13px;
+    color: #111;
+}
+
+.faire-invoice-suggest__empty {
+    padding: 16px;
+    color: #8a867e;
+    text-align: center;
+}
+
+.faire-invoice-customer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    background: #faf9f7;
+}
+
+.faire-invoice-customer strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.faire-invoice-customer span {
+    color: #8a867e;
+    font-size: 13px;
+}
+
+.faire-invoice-table-wrap {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+.faire-invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 860px;
+}
+
+.faire-invoice-table th,
+.faire-invoice-table td {
+    padding: 12px 10px;
+    border-top: 1px solid #f0eee9;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.faire-invoice-table thead th {
+    border-top: 0;
+    color: #8a867e;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.faire-invoice-empty-row td {
+    text-align: center;
+    color: #8a867e;
+    padding: 28px 10px !important;
+}
+
+.faire-invoice-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.faire-invoice-item img {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #f2f0eb;
+}
+
+.faire-invoice-item strong {
+    display: block;
+    font-size: 13px;
+}
+
+.faire-invoice-item span {
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-invoice-qty {
+    width: 72px;
+    border: 1px solid #e7e3db;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.faire-invoice-remove {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    background: transparent;
+    color: #b0aaa0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.faire-invoice-remove:hover {
+    background: #f2f0eb;
+    color: #4a4741;
+}
+
+.faire-invoice-split {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 16px;
+}
+
+.faire-invoice-help {
+    color: #6b6760;
+    font-size: 13px;
+    margin: 0 0 14px;
+}
+
+.faire-invoice-radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.faire-invoice-date {
+    width: 100%;
+    margin-top: 8px;
+    border: 1px solid #e7e3db;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.faire-invoice-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.faire-invoice-summary > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.faire-invoice-summary__total {
+    padding-top: 10px;
+    border-top: 1px solid #f0eee9;
+    font-size: 16px !important;
+}
+
+.faire-invoice-card textarea {
+    width: 100%;
+    border: 1px solid #e7e3db;
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-height: 96px;
+    resize: vertical;
+}
+
+.faire-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+@media (max-width: 991.98px) {
+    .faire-invoice-split {
+        grid-template-columns: 1fr;
+    }
+}
+
+.faire-orders__ship {
+    font-size: 13px;
+}
+
+.faire-orders__ship-track {
+    display: inline-flex;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.faire-orders__ship-track--on-time,
+.faire-orders__ship-track--scheduled {
+    background: #e8f3ea;
+    color: #1f6b34;
+}
+
+.faire-orders__ship-track--late {
+    background: #fdeceb;
+    color: #a12828;
+}
+
+.faire-orders__ship-track--scheduled {
+    background: #eaf3f5;
+    color: #123942;
+}
+
+.faire-orders__pick .dropdown-menu {
+    min-width: 200px;
+    padding: 6px 0;
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+}
+
+.faire-orders__pick .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+}
+
+.faire-orders__pick .dropdown-item:hover {
+    background: #faf9f7;
+}
+
+.faire-orders__pick .dropdown-toggle::after {
+    margin-left: 8px;
+}
+
+/* —— Settings page —— */
+.faire-settings__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.faire-settings__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.faire-settings__card {
+    background: #fff;
+    border: 1px solid #ebe8e2;
+    border-radius: 14px;
+    padding: 8px 22px 28px;
+}
+
+.faire-settings__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0 0 22px;
+    padding: 12px 0 0;
+    border-bottom: 1px solid #efeae2 !important;
+}
+
+.faire-settings__tabs .nav-link {
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #6b6760 !important;
+    background: transparent !important;
+    padding: 8px 14px !important;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.faire-settings__tabs .nav-link:hover {
+    color: #111 !important;
+    background: #f5f2ec !important;
+}
+
+.faire-settings__tabs .nav-link.active {
+    color: #111 !important;
+    background: #f0ebe3 !important;
+}
+
+.faire-settings fieldset {
+    margin: 0 0 28px;
+    padding: 0;
+    border: 0;
+}
+
+.faire-settings legend {
+    float: none;
+    width: auto;
+    margin: 0 0 16px;
+    padding: 0;
+    border: 0;
+    color: #111;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.faire-settings .col-form-label {
+    color: #4a4741;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.faire-settings .form-control,
+.faire-settings .form-select,
+.faire-settings textarea.form-control {
+    border: 1px solid #e7e3db;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    box-shadow: none;
+}
+
+.faire-settings .form-control:focus,
+.faire-settings .form-select:focus,
+.faire-settings textarea.form-control:focus {
+    border-color: #cfc8bb;
+    box-shadow: 0 0 0 3px rgba(18, 57, 66, 0.08);
+}
+
+.faire-settings .form-text {
+    color: #8a867e;
+    font-size: 12px;
+}
+
+.faire-settings .img-thumbnail {
+    border: 1px solid #ebe8e2;
+    border-radius: 10px;
+    padding: 8px;
+    background: #faf9f7;
+    max-width: 320px;
+}
+
+.faire-settings .border.rounded.d-block {
+    border-color: #ebe8e2 !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    background: #faf9f7;
+}
+
+.faire-settings .border.rounded.d-block .btn-primary,
+.faire-settings .border.rounded.d-block .btn-warning {
+    border: 0;
+    border-radius: 0 !important;
+}
+
+.faire-settings .border.rounded.d-block .btn-primary {
+    background: #2f2f2f;
+}
+
+.faire-settings .border.rounded.d-block .btn-warning {
+    background: #f0ebe3;
+    color: #4a4741;
+}
+
+.faire-settings .form-switch .form-check-input {
+    width: 2.6em;
+    height: 1.4em;
+}
+
+.faire-settings .nav-tabs {
+    border-bottom: 1px solid #efeae2;
+}
+
+@media (max-width: 991.98px) {
+    .faire-settings__head {
+        flex-direction: column;
     }
 }

@@ -7,43 +7,58 @@
   </ul>
   <div class="row">{{ column_left }}
     <div id="content" class="col">{{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      {% if orders %}
-        <div class="table-responsive">
-          <table class="table table-bordered table-hover">
-            <thead>
-              <tr>
-                <th class="text-end">{{ column_order_id }}</th>
+      <div class="cb-orders">
+        <div class="cb-orders__head">
+          <div>
+            <h1>{{ heading_title }}</h1>
+            <p class="cb-orders__lead">Track wholesale orders, shipments, and order details.</p>
+          </div>
+          <a href="{{ continue }}" class="cb-btn cb-btn--line">Back to account</a>
+        </div>
 
-                <th class="text-end">{{ column_product_total }}</th>
-                <th>{{ column_status }}</th>
-                <th class="text-end">{{ column_total }}</th>
-                <th>{{ column_date_added }}</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for order in orders %}
-                <tr>
-                  <td class="text-end">#{{ order.order_id }}</td>
-                  <td class="text-end">{{ order.product_total }}</td>
-                  <td>{{ order.status }}</td>
-                  <td class="text-end">{{ order.total }}</td>
-                  <td>{{ order.date_added }}</td>
-                  <td class="text-end"><a href="{{ order.view }}" data-bs-toggle="tooltip" title="{{ button_view }}" class="btn btn-info"><i class="fa-solid fa-eye"></i></a></td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        <div class="row mb-3">
-          <div class="col-sm-6 text-start">{{ pagination }}</div>
-          <div class="col-sm-6 text-end">{{ results }}</div>
-        </div>
-      {% else %}
-        <p>{{ text_no_results }}</p>
-      {% endif %}
-      <div class="text-end"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+        {% if orders %}
+          <div class="cb-orders__list">
+            {% for order in orders %}
+              <a class="cb-order-card" href="{{ order.view }}">
+                <div class="cb-order-card__media">
+                  {% if order.thumbs %}
+                    {% for thumb in order.thumbs %}
+                      <img src="{{ thumb }}" alt=""/>
+                    {% endfor %}
+                  {% else %}
+                    <span class="cb-order-card__placeholder"></span>
+                  {% endif %}
+                </div>
+                <div class="cb-order-card__main">
+                  <div class="cb-order-card__top">
+                    <strong class="cb-order-card__id">#{{ order.order_id }}</strong>
+                    <span class="cb-order-card__status cb-order-card__status--{{ order.status_class }}">{{ order.status }}</span>
+                  </div>
+                  <div class="cb-order-card__summary">{% if order.summary %}{{ order.summary }}{% else %}{{ order.product_total }} item{% if order.product_total != 1 %}s{% endif %}{% endif %}</div>
+                  <div class="cb-order-card__meta">
+                    <span>{{ order.date_added }}</span>
+                    <span>{{ order.product_total }} item{% if order.product_total != 1 %}s{% endif %}</span>
+                  </div>
+                </div>
+                <div class="cb-order-card__side">
+                  <strong>{{ order.total }}</strong>
+                  <span>View order <i class="cb-arrow" aria-hidden="true"></i></span>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+          <div class="cb-orders__pager">
+            <div>{{ pagination }}</div>
+            <div>{{ results }}</div>
+          </div>
+        {% else %}
+          <div class="cb-orders__empty">
+            <strong>No orders yet</strong>
+            <p>{{ text_no_results }}</p>
+            <a href="{{ continue }}" class="cb-btn cb-btn--black">Back to account</a>
+          </div>
+        {% endif %}
+      </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>

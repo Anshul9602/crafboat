@@ -7,11 +7,13 @@
     </div>
 
     <section class="faire-home-card faire-home-tip">
-      <div class="faire-home-tip__icon"><i class="fa-solid fa-store"></i></div>
-      <div class="faire-home-tip__body">
-        <h2>{{ tip.title }}</h2>
-        <p>{{ tip.body }}</p>
-        <a href="{{ tip.href }}" class="faire-link">{{ tip.link }}</a>
+      <h2 class="faire-home-tip__title">{{ tip.title }}</h2>
+      <div class="faire-home-tip__box">
+        <div class="faire-home-tip__icon"><i class="fa-solid fa-building"></i></div>
+        <div class="faire-home-tip__body">
+          <p>{{ tip.body }}</p>
+          <a href="{{ tip.href }}" class="faire-link">{{ tip.link }}</a>
+        </div>
       </div>
     </section>
 
@@ -19,28 +21,28 @@
       <div class="faire-home-card__head">
         <div>
           <h2>{{ potential_title }}</h2>
-          <p>{{ potential_sub }}</p>
+          <p>{{ potential_sub }} <span class="faire-home-beta">{{ text_beta }}</span></p>
         </div>
-        <div class="faire-home-card__meta">
-          <a href="{{ potential_href }}" class="faire-link">{{ text_view_all }}</a>
-          <span class="faire-home-beta">{{ text_beta }}</span>
-        </div>
+        <a href="{{ potential_href }}" class="faire-link">{{ text_view_all }}</a>
       </div>
 
       {% if potentials %}
         <div class="faire-home-list">
           {% for item in potentials %}
             <article class="faire-home-row">
-              <div class="faire-home-row__main">
-                <span class="faire-home-badge{% if item.badge == 'Top account' %} faire-home-badge--top{% elseif item.badge == 'New account' %} faire-home-badge--new{% endif %}">{{ item.badge }}</span>
-                <span class="faire-home-avatar">{{ item.initial }}</span>
-                <div>
-                  <a href="{{ item.href }}" class="faire-home-name">{{ item.store }}</a>
-                  <div class="faire-home-insight">{{ item.insight }}</div>
+              <div class="faire-home-row__stack">
+                <span class="faire-home-badge{% if item.badge == 'Top account' %} faire-home-badge--top{% elseif item.badge == 'New account' %} faire-home-badge--new{% elseif item.badge == 'Lead' %} faire-home-badge--lead{% endif %}">{{ item.badge }}</span>
+                <div class="faire-home-row__main">
+                  <span class="faire-home-avatar">{{ item.initial }}</span>
+                  <div class="faire-home-row__copy">
+                    <a href="{{ item.href }}" class="faire-home-name">{{ item.store }}</a>
+                    <div class="faire-home-insight">{{ item.insight }}</div>
+                  </div>
                 </div>
               </div>
               <div class="faire-home-row__actions">
                 <a href="{{ item.href }}" class="faire-home-msg"><i class="fa-regular fa-comment"></i> {{ item.action }}</a>
+                <button type="button" class="faire-home-dismiss" aria-label="Dismiss" data-dismiss-row><i class="fa-solid fa-xmark"></i></button>
               </div>
             </article>
           {% endfor %}
@@ -66,7 +68,11 @@
               <span class="faire-home-status faire-home-status--{{ order.status_class }}">{{ order.status }}</span>
               <span class="faire-home-order__date">{{ order.date }}</span>
               <span class="faire-home-order__customer">{{ order.customer }}</span>
-              <span class="faire-home-order__discount">{{ order.discount }}</span>
+              {% if order.discount %}
+                <span class="faire-home-order__discount">{{ order.discount }}</span>
+              {% else %}
+                <span class="faire-home-order__discount faire-home-order__discount--muted">0%</span>
+              {% endif %}
               <span class="faire-home-order__total">{{ order.total }}</span>
               <i class="fa-solid fa-chevron-right"></i>
             </a>
@@ -79,6 +85,16 @@
   </div>
   {{ security }}
 </div>
+<script type="text/javascript"><!--
+document.querySelectorAll('[data-dismiss-row]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var row = btn.closest('.faire-home-row');
+    if (row) {
+      row.remove();
+    }
+  });
+});
+//--></script>
 {% if developer_status %}
 <script type="text/javascript"><!--
 // keep developer modal available via keyboard shortcut if needed

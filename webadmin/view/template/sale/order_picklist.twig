@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>{{ title }}</title>
+  <base href="{{ base }}"/>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 40px 48px;
+      color: #111;
+      background: #fff;
+      font: 14px/1.45 Inter, Arial, Helvetica, sans-serif;
+    }
+    .pick-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .pick-meta span {
+      display: block;
+      margin-bottom: 4px;
+      color: #6b6760;
+      font-size: 13px;
+    }
+    .pick-meta strong {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 14px 8px;
+      border-bottom: 1px solid #e8e4dc;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      border-bottom: 2px solid #d9d3c8;
+      color: #6b6760;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    td.qty, th.qty {
+      text-align: right;
+      white-space: nowrap;
+      width: 72px;
+    }
+    td.sku {
+      width: 180px;
+      white-space: nowrap;
+    }
+    td.item {
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+    }
+    .empty {
+      padding: 40px 0;
+      color: #8a867e;
+      text-align: center;
+    }
+    @media print {
+      body { padding: 16px; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="margin-bottom:20px;">
+    <button type="button" onclick="window.print()" style="padding:8px 16px;border:1px solid #111;background:#111;color:#fff;cursor:pointer;">Print</button>
+  </div>
+
+  <div class="pick-meta">
+    <div>
+      <span>{{ text_for }}</span>
+      <strong>{{ store }}</strong>
+    </div>
+    <div>
+      <span>{{ text_orders }}</span>
+      <strong>{% if order_codes %}{{ order_codes }}{% else %}—{% endif %}</strong>
+    </div>
+  </div>
+
+  {% if products %}
+    <table>
+      <thead>
+        <tr>
+          <th>{{ column_sku }}</th>
+          <th>{{ column_item }}</th>
+          <th class="qty">{{ column_qty }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+          <tr>
+            <td class="sku">{{ product.sku }}</td>
+            <td class="item">{{ product.name }}</td>
+            <td class="qty">{{ product.quantity }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty">{{ text_no_results }}</div>
+  {% endif %}
+
+  <script>window.addEventListener('load', function () { /* ready for print */ });</script>
+</body>
+</html>
