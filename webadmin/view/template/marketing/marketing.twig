@@ -1,95 +1,117 @@
 {{ header }}{{ column_left }}
 <div id="content">
-  <div class="page-header">
-    <div class="container-fluid">
-      <div class="float-end">
-        <button type="button" data-bs-toggle="tooltip" title="{{ button_filter }}" onclick="$('#filter-marketing').toggleClass('d-none');" class="btn btn-light d-md-none"><i class="fa-solid fa-filter"></i></button>
-        <a href="{{ add }}" data-bs-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
-        <button type="submit" form="form-marketing" formaction="{{ delete }}" data-bs-toggle="tooltip" title="{{ button_delete }}" onclick="return confirm('{{ text_confirm }}');" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+  <div class="faire-page faire-page--wide faire-automations">
+    <div class="faire-page__head">
+      <div>
+        <h1 class="faire-page__title">{{ heading_title }}</h1>
       </div>
-      <h1>{{ heading_title }}</h1>
-      <ol class="breadcrumb">
-        {% for breadcrumb in breadcrumbs %}
-          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+      <div class="faire-actions">
+        <a href="mailto:hello@craftboat.com?subject=Automations%20feedback" class="faire-link">{{ text_share_feedback }}</a>
+      </div>
+    </div>
+
+    <section class="faire-auto-hero" aria-label="{{ text_hero_title }}">
+      <div class="faire-auto-hero__copy">
+        <h2>{{ text_hero_title }}</h2>
+        <p>{{ text_hero_body }}</p>
+        <a href="#automations" class="faire-auto-hero__link">{{ text_hero_learn }}</a>
+      </div>
+      <div class="faire-auto-hero__art" aria-hidden="true">
+        <div class="faire-auto-hero__bubble">{{ text_hero_bubble }}</div>
+        <div class="faire-auto-hero__mail">
+          <span>{{ text_hero_mail_label }}</span>
+          <strong>{{ text_hero_mail_subject }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="faire-auto-setup">
+      <div class="faire-auto-setup__copy">
+        <h2>{{ text_setup_title }}</h2>
+        {% if setup.complete %}
+          <p class="faire-auto-setup__progress-copy">{{ text_setup_done }}</p>
+        {% elseif setup.nearly_done %}
+          <p class="faire-auto-setup__progress-copy">{{ text_setup_nearly }}</p>
+        {% else %}
+          <p class="faire-auto-setup__progress-copy">{{ text_setup_start }}</p>
+        {% endif %}
+        <div class="faire-auto-setup__bar" role="progressbar" aria-valuenow="{{ setup.progress }}" aria-valuemin="0" aria-valuemax="100">
+          <span style="width: {{ setup.progress }}%"></span>
+        </div>
+        <div class="faire-auto-setup__count">{{ setup.label }}</div>
+        {% if not setup.complete %}
+          <a href="{{ setup.continue }}" class="faire-btn">{{ text_continue_setup }}</a>
+        {% endif %}
+      </div>
+      <div class="faire-auto-setup__cards" aria-hidden="true">
+        <article>{{ text_card_lapsed }}</article>
+        <article>{{ text_card_90 }}</article>
+        <article>{{ text_card_follower }}</article>
+      </div>
+    </section>
+
+    <section class="faire-auto-summary">
+      <div class="faire-auto-summary__head">
+        <h2>{{ text_summary }}</h2>
+        <span>{{ text_summary_period }}</span>
+      </div>
+      <div class="faire-auto-summary__grid">
+        <article>
+          <span>{{ text_metric_active }}</span>
+          <strong>{{ summary.active }}</strong>
+        </article>
+        <article>
+          <span>{{ text_metric_delivered }}</span>
+          <strong>{{ summary.delivered }}</strong>
+        </article>
+        <article>
+          <span>{{ text_metric_click }}</span>
+          <strong>{{ summary.click_rate }}</strong>
+        </article>
+        <article>
+          <span>{{ text_metric_revenue }}</span>
+          <strong>{{ summary.revenue }}</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="faire-auto-list" id="automations">
+      <nav class="faire-tabs" aria-label="Automation filters">
+        {% for tab in tabs %}
+          <a href="{{ tab.href }}"{% if tab.active %} class="is-on"{% endif %}>{{ tab.label }}</a>
         {% endfor %}
-      </ol>
-    </div>
-  </div>
-  <div class="container-fluid">
-    <div class="row">
-      <div id="filter-marketing" class="col-lg-3 col-md-12 order-lg-last d-none d-lg-block mb-3">
-        <div class="card">
-          <div class="card-header"><i class="fa-solid fa-filter"></i> {{ text_filter }}</div>
-          <div class="card-body">
-            <form id="form-filter">
-              <div class="mb-3">
-                <label for="input-name" class="form-label">{{ entry_name }}</label> <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control"/>
-              </div>
-              <div class="mb-3">
-                <label for="input-code" class="form-label">{{ entry_code }}</label> <input type="text" name="filter_code" value="{{ filter_code }}" placeholder="{{ entry_code }}" id="input-code" class="form-control"/>
-              </div>
-              <div class="mb-3">
-                <label for="input-date-from" class="form-label">{{ entry_date_from }}</label>
-                <input type="date" name="filter_date_from" value="{{ filter_date_from }}" placeholder="{{ entry_date_from }}" id="input-date-from" class="form-control"/>
-              </div>
-              <div class="mb-3">
-                <label for="input-date-to" class="form-label">{{ entry_date_to }}</label>
-                <input type="date" name="filter_date_to" value="{{ filter_date_to }}" placeholder="{{ entry_date_to }}" id="input-date-to" class="form-control"/>
-              </div>
-              <div class="text-end">
-                <button type="button" id="button-filter" class="btn btn-light"><i class="fa-solid fa-filter"></i> {{ button_filter }}</button>
-                <button type="reset" data-bs-toggle="tooltip" title="{{ button_reset }}" class="btn btn-outline-secondary"><i class="fa-solid fa-filter-circle-xmark"></i></button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-9 col-md-12">
-        <div class="card">
-          <div class="card-header"><i class="fa-solid fa-list"></i> {{ text_list }}</div>
-          <div id="marketing" class="card-body">{{ list }}</div>
-        </div>
-      </div>
-    </div>
+      </nav>
+      <div id="marketing">{{ list }}</div>
+    </section>
   </div>
 </div>
 <script type="text/javascript"><!--
-$('#marketing').on('click', 'thead a, .pagination a', function(e) {
-    e.preventDefault();
+$('#marketing').on('change', '.faire-auto-toggle input', function() {
+  var $input = $(this);
+  var $row = $input.closest('tr');
+  var id = $input.data('id');
+  var status = $input.is(':checked') ? 1 : 0;
 
-    $('#marketing').load(this.href);
-});
-
-$('#button-filter').on('click', function() {
-    url = '';
-
-    var filter_name = $('#input-name').val();
-
-    if (filter_name) {
-        url += '&filter_name=' + encodeURIComponent(filter_name);
+  $.ajax({
+    url: 'index.php?route=marketing/marketing.toggle&user_token={{ user_token }}',
+    type: 'post',
+    dataType: 'json',
+    data: { automation_id: id, status: status },
+    success: function(json) {
+      if (json.error) {
+        $input.prop('checked', !status);
+        alert(json.error);
+        return;
+      }
+      var $badge = $row.find('.faire-promo-status');
+      $badge.removeClass('faire-promo-status--active faire-promo-status--off')
+        .addClass('faire-promo-status--' + json.lifecycle)
+        .text(json.status_label);
+    },
+    error: function() {
+      $input.prop('checked', !status);
     }
-
-    var filter_code = $('#input-code').val();
-
-    if (filter_code) {
-        url += '&filter_code=' + encodeURIComponent(filter_code);
-    }
-
-    var filter_date_from = $('#input-date-from').val();
-
-    if (filter_date_from) {
-        url += '&filter_date_from=' + encodeURIComponent(filter_date_from);
-    }
-
-    var filter_date_to = $('#input-date-to').val();
-
-    if (filter_date_to) {
-        url += '&filter_date_to=' + encodeURIComponent(filter_date_to);
-    }
-
-    window.history.pushState({}, null, 'index.php?route=marketing/marketing&user_token={{ user_token }}' + url);
-
-    $('#marketing').load('index.php?route=marketing/marketing.list&user_token={{ user_token }}' + url);
+  });
 });
 //--></script>
 {{ footer }}

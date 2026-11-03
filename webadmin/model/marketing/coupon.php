@@ -189,7 +189,14 @@ class Coupon extends \Opencart\System\Engine\Model {
 	 * $results = $this->model_marketing_coupon->getCoupons($filter_data);
 	 */
 	public function getCoupons(array $data = []): array {
-		$sql = "SELECT `coupon_id`, `name`, `code`, `discount`, `date_start`, `date_end`, `status` FROM `" . DB_PREFIX . "coupon`";
+		$sql = "SELECT `c`.`coupon_id`, `c`.`name`, `c`.`code`, `c`.`type`, `c`.`discount`, `c`.`date_start`, `c`.`date_end`, `c`.`status`,
+			(SELECT COUNT(*) FROM `" . DB_PREFIX . "coupon_product` `cp` WHERE `cp`.`coupon_id` = `c`.`coupon_id`) AS `product_total`,
+			(SELECT COUNT(*) FROM `" . DB_PREFIX . "coupon_category` `cc` WHERE `cc`.`coupon_id` = `c`.`coupon_id`) AS `category_total`,
+			(SELECT COUNT(DISTINCT `ch`.`order_id`) FROM `" . DB_PREFIX . "coupon_history` `ch` WHERE `ch`.`coupon_id` = `c`.`coupon_id`) AS `order_total`,
+			(SELECT COALESCE(SUM(`o`.`total`), 0) FROM `" . DB_PREFIX . "coupon_history` `ch` LEFT JOIN `" . DB_PREFIX . "order` `o` ON (`ch`.`order_id` = `o`.`order_id`) WHERE `ch`.`coupon_id` = `c`.`coupon_id` AND `o`.`order_status_id` > '0') AS `sales_total`
+			FROM `" . DB_PREFIX . "coupon` `c`";
+
+		$sql .= $this->getFilterSql($data);
 
 		$sort_data = [
 			'name',
@@ -201,15 +208,15 @@ class Coupon extends \Opencart\System\Engine\Model {
 		];
 
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-			$sql .= " ORDER BY " . $data['sort'];
+			$sql .= " ORDER BY `c`.`" . $data['sort'] . "`";
 		} else {
-			$sql .= " ORDER BY `name`";
+			$sql .= " ORDER BY `c`.`date_start`";
 		}
 
-		if (isset($data['order']) && ($data['order'] == 'DESC')) {
-			$sql .= " DESC";
-		} else {
+		if (isset($data['order']) && ($data['order'] == 'ASC')) {
 			$sql .= " ASC";
+		} else {
+			$sql .= " DESC";
 		}
 
 		if (isset($data['start']) || isset($data['limit'])) {
@@ -227,6 +234,109 @@ class Coupon extends \Opencart\System\Engine\Model {
 		$query = $this->db->query($sql);
 
 		return $query->rows;
+	}
+
+	/**
+	 * Build WHERE clause for coupon list filters.
+	 *
+	 * @param array<string, mixed> $data
+	 *
+	 * @return string
+	 */
+	private function getFilterSql(array $data = []): string {
+		$implode = [];
+
+		if (!empty($data['filter_search'])) {
+			$search = $this->db->escape((string)$data['filter_search']);
+
+			$implode[] = "(`c`.`name` LIKE '%" . $search . "%' OR `c`.`code` LIKE '%" . $search . "%'
+				OR EXISTS (SELECT 1 FROM `" . DB_PREFIX . "coupon_product` `cp` LEFT JOIN `" . DB_PREFIX . "product_description` `pd` ON (`cp`.`product_id` = `pd`.`product_id`) WHERE `cp`.`coupon_id` = `c`.`coupon_id` AND `pd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND `pd`.`name` LIKE '%" . $search . "%')
+				OR EXISTS (SELECT 1 FROM `" . DB_PREFIX . "coupon_category` `cc` LEFT JOIN `" . DB_PREFIX . "category_description` `cd` ON (`cc`.`category_id` = `cd`.`category_id`) WHERE `cc`.`coupon_id` = `c`.`coupon_id` AND `cd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND `cd`.`name` LIKE '%" . $search . "%'))";
+		}
+
+		$today = date('Y-m-d');
+
+		if (!empty($data['filter_tab']) && $data['filter_tab'] !== 'all') {
+			if ($data['filter_tab'] === 'active') {
+				$implode[] = "`c`.`status` = '1' AND `c`.`date_start` <= '" . $this->db->escape($today) . "' AND `c`.`date_end` >= '" . $this->db->escape($today) . "'";
+			} elseif ($data['filter_tab'] === 'scheduled') {
+				$implode[] = "`c`.`status` = '1' AND `c`.`date_start` > '" . $this->db->escape($today) . "'";
+			} elseif ($data['filter_tab'] === 'completed') {
+				$implode[] = "(`c`.`status` = '0' OR `c`.`date_end` < '" . $this->db->escape($today) . "')";
+			}
+		}
+
+		if ($implode) {
+			return " WHERE " . implode(" AND ", $implode);
+		}
+
+		return '';
+	}
+
+	/**
+	 * Get lifecycle status for a coupon row.
+	 *
+	 * @param array<string, mixed> $coupon
+	 *
+	 * @return string active|scheduled|completed
+	 */
+	public function getLifecycleStatus(array $coupon): string {
+		$today = date('Y-m-d');
+		$start = (string)($coupon['date_start'] ?? '');
+		$end = (string)($coupon['date_end'] ?? '');
+		$enabled = !empty($coupon['status']);
+
+		if ($enabled && $start && $start > $today) {
+			return 'scheduled';
+		}
+
+		if ($enabled && $start && $end && $start <= $today && $end >= $today) {
+			return 'active';
+		}
+
+		return 'completed';
+	}
+
+	/**
+	 * Overview metrics for the promotions dashboard.
+	 *
+	 * @param string $date_start
+	 * @param string $date_end
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function getOverview(string $date_start, string $date_end): array {
+		$promo = $this->db->query("SELECT COUNT(DISTINCT `ch`.`order_id`) AS `orders`,
+			COALESCE(SUM(`o`.`total`), 0) AS `sales`,
+			COUNT(DISTINCT CASE WHEN (
+				SELECT MIN(`o2`.`order_id`) FROM `" . DB_PREFIX . "order` `o2`
+				WHERE `o2`.`customer_id` = `o`.`customer_id` AND `o2`.`order_status_id` > '0'
+			) = `o`.`order_id` THEN `o`.`customer_id` END) AS `new_customers`
+			FROM `" . DB_PREFIX . "coupon_history` `ch`
+			LEFT JOIN `" . DB_PREFIX . "order` `o` ON (`ch`.`order_id` = `o`.`order_id`)
+			WHERE `o`.`order_status_id` > '0'
+			AND DATE(`ch`.`date_added`) >= '" . $this->db->escape($date_start) . "'
+			AND DATE(`ch`.`date_added`) <= '" . $this->db->escape($date_end) . "'");
+
+		$total = $this->db->query("SELECT COUNT(*) AS `orders`, COALESCE(SUM(`total`), 0) AS `sales`
+			FROM `" . DB_PREFIX . "order`
+			WHERE `order_status_id` > '0'
+			AND DATE(`date_added`) >= '" . $this->db->escape($date_start) . "'
+			AND DATE(`date_added`) <= '" . $this->db->escape($date_end) . "'");
+
+		$promo_orders = (int)($promo->row['orders'] ?? 0);
+		$promo_sales = (float)($promo->row['sales'] ?? 0);
+		$total_sales = (float)($total->row['sales'] ?? 0);
+
+		return [
+			'promo_sales'    => $promo_sales,
+			'promo_orders'   => $promo_orders,
+			'new_customers'  => (int)($promo->row['new_customers'] ?? 0),
+			'avg_order'      => $promo_orders ? ($promo_sales / $promo_orders) : 0,
+			'sales_share'    => $total_sales > 0 ? round(($promo_sales / $total_sales) * 100) : 0,
+			'total_sales'    => $total_sales,
+			'product_visits' => 0
+		];
 	}
 
 	/**
@@ -412,8 +522,11 @@ class Coupon extends \Opencart\System\Engine\Model {
 	 *
 	 * $coupon_total = $this->model_marketing_coupon->getTotalCoupons();
 	 */
-	public function getTotalCoupons(): int {
-		$query = $this->db->query("SELECT COUNT(*) AS `total` FROM `" . DB_PREFIX . "coupon`");
+	public function getTotalCoupons(array $data = []): int {
+		$sql = "SELECT COUNT(*) AS `total` FROM `" . DB_PREFIX . "coupon` `c`";
+		$sql .= $this->getFilterSql($data);
+
+		$query = $this->db->query($sql);
 
 		return (int)$query->row['total'];
 	}
@@ -487,5 +600,94 @@ class Coupon extends \Opencart\System\Engine\Model {
 		$query = $this->db->query("SELECT COUNT(*) AS `total` FROM `" . DB_PREFIX . "coupon_history` WHERE `coupon_id` = '" . (int)$coupon_id . "'");
 
 		return (int)$query->row['total'];
+	}
+
+	/**
+	 * Performance summary for a promotion.
+	 *
+	 * @return array<string, float|int>
+	 */
+	public function getPromotionStats(int $coupon_id): array {
+		$query = $this->db->query("SELECT
+			COUNT(DISTINCT `ch`.`order_id`) AS `orders`,
+			COALESCE(SUM(`o`.`total`), 0) AS `sales`,
+			COALESCE(AVG(ABS(`ch`.`amount`)), 0) AS `avg_discount`,
+			COALESCE(SUM((
+				SELECT SUM(`op`.`quantity`) FROM `" . DB_PREFIX . "order_product` `op` WHERE `op`.`order_id` = `ch`.`order_id`
+			)), 0) AS `units`
+			FROM `" . DB_PREFIX . "coupon_history` `ch`
+			LEFT JOIN `" . DB_PREFIX . "order` `o` ON (`ch`.`order_id` = `o`.`order_id`)
+			WHERE `ch`.`coupon_id` = '" . (int)$coupon_id . "'
+			AND (`o`.`order_status_id` > '0' OR `o`.`order_id` IS NULL)");
+
+		$orders = (int)($query->row['orders'] ?? 0);
+		$sales = (float)($query->row['sales'] ?? 0);
+
+		return [
+			'sales'         => $sales,
+			'orders'        => $orders,
+			'avg_order'     => $orders ? ($sales / $orders) : 0,
+			'avg_discount'  => (float)($query->row['avg_discount'] ?? 0),
+			'units'         => (int)($query->row['units'] ?? 0),
+			'product_visits'=> 0
+		];
+	}
+
+	/**
+	 * Recent orders that used this promotion.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	public function getPromotionOrders(int $coupon_id, int $start = 0, int $limit = 20): array {
+		if ($start < 0) {
+			$start = 0;
+		}
+
+		if ($limit < 1) {
+			$limit = 20;
+		}
+
+		$query = $this->db->query("SELECT `ch`.`order_id`, `ch`.`amount`, `ch`.`date_added`, `ch`.`customer_id`,
+			`o`.`total`, `o`.`firstname`, `o`.`lastname`, `o`.`payment_company`, `o`.`shipping_company`,
+			CONCAT(`c`.`firstname`, ' ', `c`.`lastname`) AS `customer_name`, `ct`.`company` AS `trade_company`
+			FROM `" . DB_PREFIX . "coupon_history` `ch`
+			LEFT JOIN `" . DB_PREFIX . "order` `o` ON (`ch`.`order_id` = `o`.`order_id`)
+			LEFT JOIN `" . DB_PREFIX . "customer` `c` ON (`ch`.`customer_id` = `c`.`customer_id`)
+			LEFT JOIN `" . DB_PREFIX . "customer_trade` `ct` ON (`ch`.`customer_id` = `ct`.`customer_id`)
+			WHERE `ch`.`coupon_id` = '" . (int)$coupon_id . "'
+			ORDER BY `ch`.`date_added` DESC
+			LIMIT " . (int)$start . "," . (int)$limit);
+
+		$orders = [];
+
+		foreach ($query->rows as $row) {
+			$products = $this->db->query("SELECT `op`.`product_id`, `op`.`name`, `op`.`quantity`, `p`.`image`
+				FROM `" . DB_PREFIX . "order_product` `op`
+				LEFT JOIN `" . DB_PREFIX . "product` `p` ON (`op`.`product_id` = `p`.`product_id`)
+				WHERE `op`.`order_id` = '" . (int)$row['order_id'] . "'
+				ORDER BY `op`.`order_product_id` ASC");
+
+			$company = trim((string)($row['trade_company'] ?: $row['payment_company'] ?: $row['shipping_company'] ?: ''));
+			$customer = $company !== '' ? $company : trim((string)($row['customer_name'] ?: ($row['firstname'] . ' ' . $row['lastname'])));
+
+			$subtotal_query = $this->db->query("SELECT COALESCE(SUM(`total`), 0) AS `subtotal` FROM `" . DB_PREFIX . "order_product` WHERE `order_id` = '" . (int)$row['order_id'] . "'");
+
+			$orders[] = [
+				'order_id'    => (int)$row['order_id'],
+				'customer'    => $customer !== '' ? $customer : 'Guest',
+				'customer_id' => (int)$row['customer_id'],
+				'amount'      => abs((float)$row['amount']),
+				'subtotal'    => (float)($subtotal_query->row['subtotal'] ?? 0),
+				'total'       => (float)($row['total'] ?? 0),
+				'date_added'  => $row['date_added'],
+				'products'    => $products->rows
+			];
+		}
+
+		return $orders;
+	}
+
+	public function endPromotion(int $coupon_id): void {
+		$this->db->query("UPDATE `" . DB_PREFIX . "coupon` SET `status` = '0', `date_end` = CURDATE() WHERE `coupon_id` = '" . (int)$coupon_id . "'");
 	}
 }

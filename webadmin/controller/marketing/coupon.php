@@ -16,19 +16,7 @@ class Coupon extends \Opencart\System\Engine\Controller {
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$url = '';
-
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
-
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
+		$url = $this->getUrl();
 
 		$data['breadcrumbs'] = [];
 
@@ -44,9 +32,56 @@ class Coupon extends \Opencart\System\Engine\Controller {
 
 		$data['add'] = $this->url->link('marketing/coupon.form', 'user_token=' . $this->session->data['user_token'] . $url);
 		$data['delete'] = $this->url->link('marketing/coupon.delete', 'user_token=' . $this->session->data['user_token']);
+		$data['store'] = HTTP_CATALOG;
 
+		$filter_tab = $this->request->get['filter_tab'] ?? 'all';
+		$filter_search = $this->request->get['filter_search'] ?? '';
+		$sort = $this->request->get['sort'] ?? 'date_start';
+		$order = $this->request->get['order'] ?? 'DESC';
+
+		$data['filter_tab'] = $filter_tab;
+		$data['filter_search'] = $filter_search;
+		$data['sort'] = $sort;
+		$data['order'] = $order;
+
+		$this->load->model('marketing/coupon');
+
+		$data['counts'] = [
+			'all'       => $this->model_marketing_coupon->getTotalCoupons(),
+			'active'    => $this->model_marketing_coupon->getTotalCoupons(['filter_tab' => 'active']),
+			'scheduled' => $this->model_marketing_coupon->getTotalCoupons(['filter_tab' => 'scheduled']),
+			'completed' => $this->model_marketing_coupon->getTotalCoupons(['filter_tab' => 'completed'])
+		];
+
+		$base = 'user_token=' . $this->session->data['user_token'];
+		$search_q = $filter_search !== '' ? '&filter_search=' . urlencode($filter_search) : '';
+		$sort_q = '&sort=' . urlencode($sort) . '&order=' . urlencode($order);
+
+		$data['tabs'] = [
+			['key' => 'all', 'label' => sprintf($this->language->get('text_tab_all'), $data['counts']['all']), 'href' => $this->url->link('marketing/coupon', $base . $search_q . $sort_q), 'active' => $filter_tab === 'all'],
+			['key' => 'active', 'label' => sprintf($this->language->get('text_tab_active'), $data['counts']['active']), 'href' => $this->url->link('marketing/coupon', $base . '&filter_tab=active' . $search_q . $sort_q), 'active' => $filter_tab === 'active'],
+			['key' => 'scheduled', 'label' => sprintf($this->language->get('text_tab_scheduled'), $data['counts']['scheduled']), 'href' => $this->url->link('marketing/coupon', $base . '&filter_tab=scheduled' . $search_q . $sort_q), 'active' => $filter_tab === 'scheduled'],
+			['key' => 'completed', 'label' => sprintf($this->language->get('text_tab_completed'), $data['counts']['completed']), 'href' => $this->url->link('marketing/coupon', $base . '&filter_tab=completed' . $search_q . $sort_q), 'active' => $filter_tab === 'completed']
+		];
+
+		$date_end = date('Y-m-d');
+		$date_start = date('Y-m-d', strtotime('-12 months'));
+		$overview = $this->model_marketing_coupon->getOverview($date_start, $date_end);
+
+		$data['overview'] = [
+			'period_label'   => $this->language->get('text_past_12_months'),
+			'date_range'     => date('M j, Y', strtotime($date_start)) . ' – ' . date('M j, Y', strtotime($date_end)),
+			'promo_sales'    => $this->currency->format($overview['promo_sales'], $this->config->get('config_currency')),
+			'promo_share'    => sprintf($this->language->get('text_promo_share'), $overview['sales_share']),
+			'promo_orders'   => number_format($overview['promo_orders']),
+			'new_customers'  => sprintf($this->language->get('text_new_customers'), number_format($overview['new_customers'])),
+			'avg_order'      => $this->currency->format($overview['avg_order'], $this->config->get('config_currency')),
+			'product_visits' => number_format($overview['product_visits']),
+			'updated'        => sprintf($this->language->get('text_last_updated'), date('M j, g:i A'))
+		];
+
+		$data['sort_label'] = $this->language->get('text_sort_start');
 		$data['list'] = $this->getList();
-
 		$data['user_token'] = $this->session->data['user_token'];
 
 		$data['header'] = $this->load->controller('common/header');
@@ -54,6 +89,37 @@ class Coupon extends \Opencart\System\Engine\Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 
 		$this->response->setOutput($this->load->view('marketing/coupon', $data));
+	}
+
+	/**
+	 * Build shared query string for list filters.
+	 *
+	 * @return string
+	 */
+	private function getUrl(): string {
+		$url = '';
+
+		if (isset($this->request->get['filter_tab'])) {
+			$url .= '&filter_tab=' . urlencode((string)$this->request->get['filter_tab']);
+		}
+
+		if (isset($this->request->get['filter_search'])) {
+			$url .= '&filter_search=' . urlencode((string)$this->request->get['filter_search']);
+		}
+
+		if (isset($this->request->get['sort'])) {
+			$url .= '&sort=' . $this->request->get['sort'];
+		}
+
+		if (isset($this->request->get['order'])) {
+			$url .= '&order=' . $this->request->get['order'];
+		}
+
+		if (isset($this->request->get['page'])) {
+			$url .= '&page=' . $this->request->get['page'];
+		}
+
+		return $url;
 	}
 
 	/**
@@ -73,48 +139,26 @@ class Coupon extends \Opencart\System\Engine\Controller {
 	 * @return string
 	 */
 	public function getList(): string {
-		if (isset($this->request->get['sort'])) {
-			$sort = (string)$this->request->get['sort'];
-		} else {
-			$sort = 'name';
-		}
+		$sort = (string)($this->request->get['sort'] ?? 'date_start');
+		$order = (string)($this->request->get['order'] ?? 'DESC');
+		$page = max(1, (int)($this->request->get['page'] ?? 1));
+		$filter_tab = (string)($this->request->get['filter_tab'] ?? 'all');
+		$filter_search = (string)($this->request->get['filter_search'] ?? '');
 
-		if (isset($this->request->get['order'])) {
-			$order = (string)$this->request->get['order'];
-		} else {
-			$order = 'ASC';
-		}
-
-		if (isset($this->request->get['page'])) {
-			$page = (int)$this->request->get['page'];
-		} else {
-			$page = 1;
-		}
-
-		$url = '';
-
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
-
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
+		$url = $this->getUrl();
 
 		$data['action'] = $this->url->link('marketing/coupon.list', 'user_token=' . $this->session->data['user_token'] . $url);
+		$data['delete'] = $this->url->link('marketing/coupon.delete', 'user_token=' . $this->session->data['user_token']);
 
-		// Coupon
 		$data['coupons'] = [];
 
 		$filter_data = [
-			'sort'  => $sort,
-			'order' => $order,
-			'start' => ($page - 1) * $this->config->get('config_pagination_admin'),
-			'limit' => $this->config->get('config_pagination_admin')
+			'filter_tab'    => $filter_tab,
+			'filter_search' => $filter_search,
+			'sort'          => $sort,
+			'order'         => $order,
+			'start'         => ($page - 1) * $this->config->get('config_pagination_admin'),
+			'limit'         => $this->config->get('config_pagination_admin')
 		];
 
 		$this->load->model('marketing/coupon');
@@ -122,50 +166,73 @@ class Coupon extends \Opencart\System\Engine\Controller {
 		$results = $this->model_marketing_coupon->getCoupons($filter_data);
 
 		foreach ($results as $result) {
+			$lifecycle = $this->model_marketing_coupon->getLifecycleStatus($result);
+
+			if ((int)$result['product_total'] > 0) {
+				$type_label = $this->language->get('text_type_product');
+			} elseif ((int)$result['category_total'] > 0) {
+				$type_label = $this->language->get('text_type_collection');
+			} else {
+				$type_label = $this->language->get('text_type_shopwide');
+			}
+
+			$start_ts = strtotime($result['date_start']);
+			$end_ts = strtotime($result['date_end']);
+			$dates = '';
+
+			if ($start_ts && $end_ts) {
+				if (date('Y', $start_ts) === date('Y', $end_ts)) {
+					$dates = date('M j', $start_ts) . ' – ' . date('M j, Y', $end_ts);
+				} else {
+					$dates = date('M j, Y', $start_ts) . ' – ' . date('M j, Y', $end_ts);
+				}
+			}
+
+			$status_map = [
+				'active'    => $this->language->get('text_status_active'),
+				'scheduled' => $this->language->get('text_status_scheduled'),
+				'completed' => $this->language->get('text_status_completed')
+			];
+
 			$data['coupons'][] = [
-				'date_start' => date($this->language->get('date_format_short'), strtotime($result['date_start'])),
-				'date_end'   => date($this->language->get('date_format_short'), strtotime($result['date_end'])),
-				'edit'       => $this->url->link('marketing/coupon.form', 'user_token=' . $this->session->data['user_token'] . '&coupon_id=' . $result['coupon_id'] . $url)
-			] + $result;
+				'coupon_id'   => $result['coupon_id'],
+				'name'        => $result['name'],
+				'code'        => $result['code'],
+				'dates'       => $dates,
+				'type_label'  => $type_label,
+				'sales'       => $this->currency->format((float)$result['sales_total'], $this->config->get('config_currency')),
+				'orders'      => number_format((int)$result['order_total']),
+				'lifecycle'   => $lifecycle,
+				'status_label'=> $status_map[$lifecycle] ?? $lifecycle,
+				'edit'        => $this->url->link('marketing/coupon.form', 'user_token=' . $this->session->data['user_token'] . '&coupon_id=' . $result['coupon_id'] . $url)
+			];
 		}
 
-		$url = '';
+		$coupon_total = $this->model_marketing_coupon->getTotalCoupons([
+			'filter_tab'    => $filter_tab,
+			'filter_search' => $filter_search
+		]);
 
-		if ($order == 'ASC') {
-			$url .= '&order=DESC';
-		} else {
-			$url .= '&order=ASC';
+		$page_url = $url;
+
+		if (!str_contains($page_url, 'sort=')) {
+			$page_url .= '&sort=' . urlencode($sort);
 		}
 
-		$data['sort_name'] = $this->url->link('marketing/coupon.list', 'user_token=' . $this->session->data['user_token'] . '&sort=name' . $url);
-		$data['sort_code'] = $this->url->link('marketing/coupon.list', 'user_token=' . $this->session->data['user_token'] . '&sort=code' . $url);
-		$data['sort_discount'] = $this->url->link('marketing/coupon.list', 'user_token=' . $this->session->data['user_token'] . '&sort=discount' . $url);
-		$data['sort_date_start'] = $this->url->link('marketing/coupon.list', 'user_token=' . $this->session->data['user_token'] . '&sort=date_start' . $url);
-		$data['sort_date_end'] = $this->url->link('marketing/coupon.list', 'user_token=' . $this->session->data['user_token'] . '&sort=date_end' . $url);
-
-		$url = '';
-
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
+		if (!str_contains($page_url, 'order=')) {
+			$page_url .= '&order=' . urlencode($order);
 		}
-
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-
-		$coupon_total = $this->model_marketing_coupon->getTotalCoupons();
 
 		$data['pagination'] = $this->load->controller('common/pagination', [
 			'total' => $coupon_total,
 			'page'  => $page,
 			'limit' => $this->config->get('config_pagination_admin'),
-			'url'   => $this->url->link('marketing/coupon.list', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
+			'url'   => $this->url->link('marketing/coupon.list', 'user_token=' . $this->session->data['user_token'] . $page_url . '&page={page}')
 		]);
-
-		$data['results'] = sprintf($this->language->get('text_pagination'), ($coupon_total) ? (($page - 1) * $this->config->get('config_pagination_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_pagination_admin')) > ($coupon_total - $this->config->get('config_pagination_admin'))) ? $coupon_total : ((($page - 1) * $this->config->get('config_pagination_admin')) + $this->config->get('config_pagination_admin')), $coupon_total, ceil($coupon_total / $this->config->get('config_pagination_admin')));
 
 		$data['sort'] = $sort;
 		$data['order'] = $order;
+		$data['user_token'] = $this->session->data['user_token'];
 
 		return $this->load->view('marketing/coupon_list', $data);
 	}
@@ -339,8 +406,80 @@ class Coupon extends \Opencart\System\Engine\Controller {
 			$data['status'] = true;
 		}
 
-		$data['history'] = $this->getHistory();
+		$this->load->model('marketing/coupon');
 
+		$lifecycle = !empty($coupon_info) ? $this->model_marketing_coupon->getLifecycleStatus($coupon_info) : 'scheduled';
+		$status_map = [
+			'active'    => $this->language->get('text_status_active'),
+			'scheduled' => $this->language->get('text_status_scheduled'),
+			'completed' => $this->language->get('text_status_completed')
+		];
+
+		$data['lifecycle'] = $lifecycle;
+		$data['status_label'] = $status_map[$lifecycle] ?? $lifecycle;
+		$data['page_title'] = $data['name'] !== '' ? $data['name'] : $this->language->get('text_add');
+		$data['updated_label'] = '';
+
+		if (!empty($coupon_info['date_added'])) {
+			$data['updated_label'] = sprintf($this->language->get('text_last_updated_detail'), date('F j, Y', strtotime($coupon_info['date_added'])) . ' at ' . date('g:i A', strtotime($coupon_info['date_added'])));
+		}
+
+		$stats = !empty($coupon_info) ? $this->model_marketing_coupon->getPromotionStats((int)$coupon_info['coupon_id']) : [
+			'sales' => 0, 'orders' => 0, 'avg_order' => 0, 'avg_discount' => 0, 'units' => 0, 'product_visits' => 0
+		];
+
+		$data['summary'] = [
+			'sales'          => $this->currency->format($stats['sales'], $this->config->get('config_currency')),
+			'orders'         => number_format($stats['orders']),
+			'avg_order'      => $this->currency->format($stats['avg_order'], $this->config->get('config_currency')),
+			'avg_discount'   => $this->currency->format($stats['avg_discount'], $this->config->get('config_currency')),
+			'units'          => number_format($stats['units']),
+			'product_visits' => number_format($stats['product_visits'])
+		];
+
+		$data['promo_orders'] = [];
+
+		if (!empty($coupon_info)) {
+			$this->load->model('tool/image');
+
+			foreach ($this->model_marketing_coupon->getPromotionOrders((int)$coupon_info['coupon_id'], 0, 25) as $order) {
+				$thumbs = [];
+				$extra = 0;
+
+				foreach ($order['products'] as $index => $product) {
+					if ($index < 3) {
+						$image = !empty($product['image']) && is_file(DIR_IMAGE . html_entity_decode($product['image'], ENT_QUOTES, 'UTF-8'))
+							? $this->model_tool_image->resize(html_entity_decode($product['image'], ENT_QUOTES, 'UTF-8'), 48, 48)
+							: $this->model_tool_image->resize('no_image.png', 48, 48);
+
+						$thumbs[] = [
+							'thumb' => $image,
+							'name'  => $product['name']
+						];
+					} else {
+						$extra++;
+					}
+				}
+
+				$data['promo_orders'][] = [
+					'order_id'   => $order['order_id'],
+					'order_code' => '#' . $order['order_id'],
+					'view'       => $this->url->link('sale/order.info', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $order['order_id']),
+					'customer'   => $order['customer'],
+					'customer_href' => $order['customer_id'] ? $this->url->link('customer/customer.form', 'user_token=' . $this->session->data['user_token'] . '&customer_id=' . $order['customer_id']) : '',
+					'thumbs'     => $thumbs,
+					'extra'      => $extra,
+					'placed'     => date('F j, Y', strtotime($order['date_added'])),
+					'discount'   => $this->currency->format($order['amount'], $this->config->get('config_currency')),
+					'subtotal'   => $this->currency->format($order['subtotal'], $this->config->get('config_currency'))
+				];
+			}
+		}
+
+		$data['end'] = $this->url->link('marketing/coupon.end', 'user_token=' . $this->session->data['user_token']);
+		$data['can_end'] = !empty($coupon_info) && $lifecycle === 'active';
+		$data['is_new'] = empty($coupon_info);
+		$data['history'] = $this->getHistory();
 		$data['user_token'] = $this->session->data['user_token'];
 
 		$data['header'] = $this->load->controller('common/header');
@@ -348,6 +487,37 @@ class Coupon extends \Opencart\System\Engine\Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 
 		$this->response->setOutput($this->load->view('marketing/coupon_form', $data));
+	}
+
+	/**
+	 * End an active promotion.
+	 *
+	 * @return void
+	 */
+	public function end(): void {
+		$this->load->language('marketing/coupon');
+
+		$json = [];
+
+		if (!$this->user->hasPermission('modify', 'marketing/coupon')) {
+			$json['error'] = $this->language->get('error_permission');
+		}
+
+		$coupon_id = (int)($this->request->post['coupon_id'] ?? 0);
+
+		if (!$json && !$coupon_id) {
+			$json['error'] = $this->language->get('error_coupon');
+		}
+
+		if (!$json) {
+			$this->load->model('marketing/coupon');
+			$this->model_marketing_coupon->endPromotion($coupon_id);
+			$json['success'] = $this->language->get('text_ended');
+			$json['redirect'] = $this->url->link('marketing/coupon.form', 'user_token=' . $this->session->data['user_token'] . '&coupon_id=' . $coupon_id, true);
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
 	}
 
 	/**

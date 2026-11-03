@@ -1,31 +1,113 @@
 {{ header }}{{ column_left }}
 <div id="content">
-  <div class="page-header">
-    <div class="container-fluid">
-      <div class="float-end">
-        <a href="{{ add }}" data-bs-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a>
-        <button type="submit" form="form-coupon" formaction="{{ delete }}" data-bs-toggle="tooltip" title="{{ button_delete }}" onclick="return confirm('{{ text_confirm }}');" class="btn btn-danger"><i class="fa-regular fa-trash-can"></i></button>
+  <div class="faire-page faire-page--wide faire-promotions">
+    <div class="faire-page__head">
+      <div>
+        <h1 class="faire-page__title">{{ heading_title }}</h1>
+        <p class="faire-page__intro">{{ text_intro }}</p>
       </div>
-      <h1>{{ heading_title }}</h1>
-      <ol class="breadcrumb">
-        {% for breadcrumb in breadcrumbs %}
-          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-        {% endfor %}
-      </ol>
+      <div class="faire-actions faire-promotions__actions">
+        <a href="{{ store }}" target="_blank" rel="noopener" class="faire-link">{{ text_view_shop }}</a>
+        <div class="dropdown">
+          <button type="button" class="faire-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">{{ text_create }}</button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{{ add }}"><i class="fa-solid fa-percent fa-fw"></i> {{ text_create_discount }}</a></li>
+            <li><a class="dropdown-item" href="{{ add }}"><i class="fa-solid fa-truck fa-fw"></i> {{ text_create_shipping }}</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="container-fluid">
-    <div class="card">
-      <div class="card-header"><i class="fa-solid fa-list"></i> {{ text_list }}</div>
-      <div id="coupon" class="card-body">{{ list }}</div>
+
+    <section class="faire-promo-overview" aria-label="{{ text_overview }}">
+      <div class="faire-promo-overview__head">
+        <h2>{{ text_overview }}</h2>
+        <div class="faire-promo-overview__period">
+          <span>{{ overview.date_range }}</span>
+          <button type="button" class="faire-chip" disabled>{{ overview.period_label }} <i class="fa-solid fa-caret-down"></i></button>
+        </div>
+      </div>
+      <div class="faire-promo-overview__grid">
+        <article>
+          <span class="faire-promo-overview__label">{{ text_metric_sales }}</span>
+          <strong>{{ overview.promo_sales }}</strong>
+          <p>{{ overview.promo_share }}</p>
+        </article>
+        <article>
+          <span class="faire-promo-overview__label">{{ text_metric_orders }}</span>
+          <strong>{{ overview.promo_orders }}</strong>
+          <p>{{ overview.new_customers }}</p>
+        </article>
+        <article>
+          <span class="faire-promo-overview__label">{{ text_metric_aov }}</span>
+          <strong>{{ overview.avg_order }}</strong>
+        </article>
+        <article>
+          <span class="faire-promo-overview__label">{{ text_metric_visits }}</span>
+          <strong>{{ overview.product_visits }}</strong>
+        </article>
+      </div>
+      <div class="faire-promo-overview__foot">{{ overview.updated }}</div>
+    </section>
+
+    <div class="faire-promo-list">
+      <nav class="faire-tabs" aria-label="Promotion filters">
+        {% for tab in tabs %}
+          <a href="{{ tab.href }}"{% if tab.active %} class="is-on"{% endif %}>{{ tab.label }}</a>
+        {% endfor %}
+      </nav>
+
+      <div class="faire-promo-list__toolbar">
+        <div class="faire-search faire-promo-list__search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" id="input-promo-search" value="{{ filter_search }}" placeholder="{{ text_search }}" autocomplete="off"/>
+        </div>
+        <button type="button" class="faire-chip" id="button-promo-sort" data-sort="{{ sort }}" data-order="{{ order }}">
+          {{ text_sort }}: {{ sort_label }}
+          <i class="fa-solid fa-arrow-up-arrow-down"></i>
+        </button>
+      </div>
+
+      <div id="coupon">{{ list }}</div>
     </div>
   </div>
 </div>
 <script type="text/javascript"><!--
-$('#coupon').on('click', 'thead a, .pagination a', function(e) {
-    e.preventDefault();
+var promoToken = '{{ user_token }}';
+var promoTab = '{{ filter_tab }}';
+var promoSort = '{{ sort }}';
+var promoOrder = '{{ order }}';
 
-    $('#coupon').load(this.href);
+function fairePromoUrl() {
+  var url = '';
+  if (promoTab && promoTab !== 'all') url += '&filter_tab=' + encodeURIComponent(promoTab);
+  var search = $('#input-promo-search').val().trim();
+  if (search) url += '&filter_search=' + encodeURIComponent(search);
+  if (promoSort) url += '&sort=' + encodeURIComponent(promoSort);
+  if (promoOrder) url += '&order=' + encodeURIComponent(promoOrder);
+  return url;
+}
+
+function fairePromoReload() {
+  var url = fairePromoUrl();
+  window.history.pushState({}, null, 'index.php?route=marketing/coupon&user_token=' + promoToken + url);
+  $('#coupon').load('index.php?route=marketing/coupon.list&user_token=' + promoToken + url);
+}
+
+var promoSearchTimer;
+$('#input-promo-search').on('input', function() {
+  clearTimeout(promoSearchTimer);
+  promoSearchTimer = setTimeout(fairePromoReload, 350);
+});
+
+$('#button-promo-sort').on('click', function() {
+  promoOrder = (promoOrder === 'ASC') ? 'DESC' : 'ASC';
+  promoSort = 'date_start';
+  fairePromoReload();
+});
+
+$('#coupon').on('click', 'thead a, .pagination a', function(e) {
+  e.preventDefault();
+  $('#coupon').load(this.href);
 });
 //--></script>
 {{ footer }}

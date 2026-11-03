@@ -13,62 +13,11 @@ class Marketing extends \Opencart\System\Engine\Controller {
 	 */
 	public function index(): void {
 		$this->load->language('marketing/marketing');
-
-		if (isset($this->request->get['filter_name'])) {
-			$filter_name = $this->request->get['filter_name'];
-		} else {
-			$filter_name = '';
-		}
-
-		if (isset($this->request->get['filter_code'])) {
-			$filter_code = $this->request->get['filter_code'];
-		} else {
-			$filter_code = '';
-		}
-
-		if (isset($this->request->get['filter_date_from'])) {
-			$filter_date_from = $this->request->get['filter_date_from'];
-		} else {
-			$filter_date_from = '';
-		}
-
-		if (isset($this->request->get['filter_date_to'])) {
-			$filter_date_to = $this->request->get['filter_date_to'];
-		} else {
-			$filter_date_to = '';
-		}
+		$this->load->model('marketing/automation');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$url = '';
-
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_code'])) {
-			$url .= '&filter_code=' . $this->request->get['filter_code'];
-		}
-
-		if (isset($this->request->get['filter_date_from'])) {
-			$url .= '&filter_date_from=' . $this->request->get['filter_date_from'];
-		}
-
-		if (isset($this->request->get['filter_date_to'])) {
-			$url .= '&filter_date_to=' . $this->request->get['filter_date_to'];
-		}
-
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
-
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
+		$filter_category = (string)($this->request->get['filter_category'] ?? 'all');
 
 		$data['breadcrumbs'] = [];
 
@@ -79,19 +28,50 @@ class Marketing extends \Opencart\System\Engine\Controller {
 
 		$data['breadcrumbs'][] = [
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('marketing/marketing', 'user_token=' . $this->session->data['user_token'] . $url)
+			'href' => $this->url->link('marketing/marketing', 'user_token=' . $this->session->data['user_token'])
 		];
 
-		$data['add'] = $this->url->link('marketing/marketing.form', 'user_token=' . $this->session->data['user_token'] . $url);
-		$data['delete'] = $this->url->link('marketing/marketing.delete', 'user_token=' . $this->session->data['user_token']);
+		$overview = $this->model_marketing_automation->getOverview();
+		$active = $overview['active'];
+		$total = max(1, $overview['total']);
+		$progress = (int)round(($active / $total) * 100);
 
+		$data['setup'] = [
+			'active'       => $active,
+			'total'        => $overview['total'],
+			'progress'     => $progress,
+			'label'        => sprintf($this->language->get('text_setup_count'), $active, $overview['total']),
+			'nearly_done'  => $active >= ($overview['total'] - 3),
+			'complete'     => $active >= $overview['total'],
+			'continue'     => $this->url->link('marketing/marketing', 'user_token=' . $this->session->data['user_token'] . '&filter_category=all#automations')
+		];
+
+		$data['summary'] = [
+			'active'     => number_format($overview['active']),
+			'delivered'  => number_format($overview['delivered']),
+			'click_rate' => number_format($overview['click_rate'], 1) . '%',
+			'revenue'    => $this->currency->format($overview['revenue'], $this->config->get('config_currency'))
+		];
+
+		$counts = [
+			'all'     => $this->model_marketing_automation->getTotalAutomations(),
+			'convert' => $this->model_marketing_automation->getTotalAutomations(['filter_category' => 'convert']),
+			'reorder' => $this->model_marketing_automation->getTotalAutomations(['filter_category' => 'reorder']),
+			'loyalty' => $this->model_marketing_automation->getTotalAutomations(['filter_category' => 'loyalty'])
+		];
+
+		$base = 'user_token=' . $this->session->data['user_token'];
+
+		$data['tabs'] = [
+			['key' => 'all', 'label' => sprintf($this->language->get('text_tab_all'), $counts['all']), 'href' => $this->url->link('marketing/marketing', $base), 'active' => $filter_category === 'all'],
+			['key' => 'convert', 'label' => sprintf($this->language->get('text_tab_convert'), $counts['convert']), 'href' => $this->url->link('marketing/marketing', $base . '&filter_category=convert'), 'active' => $filter_category === 'convert'],
+			['key' => 'reorder', 'label' => sprintf($this->language->get('text_tab_reorder'), $counts['reorder']), 'href' => $this->url->link('marketing/marketing', $base . '&filter_category=reorder'), 'active' => $filter_category === 'reorder'],
+			['key' => 'loyalty', 'label' => sprintf($this->language->get('text_tab_loyalty'), $counts['loyalty']), 'href' => $this->url->link('marketing/marketing', $base . '&filter_category=loyalty'), 'active' => $filter_category === 'loyalty']
+		];
+
+		$data['filter_category'] = $filter_category;
 		$data['list'] = $this->getList();
-
-		$data['filter_name'] = $filter_name;
-		$data['filter_code'] = $filter_code;
-		$data['filter_date_from'] = $filter_date_from;
-		$data['filter_date_to'] = $filter_date_to;
-
+		$data['toggle'] = $this->url->link('marketing/marketing.toggle', 'user_token=' . $this->session->data['user_token']);
 		$data['user_token'] = $this->session->data['user_token'];
 
 		$data['header'] = $this->load->controller('common/header');
@@ -113,177 +93,76 @@ class Marketing extends \Opencart\System\Engine\Controller {
 	}
 
 	/**
+	 * Toggle automation on/off
+	 *
+	 * @return void
+	 */
+	public function toggle(): void {
+		$this->load->language('marketing/marketing');
+
+		$json = [];
+
+		if (!$this->user->hasPermission('modify', 'marketing/marketing')) {
+			$json['error'] = $this->language->get('error_permission');
+		}
+
+		$automation_id = (int)($this->request->post['automation_id'] ?? 0);
+		$status = !empty($this->request->post['status']);
+
+		if (!$json && !$automation_id) {
+			$json['error'] = $this->language->get('error_automation');
+		}
+
+		if (!$json) {
+			$this->load->model('marketing/automation');
+			$this->model_marketing_automation->setStatus($automation_id, $status);
+			$json['success'] = $this->language->get('text_success');
+			$json['status'] = $status ? 1 : 0;
+			$json['status_label'] = $status ? $this->language->get('text_status_active') : $this->language->get('text_status_off');
+			$json['lifecycle'] = $status ? 'active' : 'off';
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
 	 * Get List
 	 *
 	 * @return string
 	 */
 	public function getList(): string {
-		if (isset($this->request->get['filter_name'])) {
-			$filter_name = $this->request->get['filter_name'];
-		} else {
-			$filter_name = '';
-		}
+		$this->load->language('marketing/marketing');
+		$this->load->model('marketing/automation');
 
-		if (isset($this->request->get['filter_code'])) {
-			$filter_code = $this->request->get['filter_code'];
-		} else {
-			$filter_code = '';
-		}
+		$filter_category = (string)($this->request->get['filter_category'] ?? 'all');
 
-		if (isset($this->request->get['filter_date_from'])) {
-			$filter_date_from = (string)$this->request->get['filter_date_from'];
-		} else {
-			$filter_date_from = '';
-		}
+		$data['automations'] = [];
 
-		if (isset($this->request->get['filter_date_to'])) {
-			$filter_date_to = (string)$this->request->get['filter_date_to'];
-		} else {
-			$filter_date_to = '';
-		}
-
-		if (isset($this->request->get['sort'])) {
-			$sort = (string)$this->request->get['sort'];
-		} else {
-			$sort = 'm.name';
-		}
-
-		if (isset($this->request->get['order'])) {
-			$order = (string)$this->request->get['order'];
-		} else {
-			$order = 'ASC';
-		}
-
-		if (isset($this->request->get['page'])) {
-			$page = (int)$this->request->get['page'];
-		} else {
-			$page = 1;
-		}
-
-		$url = '';
-
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_code'])) {
-			$url .= '&filter_code=' . $this->request->get['filter_code'];
-		}
-
-		if (isset($this->request->get['filter_date_from'])) {
-			$url .= '&filter_date_from=' . $this->request->get['filter_date_from'];
-		}
-
-		if (isset($this->request->get['filter_date_to'])) {
-			$url .= '&filter_date_to=' . $this->request->get['filter_date_to'];
-		}
-
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
-
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
-
-		$data['action'] = $this->url->link('marketing/marketing.list', 'user_token=' . $this->session->data['user_token'] . $url);
-
-		$data['marketings'] = [];
-
-		// Marketing
-		$filter_data = [
-			'filter_name'      => $filter_name,
-			'filter_code'      => $filter_code,
-			'filter_date_from' => $filter_date_from,
-			'filter_date_to'   => $filter_date_to,
-			'sort'             => $sort,
-			'order'            => $order,
-			'start'            => ($page - 1) * $this->config->get('config_pagination_admin'),
-			'limit'            => $this->config->get('config_pagination_admin')
-		];
-
-		$this->load->model('marketing/marketing');
-
-		$results = $this->model_marketing_marketing->getMarketings($filter_data);
-
-		foreach ($results as $result) {
-			$data['marketings'][] = [
-				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'edit'       => $this->url->link('marketing/marketing.form', 'user_token=' . $this->session->data['user_token'] . '&marketing_id=' . $result['marketing_id'] . $url)
-			] + $result;
-		}
-
-		$url = '';
-
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_code'])) {
-			$url .= '&filter_code=' . $this->request->get['filter_code'];
-		}
-
-		if (isset($this->request->get['filter_date_from'])) {
-			$url .= '&filter_date_from=' . $this->request->get['filter_date_from'];
-		}
-
-		if (isset($this->request->get['filter_date_to'])) {
-			$url .= '&filter_date_to=' . $this->request->get['filter_date_to'];
-		}
-
-		if ($order == 'ASC') {
-			$url .= '&order=DESC';
-		} else {
-			$url .= '&order=ASC';
-		}
-
-		$data['sort_name'] = $this->url->link('marketing/marketing.list', 'user_token=' . $this->session->data['user_token'] . '&sort=m.name' . $url);
-		$data['sort_code'] = $this->url->link('marketing/marketing.list', 'user_token=' . $this->session->data['user_token'] . '&sort=m.code' . $url);
-		$data['sort_date_added'] = $this->url->link('marketing/marketing.list', 'user_token=' . $this->session->data['user_token'] . '&sort=m.date_added' . $url);
-
-		$url = '';
-
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_code'])) {
-			$url .= '&filter_code=' . $this->request->get['filter_code'];
-		}
-
-		if (isset($this->request->get['filter_date_from'])) {
-			$url .= '&filter_date_from=' . $this->request->get['filter_date_from'];
-		}
-
-		if (isset($this->request->get['filter_date_to'])) {
-			$url .= '&filter_date_to=' . $this->request->get['filter_date_to'];
-		}
-
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
-
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-
-		$marketing_total = $this->model_marketing_marketing->getTotalMarketings($filter_data);
-
-		$data['pagination'] = $this->load->controller('common/pagination', [
-			'total' => $marketing_total,
-			'page'  => $page,
-			'limit' => $this->config->get('config_pagination_admin'),
-			'url'   => $this->url->link('marketing/marketing.list', 'user_token=' . $this->session->data['user_token'] . $url . '&page={page}')
+		$results = $this->model_marketing_automation->getAutomations([
+			'filter_category' => $filter_category
 		]);
 
-		$data['results'] = sprintf($this->language->get('text_pagination'), ($marketing_total) ? (($page - 1) * $this->config->get('config_pagination_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_pagination_admin')) > ($marketing_total - $this->config->get('config_pagination_admin'))) ? $marketing_total : ((($page - 1) * $this->config->get('config_pagination_admin')) + $this->config->get('config_pagination_admin')), $marketing_total, ceil($marketing_total / $this->config->get('config_pagination_admin')));
+		foreach ($results as $result) {
+			$delivered = (int)$result['delivered'];
+			$opens = (int)$result['opens'];
+			$clicks = (int)$result['clicks'];
+			$active = !empty($result['status']);
 
-		$data['sort'] = $sort;
-		$data['order'] = $order;
+			$data['automations'][] = [
+				'automation_id' => $result['automation_id'],
+				'name'          => $result['name'],
+				'description'   => $result['description'],
+				'status'        => $active ? 1 : 0,
+				'lifecycle'     => $active ? 'active' : 'off',
+				'status_label'  => $active ? $this->language->get('text_status_active') : $this->language->get('text_status_off'),
+				'delivered'     => number_format($delivered),
+				'open_rate'     => $delivered > 0 ? number_format(($opens / $delivered) * 100, 0) . '%' : '0%',
+				'click_rate'    => $delivered > 0 ? number_format(($clicks / $delivered) * 100, 2) . '%' : '0.00%'
+			];
+		}
+
+		$data['user_token'] = $this->session->data['user_token'];
 
 		return $this->load->view('marketing/marketing_list', $data);
 	}
