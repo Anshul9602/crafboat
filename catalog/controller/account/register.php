@@ -424,8 +424,11 @@ class Register extends \Opencart\System\Engine\Controller {
 				'trade_license'     => (string)$post_info['trade_license'],
 				'pan_document'      => (string)$post_info['pan_document'],
 				'cheque'            => (string)($post_info['cheque'] ?? ''),
-				'reference'         => trim((string)($post_info['reference'] ?? ''))
+				'reference'         => trim((string)($post_info['reference'] ?? '')),
+				'profile_complete'  => 1
 			]);
+
+			$this->session->data['landing_passed'] = 1;
 
 			// Login if requires approval
 			if (!$customer_group_info['approval']) {
@@ -468,6 +471,121 @@ class Register extends \Opencart\System\Engine\Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Email-only wholesale lead signup from landing popup.
+	 * Creates (or resumes) a Wholesale account with no password step, auto-logs in, then sends to home.
+	 *
+	 * @return void
+	 */
+	public function lead(): void {
+		$json = [];
+		$language = (string)$this->config->get('config_language');
+		$email = oc_strtolower(trim((string)($this->request->post['email'] ?? '')));
+		$login_url = $this->url->link('account/register', 'language=' . $language . '&account=login', true);
+
+		if (!oc_validate_email($email)) {
+			$json['error'] = 'Enter a valid email address.';
+		}
+
+		$this->load->model('account/customer');
+		$this->load->model('account/trade');
+
+		$wholesale_id = $this->customerGroupId('Wholesale');
+		$trade_id = $this->customerGroupId('Trade');
+
+		if (!$json && !$wholesale_id) {
+			$json['error'] = 'Wholesale accounts are unavailable right now.';
+		}
+
+		if (!$json) {
+			$existing = $this->model_account_customer->getCustomerByEmail($email);
+
+			if ($existing) {
+				$group_id = (int)$existing['customer_group_id'];
+				$is_trade = ($wholesale_id && $group_id === $wholesale_id) || ($trade_id && $group_id === $trade_id);
+				$complete = $this->model_account_trade->isProfileComplete((int)$existing['customer_id']);
+
+				if ($is_trade && !$complete) {
+					try {
+						// Resume incomplete wholesale/trade lead without asking for a password.
+						$this->finishLeadLogin((int)$existing['customer_id'], $email, (string)$existing['firstname'], (string)$existing['lastname'], $group_id, (string)($existing['telephone'] ?? ''), false);
+						$json['redirect'] = $this->url->link('common/home', 'language=' . $language . '&customer_token=' . $this->session->data['customer_token'], true);
+					} catch (\Throwable $e) {
+						$json['error'] = 'Could not open your wholesale account. Please try again.';
+					}
+				} else {
+					$json['error'] = 'An account with this email already exists. Please log in.';
+					$json['login'] = $login_url;
+				}
+			} else {
+				try {
+					$password = oc_token(16) . 'Aa1!';
+					$local = explode('@', $email)[0] ?? 'Buyer';
+					$firstname = oc_substr(preg_replace('/[^a-zA-Z]/', '', $local) ?: 'Buyer', 0, 32);
+					$lastname = 'Wholesale';
+
+					$customer_id = $this->model_account_customer->addCustomer([
+						'customer_group_id' => $wholesale_id,
+						'firstname'         => $firstname,
+						'lastname'          => $lastname,
+						'email'             => $email,
+						'telephone'         => '',
+						'custom_field'      => [],
+						'password'          => $password,
+						'newsletter'        => 1,
+						'agree'             => 1
+					]);
+
+					// Bypass Wholesale approval so the lead can browse home immediately.
+					$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET `status` = '1', `customer_group_id` = '" . (int)$wholesale_id . "' WHERE `customer_id` = '" . (int)$customer_id . "'");
+					$this->db->query("DELETE FROM `" . DB_PREFIX . "customer_approval` WHERE `customer_id` = '" . (int)$customer_id . "' AND `type` = 'customer'");
+
+					$this->model_account_trade->addLeadProfile($customer_id);
+					$this->finishLeadLogin($customer_id, $email, $firstname, $lastname, $wholesale_id, '', true);
+
+					$json['redirect'] = $this->url->link('common/home', 'language=' . $language . '&customer_token=' . $this->session->data['customer_token'], true);
+				} catch (\Throwable $e) {
+					$json['error'] = 'Could not create your wholesale account. Please try again.';
+				}
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Enable + session-login a wholesale lead without a password prompt.
+	 */
+	private function finishLeadLogin(int $customer_id, string $email, string $firstname, string $lastname, int $group_id, string $telephone = '', bool $send_password_mail = false): void {
+		$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET `status` = '1' WHERE `customer_id` = '" . (int)$customer_id . "'");
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "customer_approval` WHERE `customer_id` = '" . (int)$customer_id . "' AND `type` = 'customer'");
+
+		if (!$this->customer->login($email, '', true)) {
+			throw new \RuntimeException('Unable to sign in wholesale lead.');
+		}
+
+		$this->session->data['customer'] = [
+			'customer_id'       => $customer_id,
+			'customer_group_id' => $group_id,
+			'firstname'         => $firstname,
+			'lastname'          => $lastname,
+			'email'             => $email,
+			'telephone'         => $telephone,
+			'custom_field'      => []
+		];
+		$this->session->data['customer_token'] = oc_token(26);
+		$this->session->data['landing_passed'] = 1;
+
+		$this->load->model('account/customer');
+		$this->model_account_customer->addLogin($customer_id, oc_get_ip());
+		$this->model_account_customer->deleteLoginAttempts($email);
+
+		if ($send_password_mail) {
+			$this->model_account_customer->addToken($customer_id, 'password', oc_token(40));
+		}
 	}
 
 	private function validPhone(string $value): bool {

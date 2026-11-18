@@ -14,6 +14,14 @@ class Product extends \Opencart\System\Engine\Controller {
 	public function index(): ?\Opencart\System\Engine\Action {
 		$this->load->language('product/product');
 
+		$this->load->model('account/trade');
+
+		if ($this->model_account_trade->requiresCompletion()) {
+			$this->response->redirect($this->url->link('account/complete', 'language=' . $this->config->get('config_language') . '&customer_token=' . ($this->session->data['customer_token'] ?? ''), true));
+
+			return null;
+		}
+
 		if (isset($this->request->get['product_id'])) {
 			$product_id = (int)$this->request->get['product_id'];
 		} else {
@@ -458,7 +466,10 @@ class Product extends \Opencart\System\Engine\Controller {
 			$wholesale_group_id = $this->customerGroupId('Wholesale');
 			$data['trade'] = $trade_group_id && $group_id === $trade_group_id;
 			$data['wholesale'] = $wholesale_group_id && $group_id === $wholesale_group_id;
-			$data['can_buy'] = $data['trade'] || $data['wholesale'];
+			$profile_complete = $data['logged'] ? $this->model_account_trade->isProfileComplete((int)$this->customer->getId()) : false;
+			$data['can_buy'] = ($data['trade'] || $data['wholesale']) && $profile_complete;
+			$data['trade'] = $data['trade'] && $profile_complete;
+			$data['wholesale'] = $data['wholesale'] && $profile_complete;
 			$retail_row = $this->db->query("SELECT `price` FROM `" . DB_PREFIX . "product` WHERE `product_id` = '" . (int)$product_id . "'");
 			$retail_value = $retail_row->num_rows ? (float)$retail_row->row['price'] : (float)$product_info['price'];
 			$tax_class_id = (int)$product_info['tax_class_id'];

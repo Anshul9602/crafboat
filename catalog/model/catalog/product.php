@@ -910,6 +910,12 @@ class Product extends \Opencart\System\Engine\Model {
 			return $cards;
 		}
 
+		$this->load->model('account/trade');
+
+		if (!$this->model_account_trade->isProfileComplete((int)$this->customer->getId())) {
+			return $cards;
+		}
+
 		$ids = array_map('intval', array_column($cards, 'product_id'));
 		$ids = array_values(array_filter($ids));
 

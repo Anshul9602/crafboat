@@ -514,6 +514,12 @@ class Cart extends \Opencart\System\Engine\Controller {
 		$query = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$this->customer->getGroupId() . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
 		$role = oc_strtolower((string)($query->row['name'] ?? ''));
 
-		return in_array($role, ['trade', 'wholesale'], true);
+		if (!in_array($role, ['trade', 'wholesale'], true)) {
+			return false;
+		}
+
+		$this->load->model('account/trade');
+
+		return $this->model_account_trade->isProfileComplete((int)$this->customer->getId());
 	}
 }

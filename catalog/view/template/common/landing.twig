@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>Craft Boat Wholesale</title>
+  <base href="{{ base }}"/>
+  <link href="{{ theme }}" type="text/css" rel="stylesheet"/>
+</head>
+<body class="cb cb-landing-page">
+<div id="container" class="cb-landing">
+  <div class="cb-landing__topbar">
+    <span>Craft Boat’s wholesale home for approved stocklists</span>
+    <a href="{{ faire }}" target="_blank" rel="noopener">Prefer Faire? Continue there ↗</a>
+  </div>
+
+  <header class="cb-landing__nav">
+    <a class="cb-landing__mark" href="index.php?route=common/landing&amp;language={{ language }}" aria-label="Craft Boat">
+      <img src="{{ asset }}logo-mark.svg" alt="Craft Boat">
+    </a>
+    <div class="cb-landing__nav-actions">
+      <a class="cb-landing__login" href="{{ login }}">Log in</a>
+      <button type="button" class="cb-landing__btn" data-lead-open>Create an account</button>
+    </div>
+  </header>
+
+  <section class="cb-landing__hero">
+    <div class="cb-landing__hero-art" aria-hidden="true">
+      <img class="cb-landing__hero-shape" src="{{ asset }}hero-wash.svg" alt="">
+      <img class="cb-landing__hero-wash" src="{{ asset }}splash-blue.png" alt="">
+    </div>
+    <div class="cb-landing__hero-inner">
+      <div class="cb-landing__hero-logo">
+        <img src="{{ asset }}logo-center.svg" alt="Craft Boat">
+      </div>
+      <h1 class="cb-landing__hero-title">
+        <span class="cb-landing__brand">CRAFT BOAT</span>
+        is a multi disciplinary design<br>cum manufacturing space
+      </h1>
+      <img class="cb-landing__hero-accent" src="{{ asset }}splash-tiny.png" alt="" aria-hidden="true">
+      <div class="cb-landing__hero-copy">
+        <p>We started as a handmade paper making company &amp; have recycled more than ten thousand tons of textile waste to create sheets of paper for home, office, &amp; packaging products</p>
+        <p>Based in Jaipur, India ~ our roots are tied to the multitude of art and deign this city harbours.</p>
+        <p>Since our founding in 2015, Craft Boat has made an intentional effort to embrace all things handmade, rooted with Craft Stories, and analog in the design approach. Collaborating with artisan businesses from all around the world, we have created a close knit community of artisans, designers, women leaders, &amp; nature lovers.</p>
+      </div>
+      <button type="button" class="cb-landing__btn" data-lead-open>Enter the Shop</button>
+    </div>
+  </section>
+
+  <section class="cb-landing__brief">
+    <div class="cb-landing__brief-copy">
+      <img class="cb-landing__splash" src="{{ asset }}splash-blue.png" alt="" aria-hidden="true">
+      <div class="cb-landing__brief-text">
+        <p class="cb-landing__kicker">Made for your store</p>
+        <h2>Are you<br><em>designing</em> a brand.</h2>
+        <p>Looking for slow made goods, rooted in Earth friendly practices, and need a team to create your dream to reality with hand crafts &amp; hearts committed to be your partner in process - our team shall be happy to hear from you and help you nurture your custom designs.</p>
+        <a class="cb-landing__btn" href="{{ contact }}">Start a custom brief</a>
+      </div>
+    </div>
+    <div class="cb-landing__brief-media">
+      <img src="{{ asset }}custom-brief.jpg" alt="Handmade paper boxes being assembled">
+    </div>
+  </section>
+
+  <section class="cb-landing__catalog">
+    <p class="cb-landing__kicker">Shop all</p>
+    <div class="cb-landing__catalog-head">
+      <img class="cb-landing__splash cb-landing__splash--small" src="{{ asset }}splash-small.png" alt="" aria-hidden="true">
+      <h2>WHOLESALE CATALOG</h2>
+      <p>Our B2B relations with stores all around the world has helped us consistently build our product line. As a team, we believe strongly in the craft stories &amp; know that truly a large part of the world still celebrates well crafted products with far more affection than products made with machine &amp; created to last for a very short time.</p>
+      <p>Create your wholesale buying account here, &amp; take a look inside our ready to ship products, made with Indian Crafts at heart.</p>
+    </div>
+    <button type="button" class="cb-landing__btn" data-lead-open>Create wholesale account</button>
+    <div class="cb-landing__strip">
+      {% for product in products %}
+        <div class="cb-landing__card"><span><img src="{{ product }}" alt=""></span></div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="cb-landing__retail">
+    <img class="cb-landing__retail-deco" src="{{ asset }}retail-deco.svg" alt="" aria-hidden="true">
+    <div class="cb-landing__retail-copy">
+      <p class="cb-landing__kicker cb-landing__kicker--light">Shopping for yourself?</p>
+      <h2>Buy individual pieces from our retail store.</h2>
+    </div>
+    <div class="cb-landing__retail-cta">
+      <p>Shop retail at</p>
+      <a class="cb-landing__btn cb-landing__btn--light" href="{{ retail }}" target="_blank" rel="noopener">Seeds of Anaar <img src="{{ asset }}ext-arrow.svg" alt=""></a>
+    </div>
+  </section>
+
+  <footer class="cb-landing__footer">
+    <div class="cb-landing__footer-brand">
+      <img src="{{ asset }}footer-logo.svg" alt="Craft Boat">
+      <p>Craft-led design and production, handmade in Jaipur since 2015.</p>
+    </div>
+    <div class="cb-landing__footer-col">
+      <h3>Wholesale</h3>
+      <a href="#" data-lead-open>Shop all</a>
+      <a href="#" data-lead-open>Collection</a>
+      <a href="#" data-lead-open>Apply for an account</a>
+      <a href="{{ login }}">Sign in</a>
+    </div>
+    <div class="cb-landing__footer-col">
+      <h3>Work with us</h3>
+      <a href="{{ contact }}">Custom orders</a>
+      <a href="{{ about }}">Our process</a>
+      <a href="{{ contact }}">Wholesale terms</a>
+      <a href="{{ contact }}">FAQ’s</a>
+    </div>
+    <div class="cb-landing__footer-news">
+      <h2>Studio notes, by email</h2>
+      <p>New collections, trade show dates and wholesale updates. No noise.</p>
+      <form class="cb-landing__news" id="cb-landing-news" action="{{ lead }}" method="post">
+        <input type="email" name="email" placeholder="Email address" aria-label="Email address" required>
+        <button type="submit" aria-label="Subscribe"><img src="{{ asset }}news-arrow.svg" alt=""></button>
+      </form>
+      <p class="cb-landing__news-msg" id="cb-landing-news-msg" hidden></p>
+    </div>
+  </footer>
+</div>
+
+<div class="cb-lead" id="cb-lead" hidden>
+  <button type="button" class="cb-lead__backdrop" data-lead-close aria-label="Close"></button>
+  <div class="cb-lead__dialog" role="dialog" aria-modal="true" aria-labelledby="cb-lead-title">
+    <button type="button" class="cb-lead__close" data-lead-close aria-label="Close">×</button>
+    <div class="cb-lead__media">
+      <img src="{{ asset }}popup-products.png" alt="">
+    </div>
+    <div class="cb-lead__panel">
+      <p class="cb-lead__eyebrow">Craft Boat B2B</p>
+      <h2 id="cb-lead-title">Step into Craft Boat <em>wholesale.</em></h2>
+      <p class="cb-lead__copy">Explore ready-to-ship products, made with Indian crafts at heart. Create your wholesale buying account and bring thoughtfully crafted pieces to your store.</p>
+      <form class="cb-lead__form" id="cb-lead-form" action="{{ lead }}" method="post">
+        <label class="visually-hidden" for="cb-lead-email">Email address</label>
+        <input type="email" name="email" id="cb-lead-email" placeholder="Email address" required autocomplete="email">
+        <button type="submit" aria-label="Continue"><img src="{{ asset }}popup-arrow.svg" alt=""></button>
+      </form>
+      <p class="cb-lead__error" id="cb-lead-error" hidden></p>
+      <p class="cb-lead__login">Already have a wholesale account? <a href="{{ login }}"><u>Log in</u></a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var modal = document.getElementById('cb-lead');
+  var form = document.getElementById('cb-lead-form');
+  var error = document.getElementById('cb-lead-error');
+  var news = document.getElementById('cb-landing-news');
+  var newsMsg = document.getElementById('cb-landing-news-msg');
+
+  function openLead(e) {
+    if (e) e.preventDefault();
+    if (!modal) return;
+    modal.hidden = false;
+    document.body.classList.add('cb-lead-open');
+    var input = document.getElementById('cb-lead-email');
+    if (input) setTimeout(function () { input.focus(); }, 50);
+  }
+
+  function closeLead() {
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.classList.remove('cb-lead-open');
+    if (error) {
+      error.hidden = true;
+      error.textContent = '';
+    }
+  }
+
+  document.querySelectorAll('[data-lead-open]').forEach(function (el) {
+    el.addEventListener('click', openLead);
+  });
+  document.querySelectorAll('[data-lead-close]').forEach(function (el) {
+    el.addEventListener('click', closeLead);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLead();
+  });
+
+  function submitLead(formEl, onError) {
+    var emailInput = formEl.querySelector('[name="email"]');
+    var email = (emailInput && emailInput.value ? emailInput.value : '').trim();
+    var submitBtn = formEl.querySelector('[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    return fetch(formEl.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+      body: 'email=' + encodeURIComponent(email),
+      credentials: 'same-origin'
+    }).then(function (r) { return r.json(); }).then(function (json) {
+      if (json.redirect) {
+        window.location.href = json.redirect;
+        return;
+      }
+      if (submitBtn) submitBtn.disabled = false;
+      var message = json.error || 'Something went wrong. Please try again.';
+      if (json.login) {
+        message = message + ' <a href="' + json.login + '">Log in</a>';
+      }
+      if (onError) onError(message);
+    }).catch(function () {
+      if (submitBtn) submitBtn.disabled = false;
+      if (onError) onError('Something went wrong. Please try again.');
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      submitLead(form, function (message) {
+        if (!error) return;
+        error.hidden = false;
+        error.innerHTML = message;
+      });
+    });
+  }
+
+  if (news) {
+    news.addEventListener('submit', function (e) {
+      e.preventDefault();
+      submitLead(news, function (message) {
+        if (!newsMsg) return;
+        newsMsg.hidden = false;
+        newsMsg.innerHTML = message;
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

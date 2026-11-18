@@ -14,6 +14,14 @@ class Category extends \Opencart\System\Engine\Controller {
 	public function index(): ?\Opencart\System\Engine\Action {
 		$this->load->language('product/category');
 
+		$this->load->model('account/trade');
+
+		if ($this->model_account_trade->requiresCompletion()) {
+			$this->response->redirect($this->url->link('account/complete', 'language=' . $this->config->get('config_language') . '&customer_token=' . ($this->session->data['customer_token'] ?? ''), true));
+
+			return null;
+		}
+
 		if (isset($this->request->get['path'])) {
 			$path = (string)$this->request->get['path'];
 		} else {

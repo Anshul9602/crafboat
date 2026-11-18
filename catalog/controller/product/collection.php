@@ -9,6 +9,15 @@ class Collection extends \Opencart\System\Engine\Controller {
 	 */
 	public function index(): void {
 		$language = (string)$this->config->get('config_language');
+
+		$this->load->model('account/trade');
+
+		if ($this->model_account_trade->requiresCompletion()) {
+			$this->response->redirect($this->url->link('account/complete', 'language=' . $language . '&customer_token=' . ($this->session->data['customer_token'] ?? ''), true));
+
+			return;
+		}
+
 		$this->load->model('catalog/collection');
 		$rows = $this->model_catalog_collection->getCollections();
 		$key = (string)($this->request->get['collection'] ?? ($rows[0]['code'] ?? ''));

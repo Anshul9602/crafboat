@@ -219,6 +219,7 @@ class Login extends \Opencart\System\Engine\Controller {
 
 			// Create customer token
 			$this->session->data['customer_token'] = oc_token(26);
+			$this->session->data['landing_passed'] = 1;
 
 			$this->model_account_customer->deleteLoginAttempts($post_info['email']);
 
@@ -230,9 +231,9 @@ class Login extends \Opencart\System\Engine\Controller {
 
 			// Added strpos check to pass McAfee PCI compliance test (http://forum.opencart.com/viewtopic.php?f=10&t=12043&p=151494#p151295)
 			if ($redirect && str_starts_with($redirect, $this->config->get('config_url'))) {
-				$json['redirect'] = $redirect . '&customer_token=' . $this->session->data['customer_token'];
+				$json['redirect'] = $redirect . (str_contains($redirect, 'customer_token=') ? '' : '&customer_token=' . $this->session->data['customer_token']);
 			} else {
-				$json['redirect'] = $this->url->link('account/account', 'language=' . $this->config->get('config_language') . '&customer_token=' . $this->session->data['customer_token'], true);
+				$json['redirect'] = $this->url->link('common/home', 'language=' . $this->config->get('config_language') . '&customer_token=' . $this->session->data['customer_token'], true);
 			}
 		}
 
@@ -302,8 +303,9 @@ class Login extends \Opencart\System\Engine\Controller {
 
 			// Create customer token
 			$this->session->data['customer_token'] = oc_token(26);
+			$this->session->data['landing_passed'] = 1;
 
-			$this->response->redirect($this->url->link('account/account', 'language=' . $this->config->get('config_language') . '&customer_token=' . $this->session->data['customer_token'], true));
+			$this->response->redirect($this->url->link('common/home', 'language=' . $this->config->get('config_language') . '&customer_token=' . $this->session->data['customer_token'], true));
 		} else {
 			$this->session->data['error'] = $this->language->get('error_login');
 
