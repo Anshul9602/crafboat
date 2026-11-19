@@ -31,7 +31,7 @@ class Landing extends \Opencart\System\Engine\Controller {
 		$data['faire'] = 'https://www.faire.com/';
 		$data['retail'] = 'https://www.seedsofanaar.com/';
 		$data['asset'] = 'image/catalog/craftboat/landing/';
-		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=landingfooter9';
+		$data['theme'] = 'catalog/view/stylesheet/craftboat.css?v=landingbg1';
 		$data['name'] = $this->config->get('config_name');
 		$data['base'] = $this->config->get('config_url');
 		$data['products'] = [

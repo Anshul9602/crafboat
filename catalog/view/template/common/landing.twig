@@ -6,39 +6,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <title>Craft Boat Wholesale</title>
   <base href="{{ base }}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:wght@300;400;600&display=swap" type="text/css" rel="stylesheet"/>
   <link href="{{ theme }}" type="text/css" rel="stylesheet"/>
 </head>
 <body class="cb cb-landing-page">
 <div id="container" class="cb-landing">
-  <div class="cb-landing__topbar">
-    <span>Craft Boat’s wholesale home for approved stocklists</span>
-    <a href="{{ faire }}" target="_blank" rel="noopener">Prefer Faire? Continue there ↗</a>
-  </div>
-
-  <header class="cb-landing__nav">
-    <a class="cb-landing__mark" href="index.php?route=common/landing&amp;language={{ language }}" aria-label="Craft Boat">
-      <img src="{{ asset }}logo-mark.svg" alt="Craft Boat">
-    </a>
-    <div class="cb-landing__nav-actions">
-      <a class="cb-landing__login" href="{{ login }}">Log in</a>
-      <button type="button" class="cb-landing__btn" data-lead-open>Create an account</button>
-    </div>
-  </header>
-
   <section class="cb-landing__hero">
-    <div class="cb-landing__hero-art" aria-hidden="true">
-      <img class="cb-landing__hero-shape" src="{{ asset }}hero-wash.svg" alt="">
-      <img class="cb-landing__hero-wash" src="{{ asset }}splash-blue.png" alt="">
-    </div>
     <div class="cb-landing__hero-inner">
       <div class="cb-landing__hero-logo">
         <img src="{{ asset }}logo-center.svg" alt="Craft Boat">
       </div>
-      <h1 class="cb-landing__hero-title">
-        <span class="cb-landing__brand">CRAFT BOAT</span>
-        is a multi disciplinary design<br>cum manufacturing space
-      </h1>
-      <img class="cb-landing__hero-accent" src="{{ asset }}splash-tiny.png" alt="" aria-hidden="true">
+      <div class="cb-landing__hero-heading">
+        <img class="cb-landing__hero-wash" src="{{ asset }}splash-blue.png" alt="" aria-hidden="true">
+        <h1 class="cb-landing__hero-title">
+          <span class="cb-landing__brand">CRAFT BOAT</span>
+          is a multi disciplinary design<br>cum manufacturing space
+        </h1>
+         </div>
       <div class="cb-landing__hero-copy">
         <p>We started as a handmade paper making company &amp; have recycled more than ten thousand tons of textile waste to create sheets of paper for home, office, &amp; packaging products</p>
         <p>Based in Jaipur, India ~ our roots are tied to the multitude of art and deign this city harbours.</p>
@@ -50,10 +36,12 @@
 
   <section class="cb-landing__brief">
     <div class="cb-landing__brief-copy">
-      <img class="cb-landing__splash" src="{{ asset }}splash-blue.png" alt="" aria-hidden="true">
       <div class="cb-landing__brief-text">
         <p class="cb-landing__kicker">Made for your store</p>
-        <h2>Are you<br><em>designing</em> a brand.</h2>
+        <div class="cb-landing__brief-heading">
+          <img class="cb-landing__splash" src="{{ asset }}splash-blue.png" alt="" aria-hidden="true">
+          <h2>Are you<br><em>designing</em> a brand.</h2>
+        </div>
         <p>Looking for slow made goods, rooted in Earth friendly practices, and need a team to create your dream to reality with hand crafts &amp; hearts committed to be your partner in process - our team shall be happy to hear from you and help you nurture your custom designs.</p>
         <a class="cb-landing__btn" href="{{ contact }}">Start a custom brief</a>
       </div>
@@ -63,7 +51,7 @@
     </div>
   </section>
 
-  <section class="cb-landing__catalog">
+  <section class="cb-landing__catalog ">
     <p class="cb-landing__kicker">Shop all</p>
     <div class="cb-landing__catalog-head">
       <img class="cb-landing__splash cb-landing__splash--small" src="{{ asset }}splash-small.png" alt="" aria-hidden="true">
@@ -90,36 +78,6 @@
       <a class="cb-landing__btn cb-landing__btn--light" href="{{ retail }}" target="_blank" rel="noopener">Seeds of Anaar <img src="{{ asset }}ext-arrow.svg" alt=""></a>
     </div>
   </section>
-
-  <footer class="cb-landing__footer">
-    <div class="cb-landing__footer-brand">
-      <img src="{{ asset }}footer-logo.svg" alt="Craft Boat">
-      <p>Craft-led design and production, handmade in Jaipur since 2015.</p>
-    </div>
-    <div class="cb-landing__footer-col">
-      <h3>Wholesale</h3>
-      <a href="#" data-lead-open>Shop all</a>
-      <a href="#" data-lead-open>Collection</a>
-      <a href="#" data-lead-open>Apply for an account</a>
-      <a href="{{ login }}">Sign in</a>
-    </div>
-    <div class="cb-landing__footer-col">
-      <h3>Work with us</h3>
-      <a href="{{ contact }}">Custom orders</a>
-      <a href="{{ about }}">Our process</a>
-      <a href="{{ contact }}">Wholesale terms</a>
-      <a href="{{ contact }}">FAQ’s</a>
-    </div>
-    <div class="cb-landing__footer-news">
-      <h2>Studio notes, by email</h2>
-      <p>New collections, trade show dates and wholesale updates. No noise.</p>
-      <form class="cb-landing__news" id="cb-landing-news" action="{{ lead }}" method="post">
-        <input type="email" name="email" placeholder="Email address" aria-label="Email address" required>
-        <button type="submit" aria-label="Subscribe"><img src="{{ asset }}news-arrow.svg" alt=""></button>
-      </form>
-      <p class="cb-landing__news-msg" id="cb-landing-news-msg" hidden></p>
-    </div>
-  </footer>
 </div>
 
 <div class="cb-lead" id="cb-lead" hidden>
@@ -149,8 +107,6 @@
   var modal = document.getElementById('cb-lead');
   var form = document.getElementById('cb-lead-form');
   var error = document.getElementById('cb-lead-error');
-  var news = document.getElementById('cb-landing-news');
-  var newsMsg = document.getElementById('cb-landing-news-msg');
 
   function openLead(e) {
     if (e) e.preventDefault();
@@ -220,16 +176,6 @@
     });
   }
 
-  if (news) {
-    news.addEventListener('submit', function (e) {
-      e.preventDefault();
-      submitLead(news, function (message) {
-        if (!newsMsg) return;
-        newsMsg.hidden = false;
-        newsMsg.innerHTML = message;
-      });
-    });
-  }
 })();
 </script>
 </body>
