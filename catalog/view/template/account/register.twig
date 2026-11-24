@@ -6,17 +6,19 @@
       <img src="{{ photo }}" alt="" class="cb-auth__img">
     </div>
     {% endif %}
-    <div id="content" class="{% if account == 'login' %}col-lg-6 cb-auth__form{% else %}col-12{% endif %}">{{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      {% if account == 'login' %}
-        <p>Use the email and password for your approved account.</p>
-      {% else %}
-        <p>{{ text_account_already }}</p>
-      {% endif %}
-      <div class="cb-auth__types">
-        <a href="{{ trade }}"{% if account == 'trade' %} class="is-on"{% endif %}>Trade account</a>
-        <a href="{{ wholesale }}"{% if account == 'wholesale' %} class="is-on"{% endif %}>Wholesale account</a>
-        <a href="{{ signin }}"{% if account == 'login' %} class="is-on"{% endif %}>Sign in</a>
+    <div id="content" class="{% if account == 'login' %}col-lg-6 cb-auth__form{% else %}col-12 cb-apply__shell{% endif %}">{{ content_top }}
+      <div class="cb-apply__intro">
+        <h1>{{ heading_title }}</h1>
+        {% if account == 'login' %}
+          <p>Use the email and password for your approved account.</p>
+        {% else %}
+          <p>{{ text_account_already }}</p>
+        {% endif %}
+        <div class="cb-auth__types">
+          <a href="{{ trade }}"{% if account == 'trade' %} class="is-on"{% endif %}>Trade account</a>
+          <a href="{{ wholesale }}"{% if account == 'wholesale' %} class="is-on"{% endif %}>Wholesale account</a>
+          <a href="{{ signin }}"{% if account == 'login' %} class="is-on"{% endif %}>Sign in</a>
+        </div>
       </div>
       {% if account == 'login' %}
       <form id="form-login" action="{{ login }}" method="post" data-oc-toggle="ajax">
@@ -32,48 +34,48 @@
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
       {% else %}
-      <form id="form-register" action="{{ register }}" method="post" data-oc-toggle="ajax">
+      <form id="form-register" class="cb-apply__form" action="{{ register }}" method="post" data-oc-toggle="ajax">
         <p class="cb-auth__note">Wholesale prices stay locked until Craft Boat approves this account. Choosing a business type does not turn pricing on.</p>
-        <fieldset id="account">
+        <fieldset id="account" class="cb-apply__card">
           <legend>Business details</legend>
-          <div class="row">
+          <div class="row g-2">
             <input type="hidden" name="customer_group_id" value="{{ customer_group_id }}" id="input-customer-group"/>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-company">Company / business name</label>
-              <input type="text" name="company" id="input-company" class="form-control"/>
+              <input type="text" name="company" id="input-company" class="form-control" autocomplete="organization"/>
               <div id="error-company" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-contact">Contact person</label>
-              <input type="text" name="contact" id="input-contact" class="form-control"/>
+              <input type="text" name="contact" id="input-contact" class="form-control" autocomplete="name"/>
               <div id="error-contact" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-email">Email</label>
-              <input type="email" name="email" id="input-email" class="form-control"/>
+              <input type="email" name="email" id="input-email" class="form-control" autocomplete="email"/>
               <div id="error-email" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-telephone">Mobile number</label>
-              <input type="tel" name="telephone" id="input-telephone" class="form-control" inputmode="numeric" maxlength="16" placeholder="9876543210"/>
+              <input type="tel" name="telephone" id="input-telephone" class="form-control" inputmode="numeric" maxlength="16" placeholder="9876543210" autocomplete="tel"/>
               <div id="error-telephone" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-password">Password</label>
-              <input type="password" name="password" id="input-password" class="form-control"/>
+              <input type="password" name="password" id="input-password" class="form-control" autocomplete="new-password"/>
               <div id="error-password" class="invalid-feedback"></div>
             </div>
           </div>
         </fieldset>
-        <fieldset>
+        <fieldset class="cb-apply__card">
           <legend>Billing address</legend>
-          <div class="row">
-            <div class="col-12 mb-3 required">
+          <div class="row g-2">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-billing-address">Address</label>
-              <textarea name="billing_address" id="input-billing-address" rows="3" class="form-control"></textarea>
+              <textarea name="billing_address" id="input-billing-address" rows="2" class="form-control"></textarea>
               <div id="error-billing-address" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-billing-country">Country</label>
               <select name="billing_country_id" id="input-billing-country" class="form-select" data-zone="#input-billing-zone">
                 <option value="">Select</option>
@@ -83,42 +85,42 @@
               </select>
               <div id="error-billing-country" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-billing-zone">State</label>
               <select name="billing_zone_id" id="input-billing-zone" class="form-select">
                 <option value="">Select</option>
               </select>
               <div id="error-billing-zone" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-billing-city">City</label>
               <input type="text" name="billing_city" id="input-billing-city" class="form-control"/>
               <div id="error-billing-city" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-billing-postcode">PIN</label>
               <input type="text" name="billing_postcode" id="input-billing-postcode" class="form-control" inputmode="numeric" maxlength="6" placeholder="302001"/>
               <div id="error-billing-postcode" class="invalid-feedback"></div>
             </div>
           </div>
         </fieldset>
-        <fieldset>
+        <fieldset class="cb-apply__card">
           <legend>Shipping address</legend>
-          <div class="row">
-            <div class="col-12 mb-3">
+          <div class="row g-2">
+            <div class="col-12">
               <div class="form-check">
                 <input type="checkbox" name="shipping_same" value="1" id="input-shipping-same" class="form-check-input" checked/>
                 <label class="form-check-label" for="input-shipping-same">Same as billing address</label>
               </div>
             </div>
           </div>
-          <div id="shipping-fields" class="row">
-            <div class="col-12 mb-3 required">
+          <div id="shipping-fields" class="row g-2">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-shipping-address">Address</label>
-              <textarea name="shipping_address" id="input-shipping-address" rows="3" class="form-control"></textarea>
+              <textarea name="shipping_address" id="input-shipping-address" rows="2" class="form-control"></textarea>
               <div id="error-shipping-address" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-shipping-country">Country</label>
               <select name="shipping_country_id" id="input-shipping-country" class="form-select" data-zone="#input-shipping-zone">
                 <option value="">Select</option>
@@ -128,39 +130,39 @@
               </select>
               <div id="error-shipping-country" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-shipping-zone">State</label>
               <select name="shipping_zone_id" id="input-shipping-zone" class="form-select">
                 <option value="">Select</option>
               </select>
               <div id="error-shipping-zone" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-shipping-city">City</label>
               <input type="text" name="shipping_city" id="input-shipping-city" class="form-control"/>
               <div id="error-shipping-city" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-shipping-postcode">PIN</label>
               <input type="text" name="shipping_postcode" id="input-shipping-postcode" class="form-control" inputmode="numeric" maxlength="6" placeholder="302001"/>
               <div id="error-shipping-postcode" class="invalid-feedback"></div>
             </div>
           </div>
         </fieldset>
-        <fieldset>
+        <fieldset class="cb-apply__card">
           <legend>Tax and business</legend>
-          <div class="row">
-            <div class="col-md-6 mb-3 required">
+          <div class="row g-2">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-gstin">GSTIN / Tax ID</label>
               <input type="text" name="gstin" id="input-gstin" class="form-control" maxlength="15" placeholder="22AAAAA0000A1Z5" autocapitalize="characters"/>
               <div id="error-gstin" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-pan">PAN / business registration no.</label>
               <input type="text" name="pan" id="input-pan" class="form-control" maxlength="10" placeholder="ABCDE1234F" autocapitalize="characters"/>
               <div id="error-pan" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-business-type">Business type</label>
               <select name="business_type" id="input-business-type" class="form-select">
                 <option value="">Select</option>
@@ -170,65 +172,74 @@
               </select>
               <div id="error-business-type" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-monthly-purchase">Expected monthly purchase</label>
               <input type="text" name="monthly_purchase" id="input-monthly-purchase" class="form-control" inputmode="decimal" placeholder="50000"/>
               <div id="error-monthly-purchase" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3 required">
+            <div class="col-md-4 required">
               <label class="form-label" for="input-stores">Number of stores</label>
               <input type="number" name="stores" id="input-stores" class="form-control" min="1" step="1" inputmode="numeric"/>
               <div id="error-stores" class="invalid-feedback"></div>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4">
               <label class="form-label" for="input-website">Website, if applicable</label>
               <input type="url" name="website" id="input-website" class="form-control" placeholder="https://example.com"/>
             </div>
-            <div class="col-12 mb-3">
+            <div class="col-md-4">
               <label class="form-label" for="input-reference">Reference / existing supplier</label>
-              <textarea name="reference" id="input-reference" rows="3" class="form-control"></textarea>
+              <textarea name="reference" id="input-reference" rows="2" class="form-control"></textarea>
             </div>
           </div>
         </fieldset>
-        <fieldset>
+        <fieldset class="cb-apply__card">
           <legend>Documents</legend>
-          <div class="row">
-            <div class="col-md-4 mb-3 required">
-              <label class="form-label">Trade license / GST certificate</label>
-              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-trade-license" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
-              <span class="cb-upload-preview"></span>
-              <input type="hidden" name="trade_license" id="input-trade-license" value=""/>
-              <div id="error-trade-license" class="invalid-feedback"></div>
+          <div class="row g-3 cb-apply__uploads">
+            <div class="col-md-4 required">
+              <div class="cb-apply__upload">
+                <label class="form-label">Trade license / GST certificate</label>
+                <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-trade-license" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
+                <span class="cb-upload-preview"></span>
+                <input type="hidden" name="trade_license" id="input-trade-license" value=""/>
+                <div id="error-trade-license" class="invalid-feedback"></div>
+              </div>
             </div>
-            <div class="col-md-4 mb-3 required">
-              <label class="form-label">PAN / business document</label>
-              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-pan-document" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
-              <span class="cb-upload-preview"></span>
-              <input type="hidden" name="pan_document" id="input-pan-document" value=""/>
-              <div id="error-pan-document" class="invalid-feedback"></div>
+            <div class="col-md-4 required">
+              <div class="cb-apply__upload">
+                <label class="form-label">PAN / business document</label>
+                <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-pan-document" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
+                <span class="cb-upload-preview"></span>
+                <input type="hidden" name="pan_document" id="input-pan-document" value=""/>
+                <div id="error-pan-document" class="invalid-feedback"></div>
+              </div>
             </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Cancelled cheque / bank details</label>
-              <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-cheque" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
-              <span class="cb-upload-preview"></span>
-              <input type="hidden" name="cheque" id="input-cheque" value=""/>
-              <div id="error-cheque" class="invalid-feedback"></div>
+            <div class="col-md-4">
+              <div class="cb-apply__upload">
+                <label class="form-label">Cancelled cheque / bank details</label>
+                <button type="button" data-oc-toggle="upload" data-oc-url="{{ upload }}" data-oc-size-max="{{ config_file_max_size }}" data-oc-size-error="{{ error_upload_size }}" data-oc-target="#input-cheque" data-oc-accept="jpg,jpeg,png,webp,gif,pdf" accept="image/jpeg,image/png,image/webp,image/gif,application/pdf" class="btn btn-light">Upload</button>
+                <span class="cb-upload-preview"></span>
+                <input type="hidden" name="cheque" id="input-cheque" value=""/>
+                <div id="error-cheque" class="invalid-feedback"></div>
+              </div>
             </div>
           </div>
         </fieldset>
-        <div class="form-check form-switch mb-3">
-          <input type="hidden" name="newsletter" value="0"/>
-          <input type="checkbox" name="newsletter" value="1" id="input-newsletter" class="form-check-input"/>
-          <label class="form-check-label" for="input-newsletter">{{ entry_newsletter }}</label>
-        </div>
-        {{ captcha }}
-        <div class="text-end">
-          {% if text_agree %}
-            <div class="form-check form-switch form-switch-lg form-check-reverse form-check-inline">
-              <label class="form-check-label">{{ text_agree }}</label> <input type="checkbox" name="agree" value="1" class="form-check-input"/>
-            </div>
-          {% endif %}
-          <button type="submit" class="btn btn-primary">{{ button_continue }}</button>
+        <div class="cb-apply__footer">
+          <div class="form-check form-switch">
+            <input type="hidden" name="newsletter" value="0"/>
+            <input type="checkbox" name="newsletter" value="1" id="input-newsletter" class="form-check-input"/>
+            <label class="form-check-label" for="input-newsletter">{{ entry_newsletter }}</label>
+          </div>
+          {{ captcha }}
+          <div class="cb-apply__actions">
+            {% if text_agree %}
+              <div class="form-check form-switch form-switch-lg">
+                <input type="checkbox" name="agree" value="1" class="form-check-input" id="input-agree"/>
+                <label class="form-check-label" for="input-agree">{{ text_agree }}</label>
+              </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">{{ button_continue }}</button>
+          </div>
         </div>
       </form>
       {% endif %}

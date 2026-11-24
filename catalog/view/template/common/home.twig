@@ -62,7 +62,7 @@
       <p class="cb-kicker">Buyer favourites</p>
       <h2>Best sellers</h2>
     </div>
-    <p>Product names and suggested retail remain visible. Sign in to unlock wholesale pricing and quick ordering.</p>
+    <p>Product names remain visible. Sign in to unlock pricing and quick ordering.</p>
   </div>
   <div class="cb-grid">
     {% for product in bestsellers %}
@@ -174,8 +174,8 @@
         <h3>Opening Edit</h3>
         <p class="cb-muted">A balanced first order across desk, gifting, textile and home.</p>
         <div class="cb-row"><span>Wholesale</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
-        <div class="cb-row"><span>Suggested retail</span><b>$1860</b></div>
-        <div class="cb-row"><span>Projected gross profit</span><b>Locked</b></div>
+        <div class="cb-row"><span>Suggested retail</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
+        <div class="cb-row"><span>Projected gross profit</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <a class="cb-link" href="{{ logged ? account : login }}">{% if logged %}View your account{% else %}Sign in to add assortment{% endif %} <span class="cb-arrow" aria-hidden="true"></span></a>
       </div>
     </article>
@@ -187,8 +187,8 @@
         <h3>Ready-Stock Refill</h3>
         <p class="cb-muted">In-stock bestsellers for a fast floor refresh or top-up order.</p>
         <div class="cb-row"><span>Wholesale</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
-        <div class="cb-row"><span>Suggested retail</span><b>$1176</b></div>
-        <div class="cb-row"><span>Projected gross profit</span><b>Locked</b></div>
+        <div class="cb-row"><span>Suggested retail</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
+        <div class="cb-row"><span>Projected gross profit</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <a class="cb-link" href="{{ logged ? account : login }}">{% if logged %}View your account{% else %}Sign in to add assortment{% endif %} <span class="cb-arrow" aria-hidden="true"></span></a>
       </div>
     </article>
@@ -200,8 +200,8 @@
         <h3>Gifting Table</h3>
         <p class="cb-muted">Easy-to-merchandise paper and textile pieces for gifting moments.</p>
         <div class="cb-row"><span>Wholesale</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
-        <div class="cb-row"><span>Suggested retail</span><b>$1860</b></div>
-        <div class="cb-row"><span>Projected gross profit</span><b>Locked</b></div>
+        <div class="cb-row"><span>Suggested retail</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
+        <div class="cb-row"><span>Projected gross profit</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <a class="cb-link" href="{{ logged ? account : login }}">{% if logged %}View your account{% else %}Sign in to add assortment{% endif %} <span class="cb-arrow" aria-hidden="true"></span></a>
       </div>
     </article>
