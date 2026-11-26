@@ -7,12 +7,12 @@
   {% endif %}
   <div class="cb-hero__shade"></div>
   <div class="cb-hero__copy">
-    <p class="cb-kicker">craft boat trade</p>
+    <p class="cb-kicker">CRAFT BOAT WHOLESALE</p>
     <h1>Soulful objects, made to <em>keep.</em></h1>
     <p>Handmade paper, textile and home objects for thoughtful stores and collected interiors.</p>
     <div class="cb-hero__actions">
       <a class="cb-btn cb-btn--white" href="{{ shop }}">Shop wholesale</a>
-      <a class="cb-btn cb-btn--ghost" href="index.php?route=account/register&amp;language=en-gb&amp;account=trade">Apply for a Trade Account</a>
+      <a class="cb-btn cb-btn--ghost" href="index.php?route=account/register&amp;language=en-gb&amp;account=wholesale">Apply for a wholesale account</a>
     </div>
   </div>
   {% if banners|length > 1 %}
@@ -41,7 +41,6 @@
       <p class="cb-kicker">Shop by category</p>
       <h2>Find what your store needs.</h2>
     </div>
-    <p>Browse by product type without needing to know the editorial collection.</p>
   </div>
   <div class="cb-cats-wrap">
     <div class="cb-cats" id="cb-cats" tabindex="0" aria-label="Shop by category">
@@ -62,7 +61,6 @@
       <p class="cb-kicker">Buyer favourites</p>
       <h2>Best sellers</h2>
     </div>
-    <p>Product names remain visible. Sign in to unlock pricing and quick ordering.</p>
   </div>
   <div class="cb-grid">
     {% for product in bestsellers %}
@@ -98,7 +96,6 @@
       <p class="cb-kicker">Explore categories</p>
       <h2>Build your assortment by department.</h2>
     </div>
-    <p>Adapted from Craft Boat’s real Faire taxonomy, then simplified for a single-brand buying journey.</p>
   </div>
   <div class="cb-depts" id="cb-depts">
     <a class="cb-dept" href="{{ dept_home }}" style="background-image:url('catalog/view/image/craftboat/dept-home.png')">
@@ -163,7 +160,6 @@
       <p class="cb-kicker">Buy by assortment</p>
       <h2>Build a stronger shelf, faster.</h2>
     </div>
-    <p class="cb-muted" style="color:#202020">Curated case-pack plans turn product discovery into a viable wholesale order. Review the exact units and values before adding.</p>
   </div>
   <div class="cb-assort">
     <article>
@@ -172,7 +168,6 @@
         <p class="cb-green">dispatch 3–5 days</p>
         <p>6 proven lines · 32 units</p>
         <h3>Opening Edit</h3>
-        <p class="cb-muted">A balanced first order across desk, gifting, textile and home.</p>
         <div class="cb-row"><span>Wholesale</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <div class="cb-row"><span>Suggested retail</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <div class="cb-row"><span>Projected gross profit</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
@@ -185,7 +180,6 @@
         <p class="cb-green">dispatch 3–5 days</p>
         <p>4 lines · 20 units</p>
         <h3>Ready-Stock Refill</h3>
-        <p class="cb-muted">In-stock bestsellers for a fast floor refresh or top-up order.</p>
         <div class="cb-row"><span>Wholesale</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <div class="cb-row"><span>Suggested retail</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <div class="cb-row"><span>Projected gross profit</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
@@ -198,7 +192,6 @@
         <p class="cb-green">dispatch 3–5 days</p>
         <p>4 lines · 20 giftable units</p>
         <h3>Gifting Table</h3>
-        <p class="cb-muted">Easy-to-merchandise paper and textile pieces for gifting moments.</p>
         <div class="cb-row"><span>Wholesale</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <div class="cb-row"><span>Suggested retail</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
         <div class="cb-row"><span>Projected gross profit</span><b>{% if logged %}Locked{% else %}Sign in{% endif %}</b></div>
@@ -242,7 +235,7 @@
       <p class="cb-kicker">In stock in Jaipur</p>
       <h2>Ready to Ship</h2>
     </div>
-    <p>Available now and expected to dispatch within 3–5 days.<br>Approved buyers can see quantities and add full case packs immediately.</p>
+    <p>Available now and expected to dispatch within 3–5 days.</p>
   </div>
   <div class="cb-grid">
     {% for product in ready %}
@@ -272,10 +265,9 @@
       <p class="cb-kicker">The direct difference</p>
       <h2>Made for our stockists.</h2>
     </div>
-    <p>A closer relationship with the Craft Boat studio—built around access, support and useful trade resources.</p>
   </div>
   <div class="cb-steps">
-    <article><p class="cb-num">01</p><h3>Early Access</h3><p class="cb-muted">Selected collections available first through Craft Boat Trade.</p></article>
+    <article><p class="cb-num">01</p><h3>Early Access</h3><p class="cb-muted">Selected collections available first through Craft Boat Wholesale.</p></article>
     <article><p class="cb-num">02</p><h3>Custom Possibilities</h3><p class="cb-muted">Develop colours, patterns, dimensions or packaging for larger programs.</p></article>
     <article><p class="cb-num">03</p><h3>Direct Studio Support</h3><p class="cb-muted">Work directly with our Jaipur design and production team.</p></article>
     <article><p class="cb-num">04</p><h3>Stockist Resources</h3><p class="cb-muted">Access approved product imagery, craft stories and merchandising material.</p></article>
@@ -287,7 +279,6 @@
   <div class="cb-custom__copy">
     <p class="cb-kicker">Made for your store</p>
     <h2 class="cb-display">Your idea, <em>shaped by hand.</em></h2>
-    <p>Share a product family, quantity, dimensions, colours, target price and delivery date. Our Jaipur studio will respond with feasibility and next steps.</p>
     <p><a class="cb-btn cb-btn--black" href="index.php?route=information/contact&amp;language=en-gb">Start a custom brief</a></p>
   </div>
 </section>
@@ -298,7 +289,6 @@
       <p class="cb-kicker">Verified wholesale feedback</p>
       <h2>Loved by Craft Boat stockists.</h2>
     </div>
-    <p>Ratings and excerpts below are clearly attributed to Craft Boat’s current Faire brand page.</p>
   </div>
   <div class="cb-scores">
     <div><strong>5.0</strong><span>Brand rating · 36 reviews</span></div>
@@ -349,11 +339,7 @@
   <img class="cb-seal" src="catalog/view/image/craftboat/seal-lg.svg" alt="Craft Boat">
   <p class="cb-kicker">How wholesale works</p>
   <h2 class="cb-display">A clear path from <em>hello to reorder.</em></h2>
-  <div class="cb-works__grid">
-    <article><p class="cb-num">01</p><h3>Apply</h3><p class="cb-muted">Share your store details once. We review most accounts within two business days.</p></article>
-    <article><p class="cb-num">02</p><h3>Shop your terms</h3><p class="cb-muted">See buyer-specific prices, margin, minimums and prepaid benefits as you browse.</p></article>
-    <article><p class="cb-num">03</p><h3>Order &amp; stay in touch</h3><p class="cb-muted">Build an order, pay securely and keep product conversations attached to it.</p></article>
-  </div>
+  <p class="cb-muted">We review most accounts within two business days.</p>
   <a class="cb-btn cb-btn--black" href="index.php?route=account/register&amp;language=en-gb&amp;account=wholesale">Open a wholesale account</a>
 </section>
 

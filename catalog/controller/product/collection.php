@@ -12,6 +12,16 @@ class Collection extends \Opencart\System\Engine\Controller {
 
 		$this->load->model('account/trade');
 
+		if (!$this->model_account_trade->canAccessCatalog()) {
+			if ($this->customer->isLogged()) {
+				$this->response->redirect($this->url->link('account/register', 'language=' . $language . '&account=trade' . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''), true));
+			} else {
+				$this->response->redirect($this->url->link('account/login', 'language=' . $language, true));
+			}
+
+			return;
+		}
+
 		if ($this->model_account_trade->requiresCompletion()) {
 			$this->response->redirect($this->url->link('account/complete', 'language=' . $language . '&customer_token=' . ($this->session->data['customer_token'] ?? ''), true));
 

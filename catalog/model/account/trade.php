@@ -43,15 +43,46 @@ class Trade extends \Opencart\System\Engine\Model {
 		return !empty($profile) && (int)($profile['profile_complete'] ?? 0) === 1;
 	}
 
-	public function requiresCompletion(): bool {
+	public function getRoleName(int $customer_group_id = 0): string {
+		if (!$customer_group_id) {
+			$customer_group_id = (int)$this->customer->getGroupId();
+		}
+
+		if (!$customer_group_id) {
+			return '';
+		}
+
+		$group = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$customer_group_id . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
+
+		return oc_strtolower((string)($group->row['name'] ?? ''));
+	}
+
+	public function hasTradeRole(): bool {
 		if (!$this->customer->isLogged()) {
 			return false;
 		}
 
-		$group = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "customer_group_description` WHERE `customer_group_id` = '" . (int)$this->customer->getGroupId() . "' AND `language_id` = '" . (int)$this->config->get('config_language_id') . "' LIMIT 1");
-		$role = oc_strtolower((string)($group->row['name'] ?? ''));
+		return in_array($this->getRoleName(), ['trade', 'wholesale'], true);
+	}
 
-		if (!in_array($role, ['trade', 'wholesale'], true)) {
+	public function canAccessCatalog(): bool {
+		return $this->hasTradeRole();
+	}
+
+	public function needsBusinessProfile(): bool {
+		if (!$this->customer->isLogged()) {
+			return false;
+		}
+
+		if (!$this->hasTradeRole()) {
+			return true;
+		}
+
+		return !$this->isProfileComplete((int)$this->customer->getId());
+	}
+
+	public function requiresCompletion(): bool {
+		if (!$this->hasTradeRole()) {
 			return false;
 		}
 

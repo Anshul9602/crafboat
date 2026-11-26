@@ -69,10 +69,10 @@ class Register extends \Opencart\System\Engine\Controller {
 			}
 		}
 
-		$account = (string)($this->request->get['account'] ?? 'trade');
+		$account = (string)($this->request->get['account'] ?? 'wholesale');
 
 		if (!in_array($account, ['trade', 'wholesale', 'login'], true)) {
-			$account = 'trade';
+			$account = 'wholesale';
 		}
 
 		$language = (string)$this->config->get('config_language');
@@ -88,7 +88,7 @@ class Register extends \Opencart\System\Engine\Controller {
 		$data['login'] = $this->url->link('account/login.login', 'language=' . $language . '&login_token=' . $this->session->data['login_token']);
 		$data['forgotten'] = $this->url->link('account/forgotten', 'language=' . $language);
 		$data['customer_group_id'] = ($account === 'wholesale' && $wholesale_id) ? $wholesale_id : $trade_id;
-		$data['heading_title'] = $account === 'login' ? 'Sign in' : ($account === 'wholesale' ? 'Apply for a wholesale account' : 'Apply for a trade account');
+		$data['heading_title'] = $account === 'login' ? 'Sign in' : 'Apply for a wholesale account';
 
 		$this->document->setTitle($data['heading_title']);
 

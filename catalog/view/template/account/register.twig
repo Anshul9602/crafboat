@@ -15,8 +15,7 @@
           <p>{{ text_account_already }}</p>
         {% endif %}
         <div class="cb-auth__types">
-          <a href="{{ trade }}"{% if account == 'trade' %} class="is-on"{% endif %}>Trade account</a>
-          <a href="{{ wholesale }}"{% if account == 'wholesale' %} class="is-on"{% endif %}>Wholesale account</a>
+          <a href="{{ wholesale }}"{% if account != 'login' %} class="is-on"{% endif %}>Wholesale account</a>
           <a href="{{ signin }}"{% if account == 'login' %} class="is-on"{% endif %}>Sign in</a>
         </div>
       </div>

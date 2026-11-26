@@ -8,7 +8,7 @@
     <h3>Wholesale</h3>
     <a href="{{ shop_all }}">Shop all</a>
     <a href="{{ collection }}">Collection</a>
-    <a href="index.php?route=account/register&amp;language=en-gb&amp;account=trade">Apply for an account</a>
+    <a href="index.php?route=account/register&amp;language=en-gb&amp;account=wholesale">Apply for a wholesale account</a>
     {% if logged %}
       <a href="{{ account }}">Account</a>
     {% else %}
@@ -24,7 +24,6 @@
   </div>
   <div>
     <h2>Studio notes, by email</h2>
-    <p>New collections, trade show dates and wholesale updates. No noise.</p>
     <form class="cb-news" action="{{ newsletter }}" method="get">
       <input type="email" name="email" placeholder="Email address" aria-label="Email address">
       <button type="submit" aria-label="Subscribe"><span class="cb-arrow" aria-hidden="true"></span></button>

@@ -3,7 +3,6 @@
   <section class="cb-contact__hero">
     <p class="cb-kicker">{{ text_kicker }}</p>
     <h1>{{ heading_title }}</h1>
-    <p class="cb-contact__intro">{{ text_intro }}</p>
   </section>
 
   <div class="cb-contact__layout">
@@ -11,7 +10,6 @@
       <div class="cb-contact__card">
         <p class="cb-contact__label">{{ text_email }}</p>
         <a class="cb-contact__link" href="mailto:{{ email }}">{{ email }}</a>
-        <p class="cb-contact__hint">{{ text_email_hint }}</p>
       </div>
 
       {% if telephone %}
@@ -71,23 +69,22 @@
     <section class="cb-contact__form-wrap">
       <p class="cb-kicker">{{ text_form_kicker }}</p>
       <h2>{{ text_contact }}</h2>
-      <p class="cb-contact__form-help">{{ text_form_help }}</p>
 
       <form id="form-contact" action="{{ send }}" method="post" data-oc-toggle="ajax" class="cb-contact__form">
         <div class="cb-contact__fields">
           <div class="cb-contact__field required">
             <label class="form-label" for="input-name">{{ entry_name }}</label>
-            <input type="text" name="name" value="{{ name }}" id="input-name" class="form-control" placeholder="{{ entry_name }}" autocomplete="name"/>
+            <input type="text" name="name" value="{{ name }}" id="input-name" class="form-control" autocomplete="name"/>
             <div id="error-name" class="invalid-feedback"></div>
           </div>
           <div class="cb-contact__field required">
             <label class="form-label" for="input-email">{{ entry_email }}</label>
-            <input type="email" name="email" value="{{ email_value }}" id="input-email" class="form-control" placeholder="{{ entry_email }}" autocomplete="email"/>
+            <input type="email" name="email" value="{{ email_value }}" id="input-email" class="form-control" autocomplete="email"/>
             <div id="error-email" class="invalid-feedback"></div>
           </div>
           <div class="cb-contact__field cb-contact__field--full required">
             <label class="form-label" for="input-enquiry">{{ entry_enquiry }}</label>
-            <textarea name="enquiry" rows="7" id="input-enquiry" class="form-control" placeholder="{{ entry_enquiry_placeholder }}"></textarea>
+            <textarea name="enquiry" rows="7" id="input-enquiry" class="form-control"></textarea>
             <div id="error-enquiry" class="invalid-feedback"></div>
           </div>
         </div>
@@ -103,7 +100,6 @@
     <div>
       <p class="cb-kicker">{{ text_trade_kicker }}</p>
       <h2>{{ text_trade_title }}</h2>
-      <p>{{ text_trade_copy }}</p>
     </div>
     <a class="cb-btn cb-btn--black" href="{{ register }}">{{ text_trade_cta }}</a>
   </section>

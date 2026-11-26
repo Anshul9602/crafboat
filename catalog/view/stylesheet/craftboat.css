@@ -990,25 +990,30 @@ body.cb-acct #account-register.cb-auth {
 }
 
 body.cb-acct #account-register.cb-apply .cb-apply__shell,
+body.cb-acct #account-edit.cb-apply .cb-apply__shell,
 body.cb-acct #account-complete.cb-apply #content {
     max-width: 1120px;
     margin: 0 auto;
 }
 
 body.cb-acct #account-register.cb-apply .cb-apply__intro,
+body.cb-acct #account-edit.cb-apply .cb-apply__intro,
 body.cb-acct #account-complete.cb-apply .cb-apply__intro {
     margin: 0 0 8px;
 }
 
 body.cb-acct #account-register.cb-apply .cb-apply__intro h1,
+body.cb-acct #account-edit.cb-apply .cb-apply__intro h1,
 body.cb-acct #account-complete.cb-apply h1 {
     max-width: 100%;
     margin: 0 0 12px;
     font-size: clamp(32px, 4vw, 44px);
     line-height: 1.08;
-    letter-spacing: -0.6px;}
+    letter-spacing: -0.6px;
+}
 
 body.cb-acct #account-register.cb-apply .cb-apply__intro > p,
+body.cb-acct #account-edit.cb-apply .cb-apply__intro > p,
 body.cb-acct #account-complete.cb-apply #content > p {
     max-width: 46ch;
     margin: 0 0 18px;
@@ -1114,6 +1119,7 @@ body.cb-acct #account-complete.cb-apply .cb-apply__upload .btn-light {
 }
 
 body.cb-acct #account-register.cb-apply .cb-apply__footer,
+body.cb-acct #account-edit.cb-apply .cb-apply__footer,
 body.cb-acct #account-complete.cb-apply .cb-apply__footer {
     display: flex;
     flex-direction: column;
@@ -1125,6 +1131,7 @@ body.cb-acct #account-complete.cb-apply .cb-apply__footer {
 }
 
 body.cb-acct #account-register.cb-apply .cb-apply__actions,
+body.cb-acct #account-edit.cb-apply .cb-apply__actions,
 body.cb-acct #account-complete.cb-apply .cb-apply__actions {
     display: flex;
     flex-wrap: wrap;
@@ -1134,9 +1141,18 @@ body.cb-acct #account-complete.cb-apply .cb-apply__actions {
 }
 
 body.cb-acct #account-register.cb-apply .cb-apply__actions .btn-primary,
+body.cb-acct #account-edit.cb-apply .cb-apply__actions .btn-primary,
 body.cb-acct #account-complete.cb-apply .cb-apply__actions .btn-primary {
     margin-left: auto;
     min-width: 160px;
+}
+
+body.cb-acct #account-edit.cb-apply .cb-apply__actions .btn-light {
+    border: 1px solid #111;
+    border-radius: 160px;
+    background: #fff;
+    color: #111;
+    padding: 12px 22px;
 }
 
 .cb-auth__types {
@@ -3417,6 +3433,10 @@ body.cb .cb-tile h3 {
 
 .cb-works h2 em {
     font-style: italic;
+}
+
+.cb-works > .cb-muted {
+    margin: 24px auto 36px;
 }
 
 .cb-works__grid {
@@ -8739,7 +8759,7 @@ body.cb.cb-landing-page footer.cb-landing__footer,
 }
 
 .cb-lead__panel h2 {
-    margin: 0 0 18px;
+    margin: 0 0 28px;
     font-family: Didot, "Libre Baskerville", "Times New Roman", serif;
     font-size: 42px;
     font-weight: 400;

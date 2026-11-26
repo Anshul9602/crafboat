@@ -16,8 +16,20 @@ class Category extends \Opencart\System\Engine\Controller {
 
 		$this->load->model('account/trade');
 
+		$language = (string)$this->config->get('config_language');
+
+		if (!$this->model_account_trade->canAccessCatalog()) {
+			if ($this->customer->isLogged()) {
+				$this->response->redirect($this->url->link('account/register', 'language=' . $language . '&account=trade' . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''), true));
+			} else {
+				$this->response->redirect($this->url->link('account/login', 'language=' . $language, true));
+			}
+
+			return null;
+		}
+
 		if ($this->model_account_trade->requiresCompletion()) {
-			$this->response->redirect($this->url->link('account/complete', 'language=' . $this->config->get('config_language') . '&customer_token=' . ($this->session->data['customer_token'] ?? ''), true));
+			$this->response->redirect($this->url->link('account/complete', 'language=' . $language . '&customer_token=' . ($this->session->data['customer_token'] ?? ''), true));
 
 			return null;
 		}

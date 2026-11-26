@@ -62,7 +62,7 @@ class Contact extends \Opencart\System\Engine\Controller {
 		$data['email'] = (string)($this->config->get('config_email') ?: 'info@shopcraftboat.com');
 		$data['about'] = $this->url->link('information/about', 'language=' . $language);
 		$data['shop'] = $this->url->link('product/category', 'language=' . $language . '&path=100');
-		$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=trade');
+		$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=wholesale');
 
 		// Location
 		$data['locations'] = [];

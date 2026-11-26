@@ -14,6 +14,26 @@ class Search extends \Opencart\System\Engine\Controller {
 	public function index(): void {
 		$this->load->language('product/search');
 
+		$language = (string)$this->config->get('config_language');
+
+		$this->load->model('account/trade');
+
+		if (!$this->model_account_trade->canAccessCatalog()) {
+			if ($this->customer->isLogged()) {
+				$this->response->redirect($this->url->link('account/register', 'language=' . $language . '&account=trade' . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''), true));
+			} else {
+				$this->response->redirect($this->url->link('account/login', 'language=' . $language, true));
+			}
+
+			return;
+		}
+
+		if ($this->model_account_trade->requiresCompletion()) {
+			$this->response->redirect($this->url->link('account/complete', 'language=' . $language . '&customer_token=' . ($this->session->data['customer_token'] ?? ''), true));
+
+			return;
+		}
+
 		if (isset($this->request->get['search'])) {
 			$filter_search = (string)$this->request->get['search'];
 		} else {

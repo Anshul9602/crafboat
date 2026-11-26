@@ -10,85 +10,85 @@
   {% endif %}
   <div class="row">{{ column_left }}
     <div id="content" class="col">{{ content_top }}
-      <h1>Your trade account</h1>
+      <h1>Your wholesale account</h1>
       <div class="cb-acct-tiles">
         <a class="cb-acct-tile" href="{{ wishlist }}">
           <span class="cb-acct-tile__icon"><i class="fa-regular fa-heart"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Wishlist</strong><em>Save pieces for a later order.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Wishlist</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ address }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-location-dot"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Address book</strong><em>Shipping and billing addresses.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Address book</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ password }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-lock"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Password</strong><em>Change your account password.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Password</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ order }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-box"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Orders</strong><em>View your order history.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Orders</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ message }}">
           <span class="cb-acct-tile__icon"><i class="fa-regular fa-comment"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Messages{% if message_unread %} ({{ message_unread }}){% endif %}</strong><em>Chat with the Craft Boat team about orders.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Messages{% if message_unread %} ({{ message_unread }}){% endif %}</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ download }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-download"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Downloads</strong><em>Files from your orders.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Downloads</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ return }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-rotate-left"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Returns</strong><em>Manage your return requests.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Returns</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ newsletter }}">
           <span class="cb-acct-tile__icon"><i class="fa-regular fa-envelope"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Newsletter</strong><em>Studio notes and wholesale updates.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Newsletter</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ edit }}">
           <span class="cb-acct-tile__icon"><i class="fa-regular fa-user"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Account</strong><em>Edit your name, email and phone.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Account</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ payment_method }}">
           <span class="cb-acct-tile__icon"><i class="fa-regular fa-credit-card"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Payment methods</strong><em>Cards saved for checkout.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Payment methods</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ subscription }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-repeat"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Subscriptions</strong><em>Recurring orders on your account.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Subscriptions</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         <a class="cb-acct-tile" href="{{ transaction }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-receipt"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Transactions</strong><em>Balance and account activity.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Transactions</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         {% if reward %}
         <a class="cb-acct-tile" href="{{ reward }}">
           <span class="cb-acct-tile__icon"><i class="fa-regular fa-star"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Reward points</strong><em>Points earned on your orders.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Reward points</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         {% endif %}
         {% if affiliate %}
         <a class="cb-acct-tile" href="{{ affiliate }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-user-plus"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Affiliate</strong><em>{% if not tracking %}Register for an affiliate account.{% else %}Edit your affiliate information.{% endif %}</em></span>
+          <span class="cb-acct-tile__copy"><strong>Affiliate</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         {% if tracking %}
         <a class="cb-acct-tile" href="{{ tracking }}">
           <span class="cb-acct-tile__icon"><i class="fa-solid fa-link"></i></span>
-          <span class="cb-acct-tile__copy"><strong>Tracking</strong><em>Your affiliate tracking code.</em></span>
+          <span class="cb-acct-tile__copy"><strong>Tracking</strong></span>
           <span class="cb-acct-tile__go" aria-hidden="true">→</span>
         </a>
         {% endif %}
