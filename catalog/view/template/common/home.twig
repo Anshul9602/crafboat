@@ -1,4 +1,8 @@
 {{ header }}
+<div class="cb-preloader" id="cb-preloader" role="status" aria-live="polite" aria-label="Loading Craft Boat">
+  <img class="cb-preloader__logo" src="catalog/view/image/craftboat/preloader-logo.svg?v=load1" alt="Craft Boat" width="160" height="160">
+</div>
+<script>document.body.classList.add('cb-preloading');</script>
 <section class="cb-hero" data-cb-banner{% if banners|length == 1 %} style="--cb-banner:url('{{ banners[0].image }}');{% if banners[0].mobile %}--cb-banner-mobile:url('{{ banners[0].mobile }}');{% endif %}"{% endif %}>
   {% if banners|length > 1 %}
     {% for banner in banners %}
@@ -278,8 +282,8 @@
   <div class="cb-custom__photo" style="background-image:url('catalog/view/image/craftboat/custom.png')"></div>
   <div class="cb-custom__copy">
     <p class="cb-kicker">Made for your store</p>
-    <h2 class="cb-display">Your idea, <em>shaped by hand.</em></h2>
-    <p><a class="cb-btn cb-btn--black" href="index.php?route=information/contact&amp;language=en-gb">Start a custom brief</a></p>
+    <h2 class="cb-display">Your idea, <em>shaped by</em> hand.</h2>
+    <p class="cb-custom__action"><a class="cb-btn cb-btn--black" href="{{ contact }}">Start a custom brief</a></p>
   </div>
 </section>
 
@@ -399,6 +403,123 @@
   }
   bindHScroll('cb-chips', 'cb-chips-prev', 'cb-chips-next', 220);
   bindHScroll('cb-cats', 'cb-cats-prev', 'cb-cats-next', 292);
+})();
+</script>
+{% if show_register_popup %}
+<div class="cb-lead" id="cb-lead" hidden>
+  <button type="button" class="cb-lead__backdrop" data-lead-close aria-label="Close"></button>
+  <div class="cb-lead__dialog" role="dialog" aria-modal="true" aria-labelledby="cb-lead-title">
+    <button type="button" class="cb-lead__close" data-lead-close aria-label="Close">×</button>
+    <div class="cb-lead__media">
+      <img src="{{ lead_asset }}popup-products.png" alt="">
+    </div>
+    <div class="cb-lead__panel">
+      <p class="cb-lead__eyebrow">CRAFT BOAT WHOLESALE</p>
+      <h2 id="cb-lead-title">Create a wholesale account</h2>
+      <form class="cb-lead__form" id="cb-lead-form" action="{{ lead }}" method="post">
+        <label class="visually-hidden" for="cb-lead-email">Email address</label>
+        <input type="email" name="email" id="cb-lead-email" placeholder="Email address" required autocomplete="email">
+        <button type="submit" aria-label="Continue"><img src="{{ lead_asset }}popup-arrow.svg" alt=""></button>
+      </form>
+      <p class="cb-lead__error" id="cb-lead-error" hidden></p>
+      <p class="cb-lead__login">Already registered? <a href="{{ register_login }}"><u>Log in</u></a></p>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var modal = document.getElementById('cb-lead');
+  var form = document.getElementById('cb-lead-form');
+  var error = document.getElementById('cb-lead-error');
+  if (!modal) return;
+
+  function openLead() {
+    modal.hidden = false;
+    document.body.classList.add('cb-lead-open');
+    var input = document.getElementById('cb-lead-email');
+    if (input) setTimeout(function () { input.focus(); }, 50);
+  }
+
+  function closeLead() {
+    modal.hidden = true;
+    document.body.classList.remove('cb-lead-open');
+    if (error) {
+      error.hidden = true;
+      error.textContent = '';
+    }
+  }
+
+  document.querySelectorAll('[data-lead-close]').forEach(function (el) {
+    el.addEventListener('click', closeLead);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLead();
+  });
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var emailInput = form.querySelector('[name="email"]');
+      var email = (emailInput && emailInput.value ? emailInput.value : '').trim();
+      var submitBtn = form.querySelector('[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+      fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+        body: 'email=' + encodeURIComponent(email),
+        credentials: 'same-origin'
+      }).then(function (r) { return r.json(); }).then(function (json) {
+        if (json.redirect) {
+          window.location.href = json.redirect;
+          return;
+        }
+        if (submitBtn) submitBtn.disabled = false;
+        var message = json.error || 'Something went wrong. Please try again.';
+        if (json.login) message = message + ' <a href="' + json.login + '">Log in</a>';
+        if (error) {
+          error.hidden = false;
+          error.innerHTML = message;
+        }
+      }).catch(function () {
+        if (submitBtn) submitBtn.disabled = false;
+        if (error) {
+          error.hidden = false;
+          error.textContent = 'Something went wrong. Please try again.';
+        }
+      });
+    });
+  }
+
+  function openWhenReady() {
+    if (document.getElementById('cb-preloader')) {
+      window.addEventListener('cb-preloader-done', openLead, { once: true });
+      return;
+    }
+    openLead();
+  }
+  openWhenReady();
+})();
+</script>
+{% endif %}
+<script>
+(function () {
+  var el = document.getElementById('cb-preloader');
+  if (!el) return;
+  var minMs = 1000;
+  var started = Date.now();
+  function finish() {
+    var wait = Math.max(0, minMs - (Date.now() - started));
+    window.setTimeout(function () {
+      el.classList.add('is-done');
+      document.body.classList.remove('cb-preloading');
+      window.setTimeout(function () {
+        if (el.parentNode) el.parentNode.removeChild(el);
+        window.dispatchEvent(new Event('cb-preloader-done'));
+      }, 450);
+    }, wait);
+  }
+  if (document.readyState === 'complete') finish();
+  else window.addEventListener('load', finish);
 })();
 </script>
 {{ footer }}

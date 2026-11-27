@@ -944,7 +944,7 @@ class Product extends \Opencart\System\Engine\Model {
 			$offers[$id] = $row;
 		}
 
-		$label = $role === 'trade' ? 'Trade' : 'Wholesale';
+		$label = 'Wholesale';
 
 		foreach ($cards as $index => $card) {
 			$id = (int)$card['product_id'];

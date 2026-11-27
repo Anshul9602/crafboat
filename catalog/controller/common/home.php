@@ -34,6 +34,7 @@ class Home extends \Opencart\System\Engine\Controller {
 		$data['bestsellers_link'] = $this->url->link('product/category', 'language=' . $language . '&path=100_109');
 		$data['ready_link'] = $this->url->link('product/category', 'language=' . $language . '&path=100_110');
 		$data['holiday'] = $this->url->link('product/category', 'language=' . $language . '&path=100_111');
+		$data['contact'] = $this->url->link('information/contact', 'language=' . $language);
 		$data['paper'] = $collection_url('stationery-paper-goods-moss-green-story');
 		$data['dept_home'] = $collection_url('picture-frames');
 		$data['dept_storage'] = $collection_url('desk-organization-moss-green-story');
@@ -47,9 +48,14 @@ class Home extends \Opencart\System\Engine\Controller {
 		$data['categories'] = $this->homeCategories();
 		$data['home_collections'] = $this->homeCollections();
 		$data['bestsellers'] = $this->homeCards('featured', 8);
-		$data['ready'] = $this->homeCards('readyline', 4);
+		$data['ready'] = $this->homeReadyCards(4);
 		$data['logged'] = $this->customer->isLogged();
 		$data['login'] = $this->url->link('account/login', 'language=' . $language);
+		$data['register'] = $this->url->link('account/register', 'language=' . $language . '&account=wholesale');
+		$data['register_login'] = $this->url->link('account/register', 'language=' . $language . '&account=login');
+		$data['lead'] = $this->url->link('account/register.lead', 'language=' . $language);
+		$data['lead_asset'] = 'image/catalog/craftboat/landing/';
+		$data['show_register_popup'] = !$data['logged'];
 		$data['account'] = $this->url->link('account/account', 'language=' . $language . (isset($this->session->data['customer_token']) ? '&customer_token=' . $this->session->data['customer_token'] : ''));
 
 		$data['footer'] = $this->load->controller('common/footer');
@@ -118,16 +124,36 @@ class Home extends \Opencart\System\Engine\Controller {
 	}
 
 	/**
+	 * Ready to Ship home strip: products with about 10+ units in stock.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function homeReadyCards(int $limit): array {
+		$query = $this->db->query("SELECT `p`.`product_id`, `p`.`model`, `p`.`image`, `p`.`location`, `p`.`quantity`, `pd`.`name`, `pd`.`tag`, `pd`.`meta_keyword` FROM `" . DB_PREFIX . "product` `p` LEFT JOIN `" . DB_PREFIX . "product_description` `pd` ON (`p`.`product_id` = `pd`.`product_id`) WHERE `p`.`status` = '1' AND `p`.`quantity` >= '10' AND `pd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND NOT FIND_IN_SET('made', IFNULL(`pd`.`tag`, '')) ORDER BY `p`.`quantity` DESC, `p`.`sort_order` ASC LIMIT " . (int)$limit);
+
+		return $this->mapHomeCards($query->rows, true);
+	}
+
+	/**
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function homeCards(string $flag, int $limit): array {
 		$query = $this->db->query("SELECT `p`.`product_id`, `p`.`model`, `p`.`image`, `p`.`location`, `pd`.`name`, `pd`.`tag`, `pd`.`meta_keyword` FROM `" . DB_PREFIX . "product` `p` LEFT JOIN `" . DB_PREFIX . "product_description` `pd` ON (`p`.`product_id` = `pd`.`product_id`) WHERE `p`.`status` = '1' AND `pd`.`language_id` = '" . (int)$this->config->get('config_language_id') . "' AND FIND_IN_SET('" . $this->db->escape($flag) . "', `pd`.`tag`) ORDER BY `p`.`sort_order` ASC LIMIT " . (int)$limit);
 
+		return $this->mapHomeCards($query->rows);
+	}
+
+	/**
+	 * @param array<int, array<string, mixed>> $rows
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function mapHomeCards(array $rows, bool $force_ready = false): array {
 		$cards = [];
 
-		foreach ($query->rows as $row) {
+		foreach ($rows as $row) {
 			$tags = array_map('trim', explode(',', (string)$row['tag']));
-			$made = in_array('made', $tags, true);
+			$made = !$force_ready && in_array('made', $tags, true);
 
 			$cards[] = [
 				'product_id' => $row['product_id'],
@@ -138,7 +164,7 @@ class Home extends \Opencart\System\Engine\Controller {
 				'image'      => 'image/' . $row['image'],
 				'href'       => $this->url->link('product/product', 'language=' . $this->config->get('config_language') . '&product_id=' . $row['product_id']),
 				'badge'      => in_array('new', $tags, true) ? 'new' : (in_array('bestseller', $tags, true) ? 'bestseller' : 'ready'),
-				'ship'       => $made ? 'Made to order · Ships in 10–12 days' : 'Ready to ship · Dispatches in 3–5 days',
+				'ship'       => $made ? 'Made to order - Ships in 10-12 days' : 'Ready to ship - Dispatches in 3-5 days',
 				'wait'       => $made
 			];
 		}

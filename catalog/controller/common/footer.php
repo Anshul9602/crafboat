@@ -133,6 +133,16 @@ class Footer extends \Opencart\System\Engine\Controller {
 		$data['saved_ids'] = $saved_ids;
 		$data['cookie'] = $this->load->controller('common/cookie');
 
+		$data['profile_notice'] = [];
+
+		if (!empty($this->session->data['cb_profile_notice']) && is_array($this->session->data['cb_profile_notice'])) {
+			$data['profile_notice'] = [
+				'title'   => (string)($this->session->data['cb_profile_notice']['title'] ?? 'Update account information'),
+				'message' => (string)($this->session->data['cb_profile_notice']['message'] ?? '')
+			];
+			unset($this->session->data['cb_profile_notice']);
+		}
+
 		return $this->load->view('common/footer', $data);
 	}
 }

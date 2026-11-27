@@ -26,11 +26,10 @@
       <div class="cb-pdp__figures">
         {% if can_buy %}
           <div>
-            <span>{% if trade %}Trade{% else %}Wholesale{% endif %}</span>
-            <strong>{{ trade ? trade_price : wholesale_price }}</strong>
-            <small class="cb-pdp__was{% if trade_off or wholesale_off %} is-off{% endif %}">{{ price }}</small>
-            {% if trade and trade_off %}<em class="cb-pdp__off">{{ trade_off }}</em>{% endif %}
-            {% if wholesale and wholesale_off %}<em class="cb-pdp__off">{{ wholesale_off }}</em>{% endif %}
+            <span>Wholesale</span>
+            <strong>{{ wholesale_price }}</strong>
+            <small class="cb-pdp__was{% if wholesale_off %} is-off{% endif %}">{{ price }}</small>
+            {% if wholesale_off %}<em class="cb-pdp__off">{{ wholesale_off }}</em>{% endif %}
           </div>
         {% else %}
           <div>
@@ -54,17 +53,17 @@
         </form>
       {% elseif logged %}
         <h2>Wholesale pricing is reserved for approved stockists.</h2>
-        <p>Your account can browse the catalog. Pricing and ordering unlock once you are approved for Trade or Wholesale.</p>
+        <p>Your account can browse the catalog. Pricing and ordering unlock once you are approved for Wholesale.</p>
         <div class="cb-pdp__actions">
           <a class="cb-btn cb-btn--black" href="{{ account }}">Go to your account</a>
-          <a class="cb-btn cb-btn--line" href="{{ register }}">Apply for Trade</a>
+          <a class="cb-btn cb-btn--line" href="{{ register }}">Apply for wholesale</a>
         </div>
       {% else %}
         <h2>Wholesale pricing is reserved for approved stockists.</h2>
         <p>Sign in to view price, margin, inventory and quick-add controls.</p>
         <div class="cb-pdp__actions">
           <a class="cb-btn cb-btn--black" href="{{ login }}">Sign in to view pricing</a>
-          <a class="cb-btn cb-btn--line" href="{{ register }}">Apply for Trade</a>
+          <a class="cb-btn cb-btn--line" href="{{ register }}">Apply for wholesale</a>
         </div>
       {% endif %}
     </div>
@@ -125,7 +124,7 @@
     <h2 class="cb-display">Unlock wholesale pricing and add full case packs.</h2>
   </div>
   <div class="cb-unlock__actions">
-    <a class="cb-btn cb-btn--black" href="{{ register }}">Apply for a trade account →</a>
+    <a class="cb-btn cb-btn--black" href="{{ register }}">Apply for a wholesale account →</a>
     <a class="cb-unlock__login" href="{{ logged ? account : login }}">{% if logged %}Go to your account{% else %}Already approved? Sign in{% endif %}</a>
   </div>
 </section>

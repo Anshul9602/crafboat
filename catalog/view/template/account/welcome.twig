@@ -1,0 +1,110 @@
+{{ header }}
+<div class="cb-welcome" id="account-welcome">
+  <div class="cb-welcome__shell">
+    <div class="cb-welcome__brand">
+      <img class="cb-welcome__seal" src="{{ seal }}" alt="Craft Boat" width="150" height="151">
+    </div>
+
+    <div class="cb-welcome__body">
+      <p class="cb-welcome__eyebrow">Your account is ready</p>
+      <h1 class="cb-welcome__title">Welcome to Craft Boat.</h1>
+      <p class="cb-welcome__lead">
+        Your wholesale account has been approved. Explore the<br>
+        collection and find pieces made for your store.
+      </p>
+
+      <div class="cb-welcome__showcase">
+        {% if products %}
+        <div class="cb-welcome-slider" data-welcome-slider>
+          <div class="cb-welcome-slider__viewport">
+            <div class="cb-welcome-slider__track" data-welcome-track>
+              {% for product in products %}
+                <a class="cb-welcome__thumb" href="{{ product.href }}" title="{{ product.name }}">
+                  <span class="cb-welcome__thumb-frame">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                  </span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="cb-welcome-slider__nav" {% if products|length < 2 %}hidden{% endif %}>
+            <button type="button" class="cb-welcome-slider__btn" data-welcome-prev aria-label="Previous products">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <div class="cb-welcome-slider__bar" aria-hidden="true">
+              <span class="cb-welcome-slider__fill" data-welcome-fill></span>
+            </div>
+            <button type="button" class="cb-welcome-slider__btn" data-welcome-next aria-label="Next products">
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+        {% endif %}
+        <a class="cb-welcome__cta" href="{{ explore }}">Explore the collection</a>
+      </div>
+
+      <div class="cb-welcome__note">
+        <h2>Thoughtfully made in Jaipur.</h2>
+        <p>
+          Discover handcrafted goods and considered details, ready for<br>
+          your shelves.
+        </p>
+      </div>
+    </div>
+
+    <div class="cb-welcome__foot">
+      <p class="cb-welcome__help">
+        Questions?
+        <a href="{{ contact }}">Contact the Craft Boat team</a>
+      </p>
+      <img class="cb-welcome__mark" src="{{ mark }}" alt="Craft Boat" width="52" height="61">
+      <p class="cb-welcome__place">Craft Boat · Jaipur, India</p>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.querySelector('[data-welcome-slider]');
+  if (!root) return;
+
+  var viewport = root.querySelector('.cb-welcome-slider__viewport');
+  var track = root.querySelector('[data-welcome-track]');
+  var fill = root.querySelector('[data-welcome-fill]');
+  var prev = root.querySelector('[data-welcome-prev]');
+  var next = root.querySelector('[data-welcome-next]');
+  if (!viewport || !track) return;
+
+  function stepSize() {
+    var thumb = track.querySelector('.cb-welcome__thumb');
+    if (!thumb) return 120;
+    var styles = window.getComputedStyle(track);
+    var gap = parseFloat(styles.columnGap || styles.gap || '6') || 6;
+    return thumb.getBoundingClientRect().width + gap;
+  }
+
+  function maxScroll() {
+    return Math.max(0, track.scrollWidth - viewport.clientWidth);
+  }
+
+  function update() {
+    var max = maxScroll();
+    var left = viewport.scrollLeft;
+    var ratio = max > 0 ? left / max : 0;
+    if (fill) fill.style.width = Math.max(18, Math.min(100, ratio * 100 + 18)) + '%';
+    if (prev) prev.disabled = left <= 2;
+    if (next) next.disabled = left >= max - 2;
+    root.classList.toggle('is-scrollable', max > 2);
+  }
+
+  function scrollByDir(dir) {
+    viewport.scrollBy({ left: dir * stepSize() * 2, behavior: 'smooth' });
+  }
+
+  if (prev) prev.addEventListener('click', function () { scrollByDir(-1); });
+  if (next) next.addEventListener('click', function () { scrollByDir(1); });
+  viewport.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+{{ footer }}

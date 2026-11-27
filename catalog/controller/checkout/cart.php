@@ -264,7 +264,7 @@ class Cart extends \Opencart\System\Engine\Controller {
 					'image'      => 'image/' . ($image !== '' ? $image : 'catalog/craftboat/p1.png'),
 					'href'       => $this->url->link('product/product', $lang . '&product_id=' . (int)$info['product_id']),
 					'badge'      => in_array('new', $tags, true) ? 'new' : (in_array('bestseller', $tags, true) ? 'bestseller' : 'ready'),
-					'ship'       => $made ? 'Made to order · Ships in 10–12 days' : 'Ready to ship · Dispatches in 3–5 days',
+					'ship'       => $made ? 'Made to order - Ships in 10-12 days' : 'Ready to ship - Dispatches in 3-5 days',
 					'wait'       => $made
 				];
 			}

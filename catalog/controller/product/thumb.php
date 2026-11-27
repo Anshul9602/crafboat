@@ -46,7 +46,7 @@ class Thumb extends \Opencart\System\Engine\Controller {
 		$data['category_name'] = $data['meta_keyword'] ?? '';
 		$data['sku'] = $data['model'] ?? '';
 		$data['ship_wait'] = $made;
-		$data['ship'] = $made ? 'Made to order · Ships in 10–12 days' : 'Ready to ship · Dispatches in 3–5 days';
+		$data['ship'] = $made ? 'Made to order - Ships in 10-12 days' : 'Ready to ship - Dispatches in 3-5 days';
 
 		return $this->load->view('product/thumb', $data);
 	}

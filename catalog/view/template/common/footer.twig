@@ -18,7 +18,7 @@
   <div>
     <h3>Work with us</h3>
     <a href="{{ contact }}">Custom orders</a>
-    <a href="{{ about }}">Our process</a>
+    <a href="{{ about }}">About Us</a>
     <a href="{{ contact }}">Wholesale terms</a>
     <a href="{{ contact }}">FAQ’s</a>
   </div>
@@ -93,7 +93,7 @@
   <div class="cb-notice__card" role="dialog" aria-modal="true" aria-labelledby="cb-notice-title">
     <h2 id="cb-notice-title"></h2>
     <p id="cb-notice-message"></p>
-    <button type="button" class="cb-btn cb-btn--black" data-notice-close>Close</button>
+    <button type="button" class="cb-btn cb-btn--black" data-notice-close>Continue</button>
   </div>
 </div>
 <aside class="cb-toast" id="cb-toast" hidden>
@@ -109,8 +109,20 @@
       notice.hidden = true;
     }
   });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && !notice.hidden) notice.hidden = true;
+  });
 })();
 </script>
+{% if profile_notice and profile_notice.message %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof cbShowNotice === 'function') {
+    cbShowNotice({{ profile_notice.title|json_encode|raw }}, {{ profile_notice.message|json_encode|raw }});
+  }
+});
+</script>
+{% endif %}
 <script>
 (function () {
   var root = document.getElementById('cb-saved');

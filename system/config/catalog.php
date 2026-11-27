@@ -37,6 +37,7 @@ $_['action_pre_action']  = [
 	'startup/api',
 	'startup/maintenance',
 	'startup/landing',
+	'startup/profile',
 	'startup/authorize'
 ];
 

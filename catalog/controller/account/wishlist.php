@@ -156,7 +156,7 @@ class WishList extends \Opencart\System\Engine\Controller {
 					'category'   => $product_info['meta_keyword'] ?? '',
 					'collection' => $product_info['location'] ?? '',
 					'badge'      => in_array('new', $tags, true) ? 'new' : (in_array('bestseller', $tags, true) ? 'bestseller' : 'ready'),
-					'ship'       => $made ? 'Made to order · Ships in 10–12 days' : 'Ready to ship · Dispatches in 3–5 days',
+					'ship'       => $made ? 'Made to order - Ships in 10-12 days' : 'Ready to ship - Dispatches in 3-5 days',
 					'wait'       => $made
 				] + $product_info;
 			} else {
